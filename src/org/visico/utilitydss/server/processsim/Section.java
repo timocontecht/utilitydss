@@ -79,15 +79,16 @@ public class Section extends SimProcess
 				   " End: " + myModel.presentTime().toString());
 		   myModel.cranes.takeBack(1);
 
-	/* for replacement projects			   
+	 //for replacement projects			   
 		// remove the pipe
-		   myModel.cranes.provide(1);
+		   if(myModel.getRenovation())
+		   {myModel.cranes.provide(1);
 		   //start = myModel.presentTime().toString();
 		   hold (new TimeSpan(myModel.getPipeRemoveTime(), TimeUnit.MINUTES));
 		   sendTraceNote("Activity: " + getName() + " Shoring: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
-		   myModel.cranes.takeBack(1);
-*/
+		   myModel.cranes.takeBack(1);}
+
 		   
 		   // prepare the bed
 		   myModel.crews.provide(1);

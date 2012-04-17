@@ -202,7 +202,6 @@ public class UtilitySimulation extends Model
    public double getSurfacePrepareTime() {
 	      return surfacePrepareTime.sample();
    		}
-   
    /**
     * Returns a sample of the random stream used to determine
     * the next truck arrival time. THIS IS NOT USED ATM because trucks are modeled as a resource.
@@ -212,7 +211,9 @@ public class UtilitySimulation extends Model
    public double getTruckArrivalTime() {
       return truckArrivalTime.sample();
    }
-   
+   public boolean getRenovation() {
+	      return Renovation;
+	   }
    public void report()
    {
 	   
@@ -228,6 +229,7 @@ public class UtilitySimulation extends Model
    protected static int NUM_CREW = 1;
    protected static int NUM_ROLLER = 1;
    protected static int NUM_TRUCK = 1;
+   protected static boolean Renovation = false;
    
    /**
     * Random number stream used to draw an arrival time for the next truck. THIS IS NOT USED ATM 
