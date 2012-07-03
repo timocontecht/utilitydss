@@ -117,7 +117,14 @@ public class UtilitySimulation extends Model
 		   SewerExperiment exp = (SewerExperiment)this.getExperiment();
 		   exp.getReceiver().createSectionElement(section);
 	   }
-	
+	   puts = new ArrayList<Put>();
+	// initialize the sections 
+	   for (int i=0; i<NUM_PUT; i++)
+	   {
+		   Put put = new Put(this, "put" , true);
+		   put.activate();
+		   puts.add(put);
+	   }
    }
    
    /**
@@ -153,6 +160,10 @@ public class UtilitySimulation extends Model
                   10.0, 30.0, true, false);
 	      surfacePrepareTime= new ContDistUniform(this, "SurfacePrepareTimeStream",
                   10.0, 30.0, true, false);
+	      paveTime= new ContDistUniform(this, "PaveTimeStream",
+                  10.0, 30.0, true, false);
+	      stonePaveTime= new ContDistUniform(this, "StonePaveTimeStream",
+                  10.0, 30.0, true, false);
 	     
 	      
 	      // resources
@@ -163,6 +174,8 @@ public class UtilitySimulation extends Model
 	      crews = new PartTimeRes(this, "Resource crews", NUM_CREW, true, true);
 	      rollers = new PartTimeRes(this, "Resource rollers", NUM_ROLLER, true, true);
 	      trucks = new PartTimeRes(this, "Resource trucks", NUM_TRUCK, true, true);
+	      pavecrews = new PartTimeRes(this, "Resource pavecrews", NUM_PAVECREWS, true, true);
+	      stonepavecrews = new PartTimeRes(this, "Resource stonepavecrews", NUM_STONEPAVECREWS, true, true);
 
 	      
    }
@@ -202,6 +215,31 @@ public class UtilitySimulation extends Model
    public double getSurfacePrepareTime() {
 	      return surfacePrepareTime.sample();
    		}
+   public double getPaveTime() {
+	      return paveTime.sample();
+		}
+   public double getStonePaveTime() {
+	      return stonePaveTime.sample();
+		}
+   
+   /**
+    * Returns if project is replacement project or not.
+    * if true implements pipe removal activity in section lifecycle 
+    *
+    * @return Boolean Replacement
+    */  
+   public boolean getReplacement() {
+	      return Replacement;
+	   }
+   /**
+    * Returns if project is pavement project or stone road surface.
+    * if true implements pavement in section lifecycle, if false implements stone road surface pavement
+    *
+    * @return Boolean Replacement
+    */  
+   public int getPavement() {
+	      return Pavement;
+	   }
    /**
     * Returns a sample of the random stream used to determine
     * the next truck arrival time. THIS IS NOT USED ATM because trucks are modeled as a resource.
@@ -211,26 +249,66 @@ public class UtilitySimulation extends Model
    public double getTruckArrivalTime() {
       return truckArrivalTime.sample();
    }
-   public boolean getRenovation() {
-	      return Renovation;
-	   }
+
    public void report()
    {
 	   
    }
    
    /**
+    * Updates counters after each specific activity has taken place.
+    *
+    */
+   public void roll()   {	
+	   rollcounter ++;
+   }
+   public void breaking()   {	
+	   breakcounter ++;
+   }
+   public void backfill()   {	
+	   backfillcounter ++;
+   }
+   public void pave()   {	
+	   pavecounter ++;
+   }
+   public void stonepave()   {	
+	   stonepavecounter ++;
+   }
+   /**
+    * Returns number of activities that happened.
+    * @return int rollcounter
+    */  
+   public static int getRollCounter() {
+	  return rollcounter;
+  }
+   public static int getBreakCounter() {
+	  return breakcounter;
+  }
+   public static int getBackfillCounter() {
+	  return backfillcounter;
+  }
+   public static int getPaveCounter() {
+	  return pavecounter;
+  }
+   public static int getStonePaveCounter() {
+	  return stonepavecounter;
+  }
+
+/**
     * Model parameters: the number of sections and resources
     */
    public static int NUM_SEC = 7;
+   public static int NUM_PUT = 7;
    protected static int NUM_BREAKER = 1;
    protected static int NUM_EXCAVATOR = 1;
    protected static int NUM_CRANE = 1;
    protected static int NUM_CREW = 1;
    protected static int NUM_ROLLER = 1;
    protected static int NUM_TRUCK = 1;
-   protected static boolean Renovation = false;
-   
+   protected static int NUM_PAVECREWS = 1;
+   protected static int NUM_STONEPAVECREWS = 1;
+   protected static boolean Replacement = false;
+   protected static int Pavement = 1;
    /**
     * Random number stream used to draw an arrival time for the next truck. THIS IS NOT USED ATM 
     * 						because trucks are modeled as a resource.
@@ -254,7 +332,9 @@ public class UtilitySimulation extends Model
    private desmoj.core.dist.ContDistUniform removeTrenchTime;
    private desmoj.core.dist.ContDistUniform backfillTime;
    private desmoj.core.dist.ContDistUniform surfacePrepareTime;
-
+   private desmoj.core.dist.ContDistUniform paveTime;
+   private desmoj.core.dist.ContDistUniform stonePaveTime;
+   
   
    protected PartTimeRes breakers;
    protected PartTimeRes excavators;
@@ -262,7 +342,16 @@ public class UtilitySimulation extends Model
    protected PartTimeRes crews;
    protected PartTimeRes rollers;
    protected PartTimeRes trucks;
+   protected PartTimeRes pavecrews;
+   protected PartTimeRes stonepavecrews;
    
    ArrayList<Section> sections;
+   ArrayList<Put> puts;
+   
+   private static int rollcounter = 0;
+   private static int breakcounter = 0;
+   private static int backfillcounter = 0;   
+   private static int pavecounter = 0;
+   private static int stonepavecounter = 0;
 }
 
