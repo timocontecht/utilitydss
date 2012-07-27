@@ -154,7 +154,7 @@ public class Receiver implements MessageReceiver
 		Element section = doc.createElement("task");
 		
 		Attr id = doc.createAttribute("id");
-		id.setValue(Integer.toString(id_counter));
+		id.setValue(Integer.toString(id_counter+1));
 		section.setAttributeNode(id);
 		
 		Attr name = doc.createAttribute("name");
