@@ -32,27 +32,30 @@ public class Section extends SimProcess
 	    * This is the actual description of the work that is done, the parameters are stored in UtilitySimulation.java
 	    *
 	    * the section will loop through the following stages:
-	    * 1. wait for breaker to break street 
+	    * TODO first section should perform action: setting out underground cables and tubes.
+	    * 1. wait for breaker to break street or remove stones
 	    * 2. wait for excavator to excavate (excavator requires truck)(quantity of dirt not yet modelled)
-	    * 3. wait for crane to shore the section
+	    * 3. If shoring required: wait for crane to shore the section
 	    * 4. If replacement project: wait for crane to remove the old pipe 
 	    * 5. wait for crew to prepare bed
 	    * 6. wait for crane to place pipe (pipe requires truck) - think how to model that a truck can already get a pipe
-	    * 7. wait for crew to handbackfill
-	    * 8. wait for crane to remove the trench
-	    * 9. wait for excavator to backfill (needs truck with backfill - excavator needed to load truck)
-	    * 10. wait for crew to prepare surface
-	    * 11. wait for road crew to pave the surface
+	    * 7. wait for crew to handbackfill (first backfill)
+	    * 8. If shoring required: wait for crane to remove the trench
+	    * 9. If there are housing connections: housing connections
+	    * 10. wait for excavator to backfill (needs truck with backfill - excavator needed to load truck) (second backfill)
+	    * 11. wait for crew to prepare surface
+	    * 12. wait for road crew to pave the surface with asphalt or stones
 	    */
 
 	   public void lifeCycle() 
 	   {
 		   // break the section or remove stone pavement
+		   // TODO think about: is a section equal to the part being broken at once?
 		   TimeInstant start = myModel.presentTime();
 		   if(myModel.getOldPavement() == 1){
 		   myModel.breakers.provide(1);
 		     hold (new TimeSpan(myModel.getBreakingTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
-		   TimeInstant end = myModel.presentTime();
+		   //TimeInstant end = myModel.presentTime();
 		   ActivityMessage msg = new ActivityMessage(myModel, this, start, "Break Section", myModel.presentTime()) ;
 		   sendMessage(msg);
 		   myModel.breakers.takeBack(1);
@@ -65,7 +68,7 @@ public class Section extends SimProcess
 		   else if(myModel.getOldPavement() == 2)
 		   {   myModel.crews.provide(1);
 			   hold (new TimeSpan(myModel.getBreakingTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
-			   TimeInstant end = myModel.presentTime();
+			   //TimeInstant end = myModel.presentTime();
 			   ActivityMessage msg = new ActivityMessage(myModel, this, start, "Break Section", myModel.presentTime());
 			   sendMessage(msg);
 			   myModel.crews.takeBack(1);
@@ -84,7 +87,7 @@ public class Section extends SimProcess
 		   
 		   // shore the section
 		   // only for projects that require shoring (set variable Trench to right value in simulation class)
-		   if(myModel.getTrench() == 1)
+		   if(myModel.getShore() == 1)
 		   {   myModel.cranes.provide(1);
 		   //start = myModel.presentTime().toString();
 		   hold (new TimeSpan(myModel.getShoringTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
@@ -94,7 +97,8 @@ public class Section extends SimProcess
 		   }
 		   
 		   // remove the pipe
-		   // only for replacement projects (set variable Replacement to true/false in simulation class)	   
+		   // only for replacement projects (set variable Replacement to true/false in simulation class)	
+		   // TODO implement different types of sewer to be removed (material, size, combined/seperate)
 		   if(myModel.getReplacement())
 		   {	myModel.cranes.provide(1);
 		   		//start = myModel.presentTime().toString();
@@ -113,6 +117,7 @@ public class Section extends SimProcess
 		   myModel.crews.takeBack(1);
 		  
 		   // install the pipe
+		   // TODO implement different types of sewer to be removed (material, size, combined/seperate)
 		   myModel.crews.provide(1);
 		   myModel.cranes.provide(1);
 		   //start = myModel.presentTime().toString();
@@ -122,7 +127,7 @@ public class Section extends SimProcess
 		   myModel.cranes.takeBack(1);
 		   myModel.crews.takeBack(1);
 		   
-		   // hand backfill
+		   // hand/first backfill compacting
 		   myModel.crews.provide(1);
 		   //start = myModel.presentTime().toString();
 		   hold (new TimeSpan(myModel.getHandBackfillTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
@@ -133,26 +138,13 @@ public class Section extends SimProcess
 		   if(myModel.getSecondCrew())
 		   {	if (UtilitySimulation.getHandBackfillCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT))
 		   		{myModel.crews.stopUse();
-		   		System.out.println("resource crews stopped at simulation time " + myModel.presentTime() + " because 2nd crew takes over");
+		   		System.out.println("resource crews stopped at simulation time " + myModel.presentTime() + " 2nd crew finishes housing connections");
 		   		}
 		   }
 		   
-		   //TODO	Insert housing connection activity, add resources for this task to UtilitySimulation.
-		   // install the housing connections
-		   if(myModel.getSecondCrew()){
-		   myModel.secondcrews.provide(1);}
-		   else {myModel.crews.provide(1);}
-		   //start = myModel.presentTime().toString();
-		   hold (new TimeSpan(myModel.getPipePlacingTime(), TimeUnit.HOURS)); //multiply by This.Num_HousingConnections
-		   sendTraceNote("Activity: " + getName() + " Install Pipe: " + start.toString() + 
-				   " End: " + myModel.presentTime().toString());
-		   if(myModel.getSecondCrew()){
-			   myModel.secondcrews.takeBack(1);}
-		   else {myModel.crews.takeBack(1);}
-	   
 		   // remove trench
 		   // only for projects that require shoring (set variable Trench right value in simulation class)
-		   if(myModel.getTrench() == 1)
+		   if(myModel.getShore() == 1)
 		   {	myModel.cranes.provide(1);
 		   //start = myModel.presentTime().toString();
 		   hold (new TimeSpan(myModel.getRemoveTrenchTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
@@ -164,7 +156,22 @@ public class Section extends SimProcess
 			   System.out.println("resource cranes stopped at simulation time " + myModel.presentTime());
 		   }}
 		   
-		   // backfill
+		   //TODO	make housing connections optional, not every section has them
+		   //TODO 	add characteristics to connections, per connection are average per section/project
+		   //TODO 	these characteristics need to determine time needed
+		   // install the housing connections
+		   if(myModel.getSecondCrew()){
+		   myModel.secondcrews.provide(1);}
+		   else {myModel.crews.provide(1);}
+		   //start = myModel.presentTime().toString();
+		   hold (new TimeSpan(myModel.getPipePlacingTime(), TimeUnit.HOURS)); //multiply by This.Num_HousingConnections
+		   sendTraceNote("Activity: " + getName() + " Install Pipe: " + start.toString() + 
+				   " End: " + myModel.presentTime().toString());
+		   if(myModel.getSecondCrew()){
+			   myModel.secondcrews.takeBack(1);}
+		   else {myModel.crews.takeBack(1);}
+	   	   
+		   // (second) backfill + compacting
 		   myModel.excavators.provide(1);
 		   myModel.trucks.provide(1);
 		   //start = myModel.presentTime().toString();
@@ -187,7 +194,7 @@ public class Section extends SimProcess
 			   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());}
 		   }
  
-		   // roll
+		   // roll/prepare surface
 		   myModel.rollers.provide(1);
 		   //start = myModel.presentTime().toString();
 		   hold (new TimeSpan(myModel.getSurfacePrepareTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
@@ -250,6 +257,6 @@ public class Section extends SimProcess
 	   // number of trucks to fill ....   - Not (yet) used 
 	   // TODO make excavation_volume a function of section length, width and depth
 	   // TODO make excavation_volume influence nr. of trucks needed and excavating/backfill time
-	  private double excavation_volume = 20;
+	  //private double excavation_volume = 20;
 	  
 }

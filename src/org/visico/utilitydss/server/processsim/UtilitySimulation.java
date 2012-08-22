@@ -125,11 +125,11 @@ public class UtilitySimulation extends Model
    }
    
    /**
-    * Initialises static model components like distributions and queues.
+    * Initializes static model components like distributions and queues.
     */
    public void init() 
    { 
-	      // initialise the TimeStreams
+	      // Initialize the TimeStreams
 	      // Parameters:
 	      // this                = belongs to this model
 	      // "ServiceTimeStream" = the name of the stream
@@ -258,20 +258,20 @@ public class UtilitySimulation extends Model
     */  
     public boolean getSecondCrew() {
     	return secondCrew;
-	}
+		}
    
    /**
- * Returns if project requires trenching
+ * Returns if project requires shoring
  * if true implements shoring and removing trench in section lifecycle and determines type of shoring.
  * @return int Trench
  */  
-   public int getTrench() {
-	      return Trench;
-	   }
+   public int getShore() {
+	    return Shore;
+		}
    
       /**
     * Returns a sample of the random stream used to determine
-    * the next truck arrival time. THIS IS NOT USED ATM because trucks are modeled as a resource.
+    * the next truck arrival time. This is not used atm because trucks are modeled as a resource.
     *
     * @return double a truckArrivalTime sample
     */
@@ -346,7 +346,7 @@ public class UtilitySimulation extends Model
    protected static boolean Replacement = false;
    protected static int OldPavement = 1;
    protected static int NewPavement = 2;
-   protected static int Trench = 1;
+   protected static int Shore = 1;
    protected static boolean secondCrew = false;
    
    /**
@@ -394,6 +394,11 @@ public class UtilitySimulation extends Model
    ArrayList<Section> sections;
    ArrayList<Put> puts;
    
+   /**
+    * Counters for activities
+    * Counts activities after a section or put is finished with that activity
+    * Allows end of part time resources when the required number of activities has passed
+    */   
    private static int rollcounter = 0;
    private static int breakcounter = 0;
    private static int backfillcounter = 0;   
