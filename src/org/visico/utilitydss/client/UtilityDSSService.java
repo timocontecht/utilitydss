@@ -2,6 +2,8 @@ package org.visico.utilitydss.client;
 
 import java.util.ArrayList;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.visico.utilitydss.shared.Project;
 import org.visico.utilitydss.shared.User;
 
@@ -16,5 +18,7 @@ public interface UtilityDSSService extends RemoteService
 {
 	User login (String username, String password) throws IllegalArgumentException;
 	ArrayList<Project> getProjects(User user) throws IllegalArgumentException;
+	
+	String simulate(ArrayList<Integer> resources) throws IllegalArgumentException;
 }
 

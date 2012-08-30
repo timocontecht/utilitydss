@@ -56,7 +56,7 @@ public class Section extends SimProcess
 		   ActivityMessage msg = new ActivityMessage(myModel, this, start, "Break Section", myModel.presentTime()) ;
 		   sendMessage(msg);
 		   myModel.breakers.takeBack(1);
-		   if (this.getIdentNumber() == UtilitySimulation.NUM_SEC)
+		   if (this.getIdentNumber() == myModel.getNUM_SEC())
 			   myModel.breakers.stopUse();
 		  
 		   
@@ -115,7 +115,7 @@ public class Section extends SimProcess
 		   sendTraceNote("Activity: " + getName() + " Hand Backfill: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.crews.takeBack(1);
-		   if (this.getIdentNumber() == UtilitySimulation.NUM_SEC)
+		   if (this.getIdentNumber() == myModel.getNUM_SEC())
 			   myModel.crews.stopUse();
 		   
 		   // remove trench
@@ -125,7 +125,7 @@ public class Section extends SimProcess
 		   sendTraceNote("Activity: " + getName() + " Remove Trench: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.cranes.takeBack(1);
-		   if (this.getIdentNumber() == UtilitySimulation.NUM_SEC)
+		   if (this.getIdentNumber() == myModel.getNUM_SEC())
 			   myModel.cranes.stopUse();	
 		   
 		   // backfill
@@ -137,7 +137,7 @@ public class Section extends SimProcess
 				   " End: " + myModel.presentTime().toString());
 		   myModel.excavators.takeBack(1);
 		   myModel.trucks.takeBack(1);
-		   if (this.getIdentNumber() == UtilitySimulation.NUM_SEC)
+		   if (this.getIdentNumber() == myModel.getNUM_SEC())
 		   {
 			   myModel.trucks.stopUse();
 			   myModel.excavators.stopUse();
@@ -150,7 +150,7 @@ public class Section extends SimProcess
 		   sendTraceNote("Activity: " + getName() + " Compact: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.rollers.takeBack(1);
-		   if (this.getIdentNumber() == UtilitySimulation.NUM_SEC)
+		   if (this.getIdentNumber() == myModel.getNUM_SEC())
 		   {
 			   myModel.rollers.stopUse();
 			   myModel.getExperiment().stop();

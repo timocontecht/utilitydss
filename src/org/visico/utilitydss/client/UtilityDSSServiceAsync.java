@@ -12,4 +12,6 @@ public interface UtilityDSSServiceAsync
 {
 	void login (String username, String password, AsyncCallback<User> callback) throws IllegalArgumentException;
 	void getProjects(User user, AsyncCallback<ArrayList<Project>> callback) throws IllegalArgumentException;
+	
+	void simulate(ArrayList<Integer> resources, AsyncCallback<String> callback) throws IllegalArgumentException;
 }

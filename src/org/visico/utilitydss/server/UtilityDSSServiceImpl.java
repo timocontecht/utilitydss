@@ -4,15 +4,24 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+
+import desmoj.core.simulator.TimeInstant;
+
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.xml.parsers.ParserConfigurationException;
 
+import org.visico.utilitydss.server.processsim.SewerExperiment;
+import org.visico.utilitydss.server.processsim.UtilitySimulation;
 import org.visico.utilitydss.shared.Project;
 import org.visico.utilitydss.shared.User;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * The server side implementation of the RPC service.
@@ -159,5 +168,74 @@ public class UtilityDSSServiceImpl extends RemoteServiceServlet implements
 		if (sessionID.equals(session.getId()))
 			return true;
 		else return false;
+	}
+
+	@Override
+	public String simulate(ArrayList<Integer> resources)
+			throws IllegalArgumentException {
+		
+		// create model and experiment as a first step
+		   UtilitySimulation model = new UtilitySimulation(null,
+		                         "Simple Process-Oriented Sewerage Re-construction Model", true, true, resources);
+		   // null as first parameter because it is the main model and has no master model
+		   
+		  
+		   SewerExperiment exp;
+		try {
+			exp = new SewerExperiment("Sewer Replacement example", this.getServletContext().getRealPath("/"));
+			
+			
+		
+		   // ATTENTION, since the name of the experiment is used in the names of the
+		   // output files, you have to specify a string that's compatible with the
+		   // filename constraints of your computer's operating system. The remaining three
+		   // parameters specify the granularity of simulation time, default unit to
+		   // display time and the time formatter to use (null yields a default formatter).
+		   
+		   // connect both
+		   model.connectToExperiment(exp);
+		   
+		   // set experiment parameters
+		   //
+		   
+		   
+		   
+		   exp.setShowProgressBar(true);  // display a progress bar (or not)
+
+		   //exp.stop(new TimeInstant(6000, TimeUnit.HOURS));   
+		   exp.tracePeriod(new TimeInstant(0), new TimeInstant(6000, TimeUnit.HOURS));
+
+		                                              // set the period of the trace
+		   exp.debugPeriod(new TimeInstant(0), new TimeInstant(6000, TimeUnit.HOURS));   // and debug output
+		      // ATTENTION!
+		      // Don't use too long periods. Otherwise a huge HTML page will
+		      // be created which crashes Netscape :-)
+		   
+		// start the experiment at simulation time 0.0
+		   exp.start();
+
+		   // --> now the simulation is running until it reaches its end criterion
+		   // ...
+		   // ...
+		   // <-- afterwards, the main thread returns here
+
+		   // generate the report (and other output files)
+		   exp.report();
+		   
+		   
+		  
+		   
+		   // stop all threads still alive and close all output files
+		   exp.finish();  
+		   
+		   return "Simulation completed.";
+		   
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "problem in the simulation";
+		}
+		// TODO Auto-generated method stub
+		
 	}
 }

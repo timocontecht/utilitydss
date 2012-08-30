@@ -87,8 +87,30 @@ public class UtilitySimulation extends Model
                                            boolean showInTrace) {
       super(owner, modelName, showInReport, showInTrace);
    }
+   
+   public UtilitySimulation(Model owner, String modelName, boolean showInReport, 
+           boolean showInTrace, ArrayList<Integer> resources) {
+	   
+	   		
+			super(owner, modelName, showInReport, showInTrace);
+			
+			NUM_BREAKER = resources.get(0).intValue();
+			NUM_EXCAVATOR = resources.get(1).intValue();
+			NUM_CRANE = resources.get(2).intValue();
+			NUM_CREW = resources.get(3).intValue();
+			NUM_ROLLER = resources.get(4).intValue();
+			NUM_TRUCK = resources.get(5).intValue();
+	}
 
-   /**
+   public int getNUM_SEC() {
+	return NUM_SEC;
+}
+
+public void setNUM_SEC(int nUM_SEC) {
+	NUM_SEC = nUM_SEC;
+}
+
+/**
     * Returns a description of the model to be used in the report.
     * @return model description as a string
     */
@@ -154,9 +176,8 @@ public class UtilitySimulation extends Model
 	      surfacePrepareTime= new ContDistUniform(this, "SurfacePrepareTimeStream",
                   10.0, 30.0, true, false);
 	     
-	      
+	     
 	      // resources
-
 	      breakers = new PartTimeRes(this, "Resource breakers", NUM_BREAKER, true, true);
 	      excavators = new PartTimeRes(this, "Resource Excavators", NUM_EXCAVATOR, true, true);
 	      cranes = new PartTimeRes(this, "Resource cranes", NUM_CRANE, true, true);
@@ -164,8 +185,10 @@ public class UtilitySimulation extends Model
 	      rollers = new PartTimeRes(this, "Resource rollers", NUM_ROLLER, true, true);
 	      trucks = new PartTimeRes(this, "Resource trucks", NUM_TRUCK, true, true);
 
-	      
+	   
    }
+   
+   
    /**
     * Returns a sample of the random stream used to determine the
     * time needed to perform the described activity.
@@ -219,15 +242,15 @@ public class UtilitySimulation extends Model
    }
    
    /**
-    * Model parameters: the number of sections and resources
+    * Model parameters: the number of default sections and resources
     */
-   public static int NUM_SEC = 7;
-   protected static int NUM_BREAKER = 1;
-   protected static int NUM_EXCAVATOR = 1;
-   protected static int NUM_CRANE = 1;
-   protected static int NUM_CREW = 1;
-   protected static int NUM_ROLLER = 1;
-   protected static int NUM_TRUCK = 1;
+   private int NUM_SEC = 7;
+   private int NUM_BREAKER = 1;
+   private int NUM_EXCAVATOR = 1;
+   private int NUM_CRANE = 1;
+   private int NUM_CREW = 1;
+   private int NUM_ROLLER = 1;
+   private int NUM_TRUCK = 1;
    
    /**
     * Random number stream used to draw an arrival time for the next truck. THIS IS NOT USED ATM 
