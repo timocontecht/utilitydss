@@ -37,6 +37,8 @@ public class SewerExperiment extends Experiment
 	{
 		super.report();
 		rec.writeXML();
+		rec.exportGantt();
 	}
+	
 	private Receiver rec;
 }

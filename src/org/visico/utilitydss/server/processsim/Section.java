@@ -53,7 +53,7 @@ public class Section extends SimProcess
 		   TimeInstant start = myModel.presentTime();
 		   hold (new TimeSpan(myModel.getBreakingTime(), TimeUnit.HOURS));
 		   TimeInstant end = myModel.presentTime();
-		   ActivityMessage msg = new ActivityMessage(myModel, this, start, "Break Section", myModel.presentTime()) ;
+		   ActivityMessage msg = new ActivityMessage(myModel, this, start, "Break", myModel.presentTime()) ;
 		   sendMessage(msg);
 		   myModel.breakers.takeBack(1);
 		   if (this.getIdentNumber() == myModel.getNUM_SEC())
@@ -63,8 +63,11 @@ public class Section extends SimProcess
 		   // excavate the section
 		   myModel.excavators.provide(1);
 		   myModel.trucks.provide(1);
-		   //start = myModel.presentTime().toString();
+		   start = myModel.presentTime();
 		   hold (new TimeSpan(myModel.getExcavatingTime(), TimeUnit.HOURS));
+		   end = myModel.presentTime();
+		   msg = new ActivityMessage(myModel, this, start, "Excavate", myModel.presentTime()) ;
+		   sendMessage(msg);
 		   sendTraceNote("Activity: " + getName() + " Excavating Start: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.excavators.takeBack(1);
@@ -73,8 +76,11 @@ public class Section extends SimProcess
 		   
 		   // shore the section
 		   myModel.cranes.provide(1);
-		   //start = myModel.presentTime().toString();
+		   start = myModel.presentTime();
 		   hold (new TimeSpan(myModel.getShoringTime(), TimeUnit.HOURS));
+		   end = myModel.presentTime();
+		   msg = new ActivityMessage(myModel, this, start, "Shore", myModel.presentTime()) ;
+		   sendMessage(msg);
 		   sendTraceNote("Activity: " + getName() + " Shoring: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.cranes.takeBack(1);
@@ -91,8 +97,11 @@ public class Section extends SimProcess
 		   
 		   // prepare the bed
 		   myModel.crews.provide(1);
-		   //start = myModel.presentTime().toString();
+		   start = myModel.presentTime();
 		   hold (new TimeSpan(myModel.getBedPreparationTime(), TimeUnit.HOURS));
+		   end = myModel.presentTime();
+		   msg = new ActivityMessage(myModel, this, start, "Prepare Bed", myModel.presentTime()) ;
+		   sendMessage(msg);
 		   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.crews.takeBack(1);
@@ -101,8 +110,11 @@ public class Section extends SimProcess
 		   // install the pipe
 		   myModel.excavators.provide(1);
 		   myModel.cranes.provide(1);
-		   //start = myModel.presentTime().toString();
+		   start = myModel.presentTime();
 		   hold (new TimeSpan(myModel.getPipePlacingTime(), TimeUnit.HOURS));
+		   end = myModel.presentTime();
+		   msg = new ActivityMessage(myModel, this, start, "Install Pipe", myModel.presentTime()) ;
+		   sendMessage(msg);
 		   sendTraceNote("Activity: " + getName() + " Install Pipe: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.cranes.takeBack(1);
@@ -110,8 +122,11 @@ public class Section extends SimProcess
 		   
 		   //hand backfill
 		   myModel.crews.provide(1);
-		   //start = myModel.presentTime().toString();
+		   start = myModel.presentTime();
 		   hold (new TimeSpan(myModel.getHandBackfillTime(), TimeUnit.HOURS));
+		   end = myModel.presentTime();
+		   msg = new ActivityMessage(myModel, this, start, "Hand Backfill", myModel.presentTime()) ;
+		   sendMessage(msg);
 		   sendTraceNote("Activity: " + getName() + " Hand Backfill: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.crews.takeBack(1);
@@ -120,8 +135,11 @@ public class Section extends SimProcess
 		   
 		   // remove trench
 		   myModel.cranes.provide(1);
-		   //start = myModel.presentTime().toString();
+		   start = myModel.presentTime();
 		   hold (new TimeSpan(myModel.getRemoveTrenchTime(), TimeUnit.HOURS));
+		   end = myModel.presentTime();
+		   msg = new ActivityMessage(myModel, this, start, "Remove Trench", myModel.presentTime()) ;
+		   sendMessage(msg);
 		   sendTraceNote("Activity: " + getName() + " Remove Trench: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.cranes.takeBack(1);
@@ -131,8 +149,11 @@ public class Section extends SimProcess
 		   // backfill
 		   myModel.excavators.provide(1);
 		   myModel.trucks.provide(1);
-		   //start = myModel.presentTime().toString();
+		   start = myModel.presentTime();
 		   hold (new TimeSpan(myModel.getBackfillTime(), TimeUnit.HOURS));
+		   end = myModel.presentTime();
+		   msg = new ActivityMessage(myModel, this, start, "Backfill", myModel.presentTime()) ;
+		   sendMessage(msg);
 		   sendTraceNote("Activity: " + getName() + " Backfill: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.excavators.takeBack(1);
@@ -145,8 +166,11 @@ public class Section extends SimProcess
 		   
 		   // roll
 		   myModel.rollers.provide(1);
-		   //start = myModel.presentTime().toString();
+		   start = myModel.presentTime();
 		   hold (new TimeSpan(myModel.getSurfacePrepareTime(), TimeUnit.HOURS));
+		   end = myModel.presentTime();
+		   msg = new ActivityMessage(myModel, this, start, "Compact", myModel.presentTime()) ;
+		   sendMessage(msg);
 		   sendTraceNote("Activity: " + getName() + " Compact: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.rollers.takeBack(1);

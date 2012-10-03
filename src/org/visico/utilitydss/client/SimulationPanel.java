@@ -56,6 +56,9 @@ public class SimulationPanel extends FlexTable implements ClickHandler
 		
 		this.setWidget(8, 0, new Label("Follow this link to open the latest simulation trace: "));
 		this.setWidget(8,1, new Anchor("Trace", "Sewer%20Replacement%20example_trace.html", "_blank") );
+		
+		this.setWidget(9, 0, new Label("Follow this link to open the latest Gantt chart: "));
+		this.setWidget(9,1, new Anchor("Gantt Chart", "chart.jpg", "_blank") );
 	}
 
 	@Override
