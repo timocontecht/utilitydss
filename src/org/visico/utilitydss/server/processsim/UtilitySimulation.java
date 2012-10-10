@@ -121,6 +121,9 @@ public class UtilitySimulation extends Model
 		   Put put = new Put(this, "put" , true);
 		   put.activate();
 		   puts.add(put);
+		   //SewerExperiment exp = (SewerExperiment)this.getExperiment();
+		   //exp.getReceiver().createPutElement(put);
+		   //TODO needs changes to Reciever.java and maybe ActivityMessage.java
 	   }
    }
    
@@ -154,6 +157,8 @@ public class UtilitySimulation extends Model
 	      handbackfillTime= new ContDistUniform(this, "HandBackfillTimeStream",
                   10.0, 30.0, true, false);
 	      removeTrenchTime= new ContDistUniform(this, "TrenchRemoverTimeStream",
+                  10.0, 30.0, true, false);
+	      housingConnectionTime= new ContDistUniform(this, "HousingConnectionTimeStream",
                   10.0, 30.0, true, false);
 	      backfillTime= new ContDistUniform(this, "BackfillTimeStream",
                   10.0, 30.0, true, false);
@@ -209,6 +214,9 @@ public class UtilitySimulation extends Model
    public double getRemoveTrenchTime() {
 	      return removeTrenchTime.sample();
    		}
+   public double getHousingConnectionTime() {
+	      return housingConnectionTime.sample();
+		}
    public double getBackfillTime() {
 	      return backfillTime.sample();
 	   }
@@ -223,51 +231,31 @@ public class UtilitySimulation extends Model
 		}
 
    /**
-    * Returns if project is replacement project or not.
-    * if true implements pipe removal activity in section lifecycle 
-    *
-    * @return Boolean Replacement
+    * Returns project characteristics.
+    * Sections and puts request these functions to identify characteristics of the project
+    * These include, among others, the current and new type of pavement and if shoring is required
+    * @return Boolean/Int Characteristic
     */  
    public boolean getReplacement() {
 	      return Replacement;
 	   }
    
-   /**
-    * Returns if surface is pavement  or stone road surface.
-    * if true implements breakers in section lifecycle, if false implements stone removal
-    *
-    * @return Boolean Replacement
-    */  
    public int getOldPavement() {
 	      return OldPavement;
 	   }
-   /**
-    * Returns if surface needs to be paved  or gets a stone road surface.
-    * if true implements pavement in section lifecycle, if false implements stone road surface pavement
-    *
-    * @return Boolean Replacement
-    */  
+  
    public int getNewPavement() {
 	      return NewPavement;
 	   }
    
-      /**
-    * Returns if a project has a 2nd crew for housing connections and backfilling
-    * if true implements second crew in section lifecycle, if one crew is used
-    * @return Boolean secondCrew
-    */  
     public boolean getSecondCrew() {
     	return secondCrew;
 		}
    
-   /**
- * Returns if project requires shoring
- * if true implements shoring and removing trench in section lifecycle and determines type of shoring.
- * @return int Trench
- */  
    public int getShore() {
 	    return Shore;
 		}
+   
    
       /**
     * Returns a sample of the random stream used to determine
@@ -275,7 +263,7 @@ public class UtilitySimulation extends Model
     *
     * @return double a truckArrivalTime sample
     */
-   public double getTruckArrivalTime() {
+   public double getTruckArrivalTime()  {
       return truckArrivalTime.sample();
    }
 
@@ -307,7 +295,7 @@ public class UtilitySimulation extends Model
 	   handbackfillcounter ++;
    }
    /**
-    * Returns number of activities that happened.
+    * Returns counter value indicating the number of activities that happened.
     * @return int rollcounter
     */  
    public static int getRollCounter() {
@@ -332,22 +320,23 @@ public class UtilitySimulation extends Model
 /**
     * Model parameters: the number of sections and resources and model settings
     */
-   public static int NUM_SEC = 7;
-   public static int NUM_PUT = 7;
-   protected static int NUM_BREAKER = 1;
-   protected static int NUM_EXCAVATOR = 1;
-   protected static int NUM_CRANE = 1;
-   protected static int NUM_CREW = 1;
-   protected static int NUM_2NDCREW = 1;
-   protected static int NUM_ROLLER = 1;
-   protected static int NUM_TRUCK = 1;
-   protected static int NUM_PAVECREWS = 1;
-   protected static int NUM_STONEPAVECREWS = 1;
-   protected static boolean Replacement = false;
-   protected static int OldPavement = 1;
-   protected static int NewPavement = 2;
-   protected static int Shore = 1;
-   protected static boolean secondCrew = false;
+   public static int NUM_SEC = 7;					// number of sections
+   public static int NUM_PUT = 7;					// number of puts
+   protected static int NUM_BREAKER = 1;			// number of breakers
+   protected static int NUM_EXCAVATOR = 2;			// number of excavators
+   protected static int NUM_CRANE = 1;				// number of cranes
+   protected static int NUM_CREW = 1;				// number of crews
+   protected static int NUM_2NDCREW = 1;			// number of 2ndcrews
+   protected static int NUM_ROLLER = 2;				// number of rollers
+   protected static int NUM_TRUCK = 1;				// number of trucks
+   protected static int NUM_PAVECREWS = 1;			// number of pave crews
+   protected static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
+   
+   protected static boolean Replacement = false;	// indicates if the project is a replacement project
+   protected static int OldPavement = 1;			// indicates old pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
+   protected static int NewPavement = 1;			// indicates new pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
+   protected static int Shore = 1;					// indicates if project requires shoring //TODO needs expansion with different types of shoring
+   protected static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
    
    /**
     * Random number stream used to draw an arrival time for the next truck. THIS IS NOT USED ATM 
@@ -358,7 +347,7 @@ public class UtilitySimulation extends Model
    private desmoj.core.dist.ContDistExponential truckArrivalTime;
    
    /**
-    * Random number stream used to draw a service time for this activity.
+    * Random number streams used to draw a service time for this activity.
     * Describes the time needed by excavator to fetch and load the truck.
     * See init() method for stream parameters.
     */
@@ -371,6 +360,7 @@ public class UtilitySimulation extends Model
    private desmoj.core.dist.ContDistUniform pipePlacingTime;
    private desmoj.core.dist.ContDistUniform handbackfillTime;
    private desmoj.core.dist.ContDistUniform removeTrenchTime;
+   private desmoj.core.dist.ContDistUniform housingConnectionTime;
    private desmoj.core.dist.ContDistUniform backfillTime;
    private desmoj.core.dist.ContDistUniform surfacePrepareTime;
    private desmoj.core.dist.ContDistUniform paveTime;
@@ -395,7 +385,7 @@ public class UtilitySimulation extends Model
    ArrayList<Put> puts;
    
    /**
-    * Counters for activities
+    * Activity counters
     * Counts activities after a section or put is finished with that activity
     * Allows end of part time resources when the required number of activities has passed
     */   
