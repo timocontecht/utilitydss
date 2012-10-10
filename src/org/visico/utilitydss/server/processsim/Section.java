@@ -51,6 +51,7 @@ public class Section extends SimProcess
 		   // break the section
 		   myModel.breakers.provide(1);
 		   TimeInstant start = myModel.presentTime();
+		   double dist = myModel.getBreakingTime();
 		   hold (new TimeSpan(myModel.getBreakingTime(), TimeUnit.HOURS));
 		   TimeInstant end = myModel.presentTime();
 		   ActivityMessage msg = new ActivityMessage(myModel, this, start, "Break", myModel.presentTime()) ;
