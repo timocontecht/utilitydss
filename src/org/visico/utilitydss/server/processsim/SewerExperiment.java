@@ -18,6 +18,15 @@ public class SewerExperiment extends Experiment
 		this.addReceiver(rec, ActivityMessage.class);
 		
 	}
+	
+	public SewerExperiment(String name, String path) throws ParserConfigurationException 
+	{
+		super(name, path, TimeUnit.HOURS, TimeUnit.HOURS, null, DEFAULT_REPORT_OUTPUT_TYPE, DEFAULT_TRACE_OUTPUT_TYPE, DEFAULT_ERROR_OUTPUT_TYPE , DEFAULT_DEBUG_OUTPUT_TYPE);
+		
+		rec = new Receiver();
+		this.addReceiver(rec, ActivityMessage.class);
+		
+	}
 
 	public Receiver getReceiver()
 	{
@@ -28,6 +37,8 @@ public class SewerExperiment extends Experiment
 	{
 		super.report();
 		rec.writeXML();
+		rec.exportGantt();
 	}
+	
 	private Receiver rec;
 }

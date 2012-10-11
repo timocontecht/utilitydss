@@ -5,6 +5,8 @@ import org.visico.utilitydss.shared.User;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MainPanel extends DockLayoutPanel 
 {
@@ -39,10 +41,14 @@ public class MainPanel extends DockLayoutPanel
 	
 	public void draw()
 	{
-		addNorth(new UserPanel(), 10);
-		addSouth(new HTML("footer"), 2);
-		addWest(new HTML("navigation"), 10);
-		add(new HTML("center"));
+		final Image visico_img = new Image();
+		visico_img.setUrl("VISICO.jpg");
+		final VerticalPanel logopanel = new VerticalPanel();
+		logopanel.add(visico_img);
+		addNorth(logopanel, 10);
+		//addSouth(new HTML("footer"), 2);
+		//addWest(new HTML("navigation"), 10);
+		add(new SimulationPanel());
 	}
 	
 

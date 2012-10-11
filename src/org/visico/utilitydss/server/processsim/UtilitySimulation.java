@@ -84,8 +84,31 @@ public class UtilitySimulation extends Model
                                            boolean showInTrace) {
       super(owner, modelName, showInReport, showInTrace);
    }
+   
+   public UtilitySimulation(Model owner, String modelName, boolean showInReport, 
+           boolean showInTrace, ArrayList<Integer> resources) {
+	   
+	   		
+			super(owner, modelName, showInReport, showInTrace);
+			
+			NUM_BREAKER = resources.get(0).intValue();
+			NUM_EXCAVATOR = resources.get(1).intValue();
+			NUM_CRANE = resources.get(2).intValue();
+			NUM_CREW = resources.get(3).intValue();
+			NUM_ROLLER = resources.get(4).intValue();
+			NUM_TRUCK = resources.get(5).intValue();
+			//TODO update to all current resources and other input functions.
+	}
 
-   /**
+   public int getNUM_SEC() {
+	return NUM_SEC;
+}
+
+public void setNUM_SEC(int nUM_SEC) {
+	NUM_SEC = nUM_SEC;
+}
+
+/**
     * Returns a description of the model to be used in the report.
     * @return model description as a string
     */
@@ -123,7 +146,7 @@ public class UtilitySimulation extends Model
 		   puts.add(put);
 		   //SewerExperiment exp = (SewerExperiment)this.getExperiment();
 		   //exp.getReceiver().createPutElement(put);
-		   //TODO needs changes to Reciever.java and maybe ActivityMessage.java
+		   //TODO needs changes to Reciever.java and maybe ActivityMessage.java (those focus on section now which should be general to allow section, put, breaking and other processes)
 	   }
    }
    
@@ -168,7 +191,7 @@ public class UtilitySimulation extends Model
                   10.0, 30.0, true, false);
 	      stonePaveTime= new ContDistUniform(this, "StonePaveTimeStream",
                   10.0, 30.0, true, false);
-	      
+
 	      // resources
 	      breakers = new PartTimeRes(this, "Resource breakers", NUM_BREAKER, true, true);
 	      excavators = new PartTimeRes(this, "Resource Excavators", NUM_EXCAVATOR, true, true);
@@ -179,8 +202,9 @@ public class UtilitySimulation extends Model
 	      trucks = new PartTimeRes(this, "Resource trucks", NUM_TRUCK, true, true);
 	      pavecrews = new PartTimeRes(this, "Resource pavecrews", NUM_PAVECREWS, true, true);
 	      stonepavecrews = new PartTimeRes(this, "Resource stonepavecrews", NUM_STONEPAVECREWS, true, true);
-	      
-   }
+}
+
+   
    /**
     * Returns a sample of the random stream used to determine the
     * time needed to perform the described activity.
@@ -248,14 +272,13 @@ public class UtilitySimulation extends Model
 	      return NewPavement;
 	   }
    
-    public boolean getSecondCrew() {
+   public boolean getSecondCrew() {
     	return secondCrew;
 		}
    
    public int getShore() {
 	    return Shore;
 		}
-   
    
       /**
     * Returns a sample of the random stream used to determine
@@ -273,6 +296,7 @@ public class UtilitySimulation extends Model
    }
    
    /**
+<<<<<<< HEAD
     * Updates counters after each specific activity has taken place.
     *
     */
@@ -322,21 +346,22 @@ public class UtilitySimulation extends Model
     */
    public static int NUM_SEC = 7;					// number of sections
    public static int NUM_PUT = 7;					// number of puts
-   protected static int NUM_BREAKER = 1;			// number of breakers
-   protected static int NUM_EXCAVATOR = 2;			// number of excavators
-   protected static int NUM_CRANE = 1;				// number of cranes
-   protected static int NUM_CREW = 1;				// number of crews
-   protected static int NUM_2NDCREW = 1;			// number of 2ndcrews
-   protected static int NUM_ROLLER = 2;				// number of rollers
-   protected static int NUM_TRUCK = 1;				// number of trucks
-   protected static int NUM_PAVECREWS = 1;			// number of pave crews
-   protected static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
+   private static int NUM_BREAKER = 1;				// number of breakers
+   private static int NUM_EXCAVATOR = 2;			// number of excavators
+   private static int NUM_CRANE = 0;				// number of truck-mounted cranes
+   private static int NUM_CREW = 1;					// number of crews
+   private static int NUM_2NDCREW = 1;				// number of 2ndcrews //TODO think about making a second process for when 2nd crews are used, just like for breaking entire road.
+   private static int NUM_ROLLER = 2;				// number of rollers
+   private static int NUM_TRUCK = 1;				// number of trucks
+   private static int NUM_PAVECREWS = 1;			// number of pave crews
+   private static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
    
-   protected static boolean Replacement = false;	// indicates if the project is a replacement project
-   protected static int OldPavement = 1;			// indicates old pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
-   protected static int NewPavement = 1;			// indicates new pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
-   protected static int Shore = 1;					// indicates if project requires shoring //TODO needs expansion with different types of shoring
-   protected static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
+   private static boolean Replacement = false;		// indicates if the project is a replacement project
+   private static int OldPavement = 1;				// indicates old pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
+   private static int NewPavement = 1;				// indicates new pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
+   private static int Shore = 1;					// indicates if project requires shoring, 0 means no shoring, 1 means shoring //TODO needs expansion with different types of shoring
+   private static boolean secondCrew = true;		// indicates if there is a 2nd crew present to perform housing connections
+
    
    /**
     * Random number stream used to draw an arrival time for the next truck. THIS IS NOT USED ATM 
