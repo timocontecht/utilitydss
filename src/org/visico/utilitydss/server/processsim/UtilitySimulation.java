@@ -97,8 +97,24 @@ public class UtilitySimulation extends Model
 			NUM_CREW = resources.get(3).intValue();
 			NUM_ROLLER = resources.get(4).intValue();
 			NUM_TRUCK = resources.get(5).intValue();
+			// NUM_PAVECREWS = resources.get(6).intValue();
+			// NUM_STONEPAVECREWS = resources.get(7).intValue();
+			// NUM_2NDCREW = resources.get(8).intValue();
+			
+			// NUM_SEC = resources.get(9).intValue();
+			// NUM_PUT = resources.get(10).intValue();
+			
+			// Replacement = resources.get(11).intValue();
+			// OldPavement = resources.get(12).intValue();
+			// NewPavement = resources.get(13).intValue();
+			// Shore = resources.get(14).intValue();
+			// secondCrew = resources.get(15).intValue();
 			//TODO update to all current resources and other input functions.
 	}
+
+   /** test giving sections a number of pipes to iterate trough
+    * TODO make an array with number for each section
+    */
 
    public int getNUM_SEC() {
 	return NUM_SEC;
@@ -131,7 +147,7 @@ public void setNUM_SEC(int nUM_SEC) {
 	// initialize the sections 
 	   for (int i=0; i<NUM_SEC; i++)
 	   {
-		   Section section = new Section(this, "Section" , true);
+		   Section section = new Section(this, "Section" , true , a);
 		   section.activate();
 		   sections.add(section);
 		   SewerExperiment exp = (SewerExperiment)this.getExperiment();
@@ -328,6 +344,9 @@ public void setNUM_SEC(int nUM_SEC) {
    public static int getBreakCounter() {
 	  return breakcounter;
   }
+   public static int getShoreCounter() {
+	  return shorecounter;
+  }
    public static int getBackfillCounter() {
 	  return backfillcounter;
   }
@@ -360,8 +379,13 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int OldPavement = 1;				// indicates old pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
    private static int NewPavement = 1;				// indicates new pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
    private static int Shore = 1;					// indicates if project requires shoring, 0 means no shoring, 1 means shoring //TODO needs expansion with different types of shoring
-   private static boolean secondCrew = true;		// indicates if there is a 2nd crew present to perform housing connections
+   private static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
 
+   /** test giving sections a number of pipes to iterate trough
+    * TODO make an array with number for each section
+    * other arrays can be made for other characteristics of 
+    */
+   private static int a = 10;
    
    /**
     * Random number stream used to draw an arrival time for the next truck. THIS IS NOT USED ATM 
@@ -414,11 +438,13 @@ public void setNUM_SEC(int nUM_SEC) {
     * Counts activities after a section or put is finished with that activity
     * Allows end of part time resources when the required number of activities has passed
     */   
-   private static int rollcounter = 0;
    private static int breakcounter = 0;
+   private static int handbackfillcounter = 0;
+   private static int shorecounter = 0;
    private static int backfillcounter = 0;   
+   private static int rollcounter = 0;
    private static int pavecounter = 0;
    private static int stonepavecounter = 0;
-   private static int handbackfillcounter = 0;
+
 }
 

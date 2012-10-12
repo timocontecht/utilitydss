@@ -46,6 +46,8 @@ public class Put extends SimProcess
 	    * No housing connections with put, 
 	    * TODO Think about also only one backfill activity or two when sections do have housing connections?
 	    */
+
+	// TODO implement lifecycle changes from section or make put a section with specific behavior.
 	
 	   public void lifeCycle() 
 	   {
