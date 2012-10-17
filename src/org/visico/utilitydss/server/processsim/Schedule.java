@@ -16,23 +16,23 @@ import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
 import org.jfree.data.time.SimpleTimePeriod;
 
-import com.google.gwt.dev.util.collect.HashSet;
+
 
 
 public class Schedule 
 {
-	HashSet<Location> locations;
+	ArrayList<Location> locations;
 	
 	public Schedule()
 	{
-		locations = new HashSet<Location>();
+		locations = new ArrayList<Location>();
 	}
 
-	public HashSet<Location> getLocations() {
+	public ArrayList<Location> getLocations() {
 		return locations;
 	}
 
-	public void setLocations(HashSet<Location> locations) {
+	public void setLocations(ArrayList<Location> locations) {
 		this.locations = locations;
 	}
 	
@@ -69,7 +69,7 @@ public class Schedule
 			return existing;
 	}
 	
-	public void createGanttJPG()
+	public void createGanttJPGSectionMain()
 	{
 		try
 		{
@@ -104,6 +104,55 @@ public class Schedule
 		}
 	}
 	
+	public void createGanttJPGTaskMain()
+	{
+		try
+		{
+			final TaskSeriesCollection collection = new TaskSeriesCollection();
+			
+			Iterator<Location> locIt = this.locations.iterator();
+			boolean first = true;
+			while (locIt.hasNext())
+			{
+				Location l = locIt.next();
+				
+				// establish one task series per work item during the first run
+				if (first == true)
+				{
+					Iterator<WorkItem> wiIt = l.getTasks().iterator();
+					while (wiIt.hasNext())
+					{
+						WorkItem item = wiIt.next();
+						TaskSeries ts = new TaskSeries(item.getName());
+						collection.add(ts);
+					}
+					first = false;
+				}
+				
+				// then fill these work sets
+				Iterator<WorkItem> wiIt = l.getTasks().iterator();
+				int i=0;
+				while (wiIt.hasNext())
+				{
+					WorkItem item = wiIt.next();
+					Task task = new Task(l.getName(), new SimpleTimePeriod(item.getStart(), item.getEnd()));
+					collection.getSeries(i).add(task);
+					i++;
+				}
+				
+				
+			}			
+			
+			
+	        final JFreeChart chart = createChart(collection);
+	        ChartUtilities.saveChartAsJPEG(new File("chart.jpg"), chart, 1000, 1500);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	private JFreeChart createChart(final IntervalCategoryDataset dataset) {
         final JFreeChart chart = ChartFactory.createGanttChart(
             "Gantt Chart Demo",  // chart title
@@ -114,7 +163,7 @@ public class Schedule
             true,                // tooltips
             false                // urls
         );    
-//        chart.getCategoryPlot().getDomainAxis().setMaxCategoryLabelWidthRatio(10.0f);
+
         return chart;    
     }
 }
