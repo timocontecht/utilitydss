@@ -4,6 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/mysql-connector-java-5.1.17-bin.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/desmoj-2.3.3-complete-bin.jar" sourcepath="war/WEB-INF/lib/desmoj-2.3.3-complete-bin.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jfreechart-1.0.14.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
