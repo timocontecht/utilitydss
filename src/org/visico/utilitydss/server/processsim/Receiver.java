@@ -218,22 +218,8 @@ public class Receiver implements MessageReceiver
 	
 	public void exportGantt()
 	{
-		schedule.createGanttJPG();
-		/*
-		try
-		{
-			//final IntervalCategoryDataset dataset = createDataset();
-			final TaskSeriesCollection collection = new TaskSeriesCollection();
-	        collection.add(s1);
-	        final JFreeChart chart = createChart(collection);
-	        ChartUtilities.saveChartAsJPEG(new File("chart.jpg"), chart, 1000, 1500);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		schedule.createGanttJPGTaskMain();
 		
-		*/
 	}
 	
 	private static Date date(final int day, final int month, final int year) {
