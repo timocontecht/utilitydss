@@ -61,10 +61,7 @@ public class UtilitySimulation extends Model
 
 	   // generate the report (and other output files)
 	   exp.report();
-	   
-	   
-	  
-	   
+	     
 	   // stop all threads still alive and close all output files
 	   exp.finish();   
 	}
@@ -133,7 +130,10 @@ public void setNUM_SEC(int nUM_SEC) {
 	// initialize the sections 
 	   for (int i=0; i<NUM_SEC; i++)
 	   {
+		   
+		   
 		   Section section = new Section(this, "Section" , true);
+		  
 		   section.activate();
 		   sections.add(section);
 		   SewerExperiment exp = (SewerExperiment)this.getExperiment();
@@ -251,6 +251,17 @@ public void setNUM_SEC(int nUM_SEC) {
    private int NUM_CREW = 1;
    private int NUM_ROLLER = 1;
    private int NUM_TRUCK = 1;
+   
+   /**
+    * Process versions
+    */
+  // static private processVersion pv = 1;  
+   
+   private enum processVersion
+   {
+	   BREAK_ALL_UPFRONT,
+	   BREAK_PER_SECTION
+   };
    
    /**
     * Random number stream used to draw an arrival time for the next truck. THIS IS NOT USED ATM 
