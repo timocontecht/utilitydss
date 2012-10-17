@@ -14,6 +14,7 @@ public class SewerExperiment extends Experiment
 	{
 		super(name, TimeUnit.HOURS, TimeUnit.HOURS, null);
 		
+		this.setSeedGenerator(System.nanoTime());
 		rec = new Receiver();
 		this.addReceiver(rec, ActivityMessage.class);
 		

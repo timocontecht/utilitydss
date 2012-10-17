@@ -7,7 +7,14 @@ import desmoj.core.simulator.Model;
 import desmoj.core.simulator.TimeInstant;
 
 
-
+/**
+ * 
+ * @author timo
+ * This class can be used to construct messages from sections to track the work activities on each section. 
+ * The messages contain the information required to generate the CPM and LOB schedules and other 
+ * related outputs. Messages can be send to the standard DesmoJ receiver class.  
+ *  
+ */
 public class ActivityMessage extends Message 
 {
 
