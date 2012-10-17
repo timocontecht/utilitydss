@@ -1,6 +1,6 @@
 .metadata
 .classpath
-
+.gwt/.gwt-log
 *.class
 
 # Package Files #
