@@ -114,6 +114,8 @@ public class Receiver implements MessageReceiver
 		
 		if (m instanceof ActivityMessage)
 		{
+			// this function collects the ActivityMessage based messages sent from 
+			// the life-cycle of each section and creates a CPM schedule. 
 			ActivityMessage am = (ActivityMessage)m;
 			
 			Element secTask = sectiontasks.get(am.getSection().getName());
@@ -187,7 +189,7 @@ public class Receiver implements MessageReceiver
 		Element section = doc.createElement("task");
 		
 		Attr id = doc.createAttribute("id");
-		id.setValue(Integer.toString(id_counter));
+		id.setValue(Integer.toString(id_counter+1));
 		section.setAttributeNode(id);
 		
 		Attr name = doc.createAttribute("name");

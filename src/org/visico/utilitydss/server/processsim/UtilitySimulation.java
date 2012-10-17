@@ -38,8 +38,7 @@ public class UtilitySimulation extends Model
 	   // set experiment parameters
 	   //
 	   
-	   
-	   
+	   	   
 	   exp.setShowProgressBar(true);  // display a progress bar (or not)
 
 	   //exp.stop(new TimeInstant(6000, TimeUnit.HOURS));   
@@ -61,7 +60,7 @@ public class UtilitySimulation extends Model
 
 	   // generate the report (and other output files)
 	   exp.report();
-	     
+
 	   // stop all threads still alive and close all output files
 	   exp.finish();   
 	}
@@ -97,6 +96,7 @@ public class UtilitySimulation extends Model
 			NUM_CREW = resources.get(3).intValue();
 			NUM_ROLLER = resources.get(4).intValue();
 			NUM_TRUCK = resources.get(5).intValue();
+			//TODO update to all current resources and other input functions.
 	}
 
    public int getNUM_SEC() {
@@ -139,15 +139,25 @@ public void setNUM_SEC(int nUM_SEC) {
 		   SewerExperiment exp = (SewerExperiment)this.getExperiment();
 		   exp.getReceiver().createSectionElement(section);
 	   }
-	
+	   puts = new ArrayList<Put>();
+	// initialize the puts 
+	   for (int i=0; i<NUM_PUT; i++)
+	   {
+		   Put put = new Put(this, "put" , true);
+		   put.activate();
+		   puts.add(put);
+		   //SewerExperiment exp = (SewerExperiment)this.getExperiment();
+		   //exp.getReceiver().createPutElement(put);
+		   //TODO needs changes to Reciever.java and maybe ActivityMessage.java (those focus on section now which should be general to allow section, put, breaking and other processes)
+	   }
    }
    
    /**
-    * Initialises static model components like distributions and queues.
+    * Initializes static model components like distributions and queues.
     */
    public void init() 
    { 
-	      // initialise the TimeStreams
+	      // Initialize the TimeStreams
 	      // Parameters:
 	      // this                = belongs to this model
 	      // "ServiceTimeStream" = the name of the stream
@@ -156,6 +166,8 @@ public void setNUM_SEC(int nUM_SEC) {
 	      // true                = show in report?
 	      // false               = show in trace?
 	      breakingTime= new ContDistUniform(this, "BreakingTimeStream",
+                  10.0, 30.0, true, false);
+	      stoneRemovalTime= new ContDistUniform(this, "StoneRemovalTimeStream",
                   10.0, 30.0, true, false);
 	      excavatingTime= new ContDistUniform(this, "ExcavatingTimeStream",
                   10.0, 30.0, true, false);	
@@ -171,23 +183,29 @@ public void setNUM_SEC(int nUM_SEC) {
                   10.0, 30.0, true, false);
 	      removeTrenchTime= new ContDistUniform(this, "TrenchRemoverTimeStream",
                   10.0, 30.0, true, false);
+	      housingConnectionTime= new ContDistUniform(this, "HousingConnectionTimeStream",
+                  10.0, 30.0, true, false);
 	      backfillTime= new ContDistUniform(this, "BackfillTimeStream",
                   10.0, 30.0, true, false);
 	      surfacePrepareTime= new ContDistUniform(this, "SurfacePrepareTimeStream",
                   10.0, 30.0, true, false);
-	     
-	     
+	      paveTime= new ContDistUniform(this, "PaveTimeStream",
+                  10.0, 30.0, true, false);
+	      stonePaveTime= new ContDistUniform(this, "StonePaveTimeStream",
+                  10.0, 30.0, true, false);
+
 	      // resources
 	      breakers = new PartTimeRes(this, "Resource breakers", NUM_BREAKER, true, true);
 	      excavators = new PartTimeRes(this, "Resource Excavators", NUM_EXCAVATOR, true, true);
 	      cranes = new PartTimeRes(this, "Resource cranes", NUM_CRANE, true, true);
 	      crews = new PartTimeRes(this, "Resource crews", NUM_CREW, true, true);
+	      secondcrews = new PartTimeRes(this, "Resource 2ndcrews", NUM_2NDCREW, true, true);
 	      rollers = new PartTimeRes(this, "Resource rollers", NUM_ROLLER, true, true);
 	      trucks = new PartTimeRes(this, "Resource trucks", NUM_TRUCK, true, true);
+	      pavecrews = new PartTimeRes(this, "Resource pavecrews", NUM_PAVECREWS, true, true);
+	      stonepavecrews = new PartTimeRes(this, "Resource stonepavecrews", NUM_STONEPAVECREWS, true, true);
+}
 
-	   
-   }
-   
    
    /**
     * Returns a sample of the random stream used to determine the
@@ -198,6 +216,9 @@ public void setNUM_SEC(int nUM_SEC) {
    public double getBreakingTime(){
 	      return breakingTime.sample();
 	   }
+   public double getStoneRemovalTime() {
+	      return stoneRemovalTime.sample();
+		}
    public double getExcavatingTime() {
 	      return excavatingTime.sample();
 	   }
@@ -219,38 +240,130 @@ public void setNUM_SEC(int nUM_SEC) {
    public double getRemoveTrenchTime() {
 	      return removeTrenchTime.sample();
    		}
+   public double getHousingConnectionTime() {
+	      return housingConnectionTime.sample();
+		}
    public double getBackfillTime() {
 	      return backfillTime.sample();
 	   }
    public double getSurfacePrepareTime() {
 	      return surfacePrepareTime.sample();
    		}
-   
+   public double getPaveTime() {
+	      return paveTime.sample();
+		}
+   public double getStonePaveTime() {
+	      return stonePaveTime.sample();
+		}
+
    /**
+    * Returns project characteristics.
+    * Sections and puts request these functions to identify characteristics of the project
+    * These include, among others, the current and new type of pavement and if shoring is required
+    * @return Boolean/Int Characteristic
+    */  
+   public boolean getReplacement() {
+	      return Replacement;
+	   }
+   
+   public int getOldPavement() {
+	      return OldPavement;
+	   }
+  
+   public int getNewPavement() {
+	      return NewPavement;
+	   }
+   
+   public boolean getSecondCrew() {
+    	return secondCrew;
+		}
+   
+   public int getShore() {
+	    return Shore;
+		}
+   
+      /**
     * Returns a sample of the random stream used to determine
-    * the next truck arrival time. THIS IS NOT USED ATM because trucks are modeled as a resource.
+    * the next truck arrival time. This is not used atm because trucks are modeled as a resource.
     *
     * @return double a truckArrivalTime sample
     */
-   public double getTruckArrivalTime() {
+   public double getTruckArrivalTime()  {
       return truckArrivalTime.sample();
    }
-   
+
    public void report()
    {
 	   
    }
    
    /**
-    * Model parameters: the number of default sections and resources
+<<<<<<< HEAD
+    * Updates counters after each specific activity has taken place.
+    *
     */
-   private int NUM_SEC = 7;
-   private int NUM_BREAKER = 1;
-   private int NUM_EXCAVATOR = 1;
-   private int NUM_CRANE = 1;
-   private int NUM_CREW = 1;
-   private int NUM_ROLLER = 1;
-   private int NUM_TRUCK = 1;
+   public void roll()   {	
+	   rollcounter ++;
+   }
+   public void breaking()   {	
+	   breakcounter ++;
+   }
+   public void backfill()   {	
+	   backfillcounter ++;
+   }
+   public void pave()   {	
+	   pavecounter ++;
+   }
+   public void stonepave()   {	
+	   stonepavecounter ++;
+   }
+   public void handbackfill()   {	
+	   handbackfillcounter ++;
+   }
+   /**
+    * Returns counter value indicating the number of activities that happened.
+    * @return int rollcounter
+    */  
+   public static int getRollCounter() {
+	  return rollcounter;
+  }
+   public static int getBreakCounter() {
+	  return breakcounter;
+  }
+   public static int getBackfillCounter() {
+	  return backfillcounter;
+  }
+   public static int getPaveCounter() {
+	  return pavecounter;
+  }
+   public static int getStonePaveCounter() {
+	  return stonepavecounter;
+  }
+   public static int getHandBackfillCounter() {
+	  return handbackfillcounter;
+  }
+
+/**
+    * Model parameters: the number of sections and resources and model settings
+    */
+   public static int NUM_SEC = 7;					// number of sections
+   public static int NUM_PUT = 7;					// number of puts
+   private static int NUM_BREAKER = 1;				// number of breakers
+   private static int NUM_EXCAVATOR = 2;			// number of excavators
+   private static int NUM_CRANE = 0;				// number of truck-mounted cranes
+   private static int NUM_CREW = 1;					// number of crews
+   private static int NUM_2NDCREW = 1;				// number of 2ndcrews //TODO think about making a second process for when 2nd crews are used, just like for breaking entire road.
+   private static int NUM_ROLLER = 2;				// number of rollers
+   private static int NUM_TRUCK = 1;				// number of trucks
+   private static int NUM_PAVECREWS = 1;			// number of pave crews
+   private static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
+   
+   private static boolean Replacement = false;		// indicates if the project is a replacement project
+   private static int OldPavement = 1;				// indicates old pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
+   private static int NewPavement = 1;				// indicates new pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
+   private static int Shore = 1;					// indicates if project requires shoring, 0 means no shoring, 1 means shoring //TODO needs expansion with different types of shoring
+   private static boolean secondCrew = true;		// indicates if there is a 2nd crew present to perform housing connections
+
    
    /**
     * Process versions
@@ -272,11 +385,12 @@ public void setNUM_SEC(int nUM_SEC) {
    private desmoj.core.dist.ContDistExponential truckArrivalTime;
    
    /**
-    * Random number stream used to draw a service time for this activity.
+    * Random number streams used to draw a service time for this activity.
     * Describes the time needed by excavator to fetch and load the truck.
     * See init() method for stream parameters.
     */
    private desmoj.core.dist.ContDistUniform breakingTime;
+   private desmoj.core.dist.ContDistUniform stoneRemovalTime;
    private desmoj.core.dist.ContDistUniform excavatingTime;
    private desmoj.core.dist.ContDistUniform shoreTime;
    private desmoj.core.dist.ContDistUniform PipeRemoveTime;
@@ -284,17 +398,40 @@ public void setNUM_SEC(int nUM_SEC) {
    private desmoj.core.dist.ContDistUniform pipePlacingTime;
    private desmoj.core.dist.ContDistUniform handbackfillTime;
    private desmoj.core.dist.ContDistUniform removeTrenchTime;
+   private desmoj.core.dist.ContDistUniform housingConnectionTime;
    private desmoj.core.dist.ContDistUniform backfillTime;
    private desmoj.core.dist.ContDistUniform surfacePrepareTime;
-
-  
+   private desmoj.core.dist.ContDistUniform paveTime;
+   private desmoj.core.dist.ContDistUniform stonePaveTime;
+   
+   /**
+    * Parttime resource containers for the resources.
+    * contains the resources during the simulation. 
+    * Provides resources when requested and available and takes back resources
+    */
    protected PartTimeRes breakers;
    protected PartTimeRes excavators;
    protected PartTimeRes cranes;
    protected PartTimeRes crews;
+   protected PartTimeRes secondcrews;
    protected PartTimeRes rollers;
    protected PartTimeRes trucks;
+   protected PartTimeRes pavecrews;
+   protected PartTimeRes stonepavecrews;
    
    ArrayList<Section> sections;
+   ArrayList<Put> puts;
+   
+   /**
+    * Activity counters
+    * Counts activities after a section or put is finished with that activity
+    * Allows end of part time resources when the required number of activities has passed
+    */   
+   private static int rollcounter = 0;
+   private static int breakcounter = 0;
+   private static int backfillcounter = 0;   
+   private static int pavecounter = 0;
+   private static int stonepavecounter = 0;
+   private static int handbackfillcounter = 0;
 }
 

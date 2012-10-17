@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="org/visico/utilitydss/server/processsim/Breaker.java|org/visico/utilitydss/server/processsim/Crane.java|org/visico/utilitydss/server/processsim/Crew.java|org/visico/utilitydss/server/processsim/Excavator.java|org/visico/utilitydss/server/processsim/Roller.java|org/visico/utilitydss/server/processsim/Truck.java|org/visico/utilitydss/server/processsim/TruckGenerator.java" kind="src" path="src"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/desmoj-2.3.1-complete-bin.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/mysql-connector-java-5.1.17-bin.jar"/>
-	<classpathentry kind="lib" path="/home/timo/code/utilitydss/utilitydss/utilitydss/war/WEB-INF/lib/desmoj-2.3.1-complete-bin.jar"/>
-	<classpathentry kind="lib" path="/home/timo/code/utilitydss/utilitydss/utilitydss/war/WEB-INF/lib/desmoj-2.3.3-complete-bin.jar"/>
-	<classpathentry kind="lib" path="/home/timo/code/utilitydss/utilitydss/utilitydss/war/WEB-INF/lib/geronimo-jpa_3.0_spec-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/home/timo/code/utilitydss/utilitydss/utilitydss/war/WEB-INF/lib/geronimo-jta_1.1_spec-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/home/timo/code/utilitydss/utilitydss/utilitydss/war/WEB-INF/lib/gwt-servlet.jar"/>
-	<classpathentry kind="lib" path="/home/timo/code/utilitydss/utilitydss/utilitydss/war/WEB-INF/lib/jdo2-api-2.3-eb.jar"/>
-	<classpathentry kind="lib" path="/home/timo/code/utilitydss/utilitydss/utilitydss/war/WEB-INF/lib/jsr107cache-1.1.jar"/>
-	<classpathentry kind="lib" path="/home/timo/code/utilitydss/utilitydss/utilitydss/war/WEB-INF/lib/mysql-connector-java-5.1.17-bin.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
