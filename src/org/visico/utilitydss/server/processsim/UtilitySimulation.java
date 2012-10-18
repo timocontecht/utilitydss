@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import javax.xml.parsers.ParserConfigurationException;
 import desmoj.core.simulator.*;
+import desmoj.core.advancedModellingFeatures.Bin;
 import desmoj.core.dist.*;
 
 
@@ -42,10 +43,10 @@ public class UtilitySimulation extends Model
 	   exp.setShowProgressBar(true);  // display a progress bar (or not)
 
 	   //exp.stop(new TimeInstant(6000, TimeUnit.HOURS));   
-	   exp.tracePeriod(new TimeInstant(0), new TimeInstant(6000, TimeUnit.HOURS));
+	   exp.tracePeriod(new TimeInstant(0), new TimeInstant(10000, TimeUnit.HOURS));
 
 	                                              // set the period of the trace
-	   exp.debugPeriod(new TimeInstant(0), new TimeInstant(6000, TimeUnit.HOURS));   // and debug output
+	   exp.debugPeriod(new TimeInstant(0), new TimeInstant(10000, TimeUnit.HOURS));   // and debug output
 	      // ATTENTION!
 	      // Don't use too long periods. Otherwise a huge HTML page will
 	      // be created which crashes Netscape :-)
@@ -97,19 +98,21 @@ public class UtilitySimulation extends Model
 			NUM_CREW = resources.get(3).intValue();
 			NUM_ROLLER = resources.get(4).intValue();
 			NUM_TRUCK = resources.get(5).intValue();
-			// NUM_PAVECREWS = resources.get(6).intValue();
-			// NUM_STONEPAVECREWS = resources.get(7).intValue();
-			// NUM_2NDCREW = resources.get(8).intValue();
+			/* 
+			NUM_PAVECREWS = resources.get(6).intValue();
+			NUM_STONEPAVECREWS = resources.get(7).intValue();
+			NUM_2NDCREW = resources.get(8).intValue();
 			
-			// NUM_SEC = resources.get(9).intValue();
-			// NUM_PUT = resources.get(10).intValue();
+			NUM_SEC = resources.get(9).intValue();
+			NUM_PUT = resources.get(10).intValue();
 			
-			// Replacement = resources.get(11).intValue();
-			// OldPavement = resources.get(12).intValue();
-			// NewPavement = resources.get(13).intValue();
-			// Shore = resources.get(14).intValue();
-			// secondCrew = resources.get(15).intValue();
-			//TODO update to all current resources and other input functions.
+			Replacement = resources.get(11).intValue();
+			OldPavement = resources.get(12).intValue();
+			NewPavement = resources.get(13).intValue();
+			Shore = resources.get(14).intValue();
+			secondCrew = resources.get(15).intValue();
+			TODO update to all current resources and other input functions.
+	*/
 	}
 
    /** test giving sections a number of pipes to iterate trough
@@ -218,6 +221,7 @@ public void setNUM_SEC(int nUM_SEC) {
 	      trucks = new PartTimeRes(this, "Resource trucks", NUM_TRUCK, true, true);
 	      pavecrews = new PartTimeRes(this, "Resource pavecrews", NUM_PAVECREWS, true, true);
 	      stonepavecrews = new PartTimeRes(this, "Resource stonepavecrews", NUM_STONEPAVECREWS, true, true);
+	      startingCondition = new Bin (this, "starting condition check", NUM_STARTINGCONDITION, true, true);
 }
 
    
@@ -284,18 +288,26 @@ public void setNUM_SEC(int nUM_SEC) {
 	      return OldPavement;
 	   }
   
-   public int getNewPavement() {
-	      return NewPavement;
-	   }
-   
-   public boolean getSecondCrew() {
-    	return secondCrew;
-		}
    
    public int getShore() {
 	    return Shore;
 		}
    
+   public boolean getSecondCrew() {
+    	return secondCrew;
+		}
+   
+   public int getPrepareSurface() {
+	    return prepareSurface;
+		}
+   
+      public int getNewPavement() {
+	      return newPavement;
+	   }
+   
+   public int getActivitymsg() {
+	    return activityMsg;
+		}
       /**
     * Returns a sample of the random stream used to determine
     * the next truck arrival time. This is not used atm because trucks are modeled as a resource.
@@ -312,12 +324,11 @@ public void setNUM_SEC(int nUM_SEC) {
    }
    
    /**
-<<<<<<< HEAD
     * Updates counters after each specific activity has taken place.
     *
     */
-   public void roll()   {	
-	   rollcounter ++;
+   public void prepare()   {	
+	   preparecounter ++;
    }
    public void breaking()   {	
 	   breakcounter ++;
@@ -338,8 +349,8 @@ public void setNUM_SEC(int nUM_SEC) {
     * Returns counter value indicating the number of activities that happened.
     * @return int rollcounter
     */  
-   public static int getRollCounter() {
-	  return rollcounter;
+   public static int getPrepareCounter() {
+	  return preparecounter;
   }
    public static int getBreakCounter() {
 	  return breakcounter;
@@ -361,10 +372,10 @@ public void setNUM_SEC(int nUM_SEC) {
   }
 
 /**
-    * Model parameters: the number of sections and resources and model settings
+    * Model parameters: Project parameters (the number of sections, puts and resources, etc)
     */
    public static int NUM_SEC = 7;					// number of sections
-   public static int NUM_PUT = 7;					// number of puts
+   public static int NUM_PUT = 0;					// number of puts
    private static int NUM_BREAKER = 1;				// number of breakers
    private static int NUM_EXCAVATOR = 2;			// number of excavators
    private static int NUM_CRANE = 0;				// number of truck-mounted cranes
@@ -374,16 +385,29 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int NUM_TRUCK = 1;				// number of trucks
    private static int NUM_PAVECREWS = 1;			// number of pave crews
    private static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
+   private static int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
    
+/**
+   * Model parameters: Simulation settings
+   */
+   private static int OldPavement = 3;				// indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+													// 3 means asphalt; break all sections at start, other gives error
+   private static int Shore = 0;					// indicates if project requires shoring, 0 means no shoring, 1 means shoring //TODO needs expansion with different types of shoring
    private static boolean Replacement = false;		// indicates if the project is a replacement project
-   private static int OldPavement = 1;				// indicates old pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
-   private static int NewPavement = 1;				// indicates new pavement type, 0 means no pavement, 1 means asphalt, 2 means stones
-   private static int Shore = 1;					// indicates if project requires shoring, 0 means no shoring, 1 means shoring //TODO needs expansion with different types of shoring
+   private static boolean pipeHeavy	= false; 		// indicates if the pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
+   													// for puts this is indicated by an array per put as sizes differ.
    private static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
+   private static int prepareSurface = 2;			// indicates if broken rock is placed per section or for all sections at once: 1 = per section, 2 = all sections
+   private static int newPavement =3;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+													// 3 means asphalt; pave all sections at start, other gives error
+   private static int activityMsg = 2;				// indicates what data is collected: 1 = per pipe, 2 is per activity per pipe, 3 = ?
+   													// TODO invoeren in section.
 
    /** test giving sections a number of pipes to iterate trough
     * TODO make an array with number for each section
-    * other arrays can be made for other characteristics of 
+    * other arrays can be made for other characteristics
+    * 
+    * examples: housing connections, K&L, puts to be placed with mobile crane
     */
    private static int a = 10;
    
@@ -430,6 +454,8 @@ public void setNUM_SEC(int nUM_SEC) {
    protected PartTimeRes pavecrews;
    protected PartTimeRes stonepavecrews;
    
+   protected Bin startingCondition;
+   
    ArrayList<Section> sections;
    ArrayList<Put> puts;
    
@@ -442,7 +468,7 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int handbackfillcounter = 0;
    private static int shorecounter = 0;
    private static int backfillcounter = 0;   
-   private static int rollcounter = 0;
+   private static int preparecounter = 0;
    private static int pavecounter = 0;
    private static int stonepavecounter = 0;
 

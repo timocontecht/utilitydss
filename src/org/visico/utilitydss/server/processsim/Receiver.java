@@ -145,8 +145,9 @@ public class Receiver implements MessageReceiver
 			// and add to the chart
 			Calendar end = am.start();
 			end.add(Calendar.DAY_OF_MONTH, (int) am.duration());
-			SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), (long) (am.start().getTimeInMillis() + am.duration() * 8.64e7));
-			 s1.add(new Task(am.getSection().getName() + " " + am.work(), p));
+			// SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), (long) (am.start().getTimeInMillis() + am.duration() * 8.64e7)); - replaced by line below - 
+			SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), am.end().getTimeInMillis() );
+			s1.add(new Task(am.getSection().getName() + " " + am.work(), p));
 		}
 		
 	}
@@ -207,7 +208,8 @@ public class Receiver implements MessageReceiver
 			final TaskSeriesCollection collection = new TaskSeriesCollection();
 	        collection.add(s1);
 	        final JFreeChart chart = createChart(collection);
-	        ChartUtilities.saveChartAsJPEG(new File("chart.jpg"), chart, 1000, 1500);
+	        ChartUtilities.saveChartAsJPEG(new File("chart.jpg"), chart, 1000, 4000);
+	        // Change last number for different height of .jpg
 		}
 		catch (Exception e)
 		{

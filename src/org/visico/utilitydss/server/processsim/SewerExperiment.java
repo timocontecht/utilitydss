@@ -9,17 +9,16 @@ import desmoj.core.simulator.Experiment;
 
 public class SewerExperiment extends Experiment 
 {
-
+	
 	public SewerExperiment(String name) throws ParserConfigurationException 
 	{
 		super(name, TimeUnit.HOURS, TimeUnit.HOURS, null);
 		
 		rec = new Receiver();
 		this.addReceiver(rec, ActivityMessage.class);
-		
 	}
 	
-	//define random number generator seed for true random numbers
+	// FIXME define random number generator seed for true random numbers
 	
 	public SewerExperiment(String name, String path) throws ParserConfigurationException 
 	{

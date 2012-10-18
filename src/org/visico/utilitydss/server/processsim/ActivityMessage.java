@@ -21,6 +21,7 @@ public class ActivityMessage extends Message
 		starttime = st;
 		work = w;
 		duration = e.getTimeAsDouble() - st.getTimeAsDouble();
+		endtime = e;
 	}
 	
 	public Section getSection()
@@ -43,9 +44,15 @@ public class ActivityMessage extends Message
 		return duration;
 	}
 	
+	public Calendar end()
+	{
+		return endtime.getTimeAsCalender();
+	}
+	
 	private String work;
 	private TimeInstant starttime;
 	private double duration;
 	private Section sec; 
+	private TimeInstant endtime;
 
 }

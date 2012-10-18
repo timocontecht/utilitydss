@@ -224,9 +224,9 @@ public class Put extends SimProcess
 		   sendTraceNote("Activity: " + getName() + " Compact: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.rollers.takeBack(1);
-		   myModel.roll();
+		   myModel.prepare();
    
-		   if (UtilitySimulation.getRollCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) {
+		   if (UtilitySimulation.getPrepareCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) {
 			   myModel.rollers.stopUse();
 			   System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
 		   }
@@ -270,7 +270,7 @@ public class Put extends SimProcess
 		   }   
 		   
 		   else if(myModel.getNewPavement() == 0) {
-			   	if (UtilitySimulation.getRollCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)){
+			   	if (UtilitySimulation.getPrepareCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)){
 			   		myModel.getExperiment().stop();
 			   	}	
 		   }
