@@ -70,6 +70,10 @@ public class Section extends SimProcess
 		    */
 		   myModel.startingCondition.retrieve(1);
 		   
+		   // variables to create messages for output charts
+		   // TimeInstant start, end; 
+		   // ActivityMessage msg;
+		   
 		   // TODO make section/put hold until all preceding sections & puts are done with certain activities
 		   // which activities this are is process dependent ( give different options) 
 		   // this requires a section to asses what its predecessors (puts and sections) are &
@@ -139,7 +143,8 @@ public class Section extends SimProcess
 			   myModel.getExperiment().stop();
 			   //TODO can be removed when numbers are connected to GUI selection so no false selection can be made
 		   }
-			  
+		   
+
 		   // for loop iterating trough all pipes in this section
 		   // TODO make different number of pipes possible per section. --> make an array for number of pipes for all sections.
 		   for (int i=1; i<=this.NUM_PIPE; i++)
@@ -209,10 +214,10 @@ public class Section extends SimProcess
 			   		// add option for mobile crane for heavy pipes
 			   myModel.crews.provide(1);
 			   myModel.excavators.provide(1);
-			  start = myModel.presentTime();
+			   start = myModel.presentTime();
 			   hold (new TimeSpan(myModel.getPipePlacingTime(), TimeUnit.HOURS));
-			  ActivityMessage msg_6 = new ActivityMessage(myModel, this, start, "Install Pipe" + i, myModel.presentTime()) ;
-			  sendMessage(msg_6);
+			   ActivityMessage msg_6 = new ActivityMessage(myModel, this, start, "Install Pipe" + i, myModel.presentTime()) ;
+			   sendMessage(msg_6);
 			   sendTraceNote("Activity: " + getName() + " Install Pipe: " + start.toString() + 
 					   " End: " + myModel.presentTime().toString());
 			   myModel.excavators.takeBack(1);
@@ -246,10 +251,10 @@ public class Section extends SimProcess
 			   {	myModel.excavators.provide(1);
 			   		start = myModel.presentTime();
 			   		hold (new TimeSpan(myModel.getRemoveTrenchTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
-			   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start.toString() + 
-			   				" End: " + myModel.presentTime().toString());
 			   		ActivityMessage msg_8 = new ActivityMessage(myModel, this, start, "Remove Shoring" + i, myModel.presentTime()) ;
 			   		sendMessage(msg_8);
+			   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start.toString() + 
+			   				" End: " + myModel.presentTime().toString());
 			   		myModel.excavators.takeBack(1);
 			   		if(myModel.getSecondCrew()){ // if there are second crews:
 			   			if (UtilitySimulation.getShoreCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) 
@@ -287,7 +292,7 @@ public class Section extends SimProcess
 		   if(myModel.getSecondCrew()){
 			   myModel.secondcrews.takeBack(1);}
 		   else {myModel.crews.takeBack(1);}
-		   	   
+
 		   // 10. (second) backfill + compacting
 		   //TODO make this action dependent on if there are housing connections, and on crews
 		   if(myModel.getSecondCrew()) {

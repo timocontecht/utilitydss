@@ -47,6 +47,7 @@ public class Receiver implements MessageReceiver
 	private TreeMap<String,Element> sectiontasks;
 	private Document doc;
 	private TaskSeries s1;
+	private Schedule schedule; 
 		
 	static private int id_counter = 0;
 		
@@ -56,6 +57,7 @@ public class Receiver implements MessageReceiver
 	{
 		project_start = Calendar.getInstance();
 		s1 = new TaskSeries("Scheduled");
+		schedule = new Schedule();
 		buildBaseXML();
 		
 	}
@@ -114,7 +116,22 @@ public class Receiver implements MessageReceiver
 		
 		if (m instanceof ActivityMessage)
 		{
+			// this function collects the ActivityMessage based messages sent from 
+			// the life-cycle of each section and creates a CPM schedule. 
 			ActivityMessage am = (ActivityMessage)m;
+			Location l = schedule.addNew(am.getSection().getName());
+			
+			Calendar end = am.start();
+			end.add(Calendar.DAY_OF_MONTH, (int) am.duration());
+			
+			WorkItem t = new WorkItem(am.work(), am.start().getTime(), end.getTime());
+			l.addWorkItem(t);
+			
+			
+			
+			
+			// add XML entry
+			// TODO: move to schedule class
 			
 			Element secTask = sectiontasks.get(am.getSection().getName());
 			
@@ -143,11 +160,16 @@ public class Receiver implements MessageReceiver
 			id_counter++;
 			
 			// and add to the chart
-			Calendar end = am.start();
-			end.add(Calendar.DAY_OF_MONTH, (int) am.duration());
+			//TODO: move to schedule class
+			// Calendar end = am.start();
+			// end.add(Calendar.DAY_OF_MONTH, (int) am.duration());
+			
 			// SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), (long) (am.start().getTimeInMillis() + am.duration() * 8.64e7)); - replaced by line below - 
 			SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), am.end().getTimeInMillis() );
 			s1.add(new Task(am.getSection().getName() + " " + am.work(), p));
+
+
+
 		}
 		
 	}
@@ -202,6 +224,7 @@ public class Receiver implements MessageReceiver
 	
 	public void exportGantt()
 	{
+<<<<<<< HEAD
 		try
 		{
 			//final IntervalCategoryDataset dataset = createDataset();
@@ -215,92 +238,12 @@ public class Receiver implements MessageReceiver
 		{
 			e.printStackTrace();
 		}
+=======
+		schedule.createGanttJPGTaskMain();
+		
+>>>>>>> f2365b1ceb9332846080ce340d343537b0be68e3
 	}
-	/*
-	public static IntervalCategoryDataset createDataset() {
-
-        final TaskSeries 
-    /*    s1.add(new Task("Write Proposal",
-               new SimpleTimePeriod(date(1, Calendar.APRIL, 2001),
-                                    date(5, Calendar.APRIL, 2001))));
-        s1.add(new Task("Obtain Approval",
-               new SimpleTimePeriod(date(9, Calendar.APRIL, 2001),
-                                    date(9, Calendar.APRIL, 2001))));
-        s1.add(new Task("Requirements Analysis",
-               new SimpleTimePeriod(date(10, Calendar.APRIL, 2001),
-                                    date(5, Calendar.MAY, 2001))));
-        s1.add(new Task("Design Phase",
-               new SimpleTimePeriod(date(6, Calendar.MAY, 2001),
-                                    date(30, Calendar.MAY, 2001))));
-        s1.add(new Task("Design Signoff",
-               new SimpleTimePeriod(date(2, Calendar.JUNE, 2001),
-                                    date(2, Calendar.JUNE, 2001))));
-        s1.add(new Task("Alpha Implementation",
-               new SimpleTimePeriod(date(3, Calendar.JUNE, 2001),
-                                    date(31, Calendar.JULY, 2001))));
-        s1.add(new Task("Design Review",
-               new SimpleTimePeriod(date(1, Calendar.AUGUST, 2001),
-                                    date(8, Calendar.AUGUST, 2001))));
-        s1.add(new Task("Revised Design Signoff",
-               new SimpleTimePeriod(date(10, Calendar.AUGUST, 2001),
-                                    date(10, Calendar.AUGUST, 2001))));
-        s1.add(new Task("Beta Implementation",
-               new SimpleTimePeriod(date(12, Calendar.AUGUST, 2001),
-                                    date(12, Calendar.SEPTEMBER, 2001))));
-        s1.add(new Task("Testing",
-               new SimpleTimePeriod(date(13, Calendar.SEPTEMBER, 2001),
-                                    date(31, Calendar.OCTOBER, 2001))));
-        s1.add(new Task("Final Implementation",
-               new SimpleTimePeriod(date(1, Calendar.NOVEMBER, 2001),
-                                    date(15, Calendar.NOVEMBER, 2001))));
-        s1.add(new Task("Signoff",
-               new SimpleTimePeriod(date(28, Calendar.NOVEMBER, 2001),
-                                    date(30, Calendar.NOVEMBER, 2001))));
-
-        final TaskSeries s2 = new TaskSeries("Actual");
-        s2.add(new Task("Write Proposal",
-               new SimpleTimePeriod(date(1, Calendar.APRIL, 2001),
-                                    date(5, Calendar.APRIL, 2001))));
-        s2.add(new Task("Obtain Approval",
-               new SimpleTimePeriod(date(9, Calendar.APRIL, 2001),
-                                    date(9, Calendar.APRIL, 2001))));
-        s2.add(new Task("Requirements Analysis",
-               new SimpleTimePeriod(date(10, Calendar.APRIL, 2001),
-                                    date(15, Calendar.MAY, 2001))));
-        s2.add(new Task("Design Phase",
-               new SimpleTimePeriod(date(15, Calendar.MAY, 2001),
-                                    date(17, Calendar.JUNE, 2001))));
-        s2.add(new Task("Design Signoff",
-               new SimpleTimePeriod(date(30, Calendar.JUNE, 2001),
-                                    date(30, Calendar.JUNE, 2001))));
-        s2.add(new Task("Alpha Implementation",
-               new SimpleTimePeriod(date(1, Calendar.JULY, 2001),
-                                    date(12, Calendar.SEPTEMBER, 2001))));
-        s2.add(new Task("Design Review",
-               new SimpleTimePeriod(date(12, Calendar.SEPTEMBER, 2001),
-                                    date(22, Calendar.SEPTEMBER, 2001))));
-        s2.add(new Task("Revised Design Signoff",
-               new SimpleTimePeriod(date(25, Calendar.SEPTEMBER, 2001),
-                                    date(27, Calendar.SEPTEMBER, 2001))));
-        s2.add(new Task("Beta Implementation",
-               new SimpleTimePeriod(date(27, Calendar.SEPTEMBER, 2001),
-                                    date(30, Calendar.OCTOBER, 2001))));
-        s2.add(new Task("Testing",
-               new SimpleTimePeriod(date(31, Calendar.OCTOBER, 2001),
-                                    date(17, Calendar.NOVEMBER, 2001))));
-        s2.add(new Task("Final Implementation",
-               new SimpleTimePeriod(date(18, Calendar.NOVEMBER, 2001),
-                                    date(5, Calendar.DECEMBER, 2001))));
-        s2.add(new Task("Signoff",
-               new SimpleTimePeriod(date(10, Calendar.DECEMBER, 2001),
-                                    date(11, Calendar.DECEMBER, 2001))));
-
-        
-        collection.add(s2);
-
-        return collection;
-    }
-*/	
+	
 	private static Date date(final int day, final int month, final int year) {
 
         final Calendar calendar = Calendar.getInstance();
