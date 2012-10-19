@@ -153,7 +153,11 @@ public void setNUM_SEC(int nUM_SEC) {
 				   this, 			//owner
 				   "Section", 		//name
 				   true, 			// ?
-				   a);				// number of pipes in section
+				   pipes[i],			// number of pipes in section
+				   connections[i]);	// number of connections in section
+		   
+		   // TODO Make this constructor able to select data corresponding to created section from an array of data
+		   // TODO Add more characteristics
 		   
 		   section.activate();
 		   sections.add(section);
@@ -310,10 +314,19 @@ public void setNUM_SEC(int nUM_SEC) {
 	      return newPavement;
 	   }
    
-   public int getActivitymsg() {
+   public int getActivityMsg() {
 	    return activityMsg;
 		}
-      /**
+   
+   public int getActivityMsgConnection() {
+	    return activityMsgConnection;
+		}
+   
+   public int getSectionWait() {
+	    return sectionWait;
+		}
+   
+    /**
     * Returns a sample of the random stream used to determine
     * the next truck arrival time. This is not used atm because trucks are modeled as a resource.
     *
@@ -328,58 +341,10 @@ public void setNUM_SEC(int nUM_SEC) {
 	   
    }
    
-   /**
-    * Updates counters after each specific activity has taken place.
-    *
-    */
-   public void prepare()   {	
-	   preparecounter ++;
-   }
-   public void breaking()   {	
-	   breakcounter ++;
-   }
-   public void backfill()   {	
-	   backfillcounter ++;
-   }
-   public void pave()   {	
-	   pavecounter ++;
-   }
-   public void stonepave()   {	
-	   stonepavecounter ++;
-   }
-   public void handbackfill()   {	
-	   handbackfillcounter ++;
-   }
-   /**
-    * Returns counter value indicating the number of activities that happened.
-    * @return int rollcounter
-    */  
-   public static int getPrepareCounter() {
-	  return preparecounter;
-  }
-   public static int getBreakCounter() {
-	  return breakcounter;
-  }
-   public static int getShoreCounter() {
-	  return shorecounter;
-  }
-   public static int getBackfillCounter() {
-	  return backfillcounter;
-  }
-   public static int getPaveCounter() {
-	  return pavecounter;
-  }
-   public static int getStonePaveCounter() {
-	  return stonepavecounter;
-  }
-   public static int getHandBackfillCounter() {
-	  return handbackfillcounter;
-  }
-
 /**
     * Model parameters: Project parameters (the number of sections, puts and resources, etc)
     */
-   public static int NUM_SEC = 7;					// number of sections
+   public static int NUM_SEC = 4;					// number of sections
    public static int NUM_PUT = 0;					// number of puts
    private static int NUM_BREAKER = 1;				// number of breakers
    private static int NUM_EXCAVATOR = 2;			// number of excavators
@@ -391,30 +356,64 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int NUM_PAVECREWS = 1;			// number of pave crews
    private static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
    private static int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
+  
+   /** 
+    * Model parameters: Project parameters per section
+    * Characteristics of each section/put, stored in arrays
+    * TODO other arrays can be made for other characteristics
+    * examples: housing connections, K&L, puts to be placed with mobile crane
+    */
+   private static int[] pipes = 				{ 5, 3, 2, 2, 1, 1, 2, 2, 2, 5 }; 		// number of pipes
+   private static int[] connections = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections
+   // private static int[] old_pavement = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement
+   // private static int[] new_pavement = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of new pavement
+   // private static int[] length = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
+   // private static int[] pipe_length = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of pipes in
+   // private static int[] sectio_nwidth = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of section in
+   // private static int[] ditch_width = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of ditch v
+   // private static int[] ditch_depth = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// depth of ditch in
+   // private static int[] old_sewer_type = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old sewer
+   // private static int[] new_sewer_type = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of new sewer
+   // private static int[] old_diameter = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// diameter of old sewer
+   // private static int[] new_diameter = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// diameter of new sewer
+   // private static int[] asphalt_old = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// layer thickness of old asphalt in
+   // private static int[] asphalt_new = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// layer thickness of new asphalt in // TODO what if multiple layers?
+   // private static int[] pavement_old = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of old pavement
+   // private static int[] pavement_new = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of new pavement
+   // private static int[] Cables =		 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// weight class of cables in the ground
+   // private static int[] length_connections =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average length of connections
+   // private static int[] depth_connections =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average depth of connections
+   // private static int[] funcation_type =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type fundation used: 1 = , 2 =
+   // private static int[] ditch_protection =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// Type of ditch protection used: 1 = , 2 =
+   // private static int[] Soil_removed = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the removed soil placed: 1 = , 2 =
+   // private static int[] Soil_new = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  			// where is the new soil placed: 1 = , 2 =
+   // private static int[] pipes_old = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where are the removed pipes placed: 1 = , 2 =
+   // private static int[] pipes_new = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where are the new pipes placed: 1 = , 2 =
+
    
 /**
    * Model parameters: Simulation settings
    */
-   private static int OldPavement = 3;				// indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+   private static int OldPavement = 2;				// indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 													// 3 means asphalt; break all sections at start, other gives error
    private static int Shore = 0;					// indicates if project requires shoring, 0 means no shoring, 1 means shoring //TODO needs expansion with different types of shoring
    private static boolean Replacement = false;		// indicates if the project is a replacement project
    private static boolean pipeHeavy	= false; 		// indicates if the pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    													// for puts this is indicated by an array per put as sizes differ.
+   													// TODO differentiate for new and old sewer pipes
    private static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
    private static int prepareSurface = 2;			// indicates if broken rock is placed per section or for all sections at once: 1 = per section, 2 = all sections
-   private static int newPavement =3;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+   private static int newPavement = 2;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 													// 3 means asphalt; pave all sections at start, other gives error
-   private static int activityMsg = 2;				// indicates what data is collected: 1 = per pipe, 2 is per activity per pipe, 3 = ?
-   													// TODO invoeren in section.
+   private static int sectionWait = 1;				// indicates after which activity the next section starts: 1 = after main loop, 2 = second backfill, 3 = surface prepared
+													// 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
+   // private static int inspectionType = 1;			// type of inspection applied: 1 = ????
 
-   /** test giving sections a number of pipes to iterate trough
-    * TODO make an array with number for each section
-    * other arrays can be made for other characteristics
-    * 
-    * examples: housing connections, K&L, puts to be placed with mobile crane
-    */
-   private static int a = 10; 						// number of pipes
+   /**   
+   * Model parameters: Simulation output settings
+   */
+   private static int activityMsg = 1;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
    
    /**
     * Process versions
@@ -474,6 +473,56 @@ public void setNUM_SEC(int nUM_SEC) {
    
    ArrayList<Section> sections;
    ArrayList<Put> puts;
+   
+   
+   /**
+    * Updates counters after each specific activity has taken place.
+    *
+    */
+   public void prepare()   {	
+	   preparecounter ++;
+   }
+   public void breaking()   {	
+	   breakcounter ++;
+   }
+   public void backfill()   {	
+	   backfillcounter ++;
+   }
+   public void pave()   {	
+	   pavecounter ++;
+   }
+   public void stonepave()   {	
+	   stonepavecounter ++;
+   }
+   public void handbackfill()   {	
+	   handbackfillcounter ++;
+   }
+   
+   /**
+    * Returns counter value indicating the number of activities that happened.
+    * @return int rollcounter
+    */  
+   public static int getPrepareCounter() {
+	  return preparecounter;
+  }
+   public static int getBreakCounter() {
+	  return breakcounter;
+  }
+   public static int getShoreCounter() {
+	  return shorecounter;
+  }
+   public static int getBackfillCounter() {
+	  return backfillcounter;
+  }
+   public static int getPaveCounter() {
+	  return pavecounter;
+  }
+   public static int getStonePaveCounter() {
+	  return stonepavecounter;
+  }
+   public static int getHandBackfillCounter() {
+	  return handbackfillcounter;
+  }
    
    /**
     * Activity counters

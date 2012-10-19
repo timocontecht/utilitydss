@@ -5,10 +5,10 @@ import java.util.Date;
 public class WorkItem 
 {
 	String name;
-	Date start;
-	Date end;
+	long start;
+	long end;
 	
-	public WorkItem(String work, Date startTime, Date endTime) 
+	public WorkItem(String work, long startTime, long endTime) 
 	{
 		this.name = work;
 		this.start = startTime;
@@ -20,16 +20,16 @@ public class WorkItem
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getStart() {
+	public long getStart() {
 		return start;
 	}
-	public void setStart(Date start) {
+	public void setStart(long start) {
 		this.start = start;
 	}
-	public Date getEnd() {
+	public long getEnd() {
 		return end;
 	}
-	public void setEnd(Date end) {
+	public void setEnd(long end) {
 		this.end = end;
 	}
 

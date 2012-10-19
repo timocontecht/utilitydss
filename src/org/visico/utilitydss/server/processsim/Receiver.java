@@ -124,7 +124,7 @@ public class Receiver implements MessageReceiver
 			Calendar end = am.start();
 			end.add(Calendar.DAY_OF_MONTH, (int) am.duration());
 			
-			WorkItem t = new WorkItem(am.work(), am.start().getTime(), end.getTime());
+			WorkItem t = new WorkItem(am.work(), am.start().getTimeInMillis(), am.end().getTimeInMillis());
 			l.addWorkItem(t);
 			
 			
@@ -160,15 +160,13 @@ public class Receiver implements MessageReceiver
 			id_counter++;
 			
 			// and add to the chart
-			//TODO: move to schedule class
+			// TODO: move to schedule class
 			// Calendar end = am.start();
 			// end.add(Calendar.DAY_OF_MONTH, (int) am.duration());
 			
 			// SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), (long) (am.start().getTimeInMillis() + am.duration() * 8.64e7)); - replaced by line below - 
 			SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), am.end().getTimeInMillis() );
 			s1.add(new Task(am.getSection().getName() + " " + am.work(), p));
-
-
 
 		}
 		
@@ -224,24 +222,7 @@ public class Receiver implements MessageReceiver
 	
 	public void exportGantt()
 	{
-<<<<<<< HEAD
-		try
-		{
-			//final IntervalCategoryDataset dataset = createDataset();
-			final TaskSeriesCollection collection = new TaskSeriesCollection();
-	        collection.add(s1);
-	        final JFreeChart chart = createChart(collection);
-	        ChartUtilities.saveChartAsJPEG(new File("chart.jpg"), chart, 1000, 4000);
-	        // Change last number for different height of .jpg
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-=======
-		schedule.createGanttJPGTaskMain();
-		
->>>>>>> f2365b1ceb9332846080ce340d343537b0be68e3
+		schedule.createGanttJPGTaskMain();	
 	}
 	
 	private static Date date(final int day, final int month, final int year) {
