@@ -13,6 +13,37 @@ public class Section extends SimProcess
 	
 	private int NUM_PIPE;
 	private int NUM_CONNECTIONS;
+	/*
+	private int NUM_Pipe = Math.ceil(Section_length / pipe_length)
+	private int Area = (Section_length * Section_width)
+	private int put_connections;  		// number of connections the put has, only if put
+	private int old_pavement; 			// type of old pavement
+	private int new_pavement;  			// type of new pavement
+	private int length;  				// length of section in
+	private int pipe_length;  			// length of pipes in
+	private int section_nwidth;  		// width of section in
+	private int ditch_width;  			// width of ditch v
+	private int ditch_depth;  			// depth of ditch in
+	private int old_sewer_type; 		// type of old sewer
+	private int new_sewer_type; 		// type of new sewer
+	private int old_diamete ;  			// diameter of old sewer 
+	private int new_diameter;  			// diameter of new sewer
+	private int asphalt_old;  			// layer thickness of old asphalt in
+	private int asphalt_new;  			// layer thickness of new asphalt in // TODO what if multiple layers?
+	private int pavement_old;  			// type of old pavement
+	private int pavement_new;  			// type of new pavement
+	private int Cables;  				// weight class of cables in the ground
+	private int length_connections;  	// average length of connections
+	private int depth_connections;  	// average depth of connections
+	private int funcation_type;  		// type foundation used: 1 = , 2 =
+	private int ditch_protection;  		// Type of ditch protection used: 1 = , 2 =
+	private int Soil_removed;  			// where is the removed soil placed: 1 = , 2 =
+	private int Soil_new;  				// where is the new soil placed: 1 = , 2 =
+	private int pipes_old;  			// where are the removed pipes placed: 1 = , 2 =
+	private int pipes_new;  			// where are the new pipes placed: 1 = , 2 =
+	etc
+	*/
+	
 	/**
 	    * Constructor of the section 
 	    *
@@ -23,18 +54,72 @@ public class Section extends SimProcess
 	    * @param showInTrace flag to indicate if this process shall produce output
 	    *                    for the trace
 	    */
-	public Section(Model owner, String name, boolean showInTrace , int pipes, int connections) 
+	public Section(Model owner, 
+			String name, 
+			boolean showInTrace, 
+			int pipes, 
+			int connections
+			/*,
+			int put_connections,
+			int old_pavement,
+			int new_pavement,
+			int length,
+			int pipe_length,
+			int section_nwidth,
+			int ditch_width,
+			int ditch_depth,
+			int old_sewer_type,
+			int new_sewer_type,
+			int old_diamete,
+			int new_diameter,
+			int asphalt_old,
+			int asphalt_new,
+			int pavement_old,
+			int pavement_new,
+			int cables,
+			int length_connections,
+			int depth_connections,
+			int funcation_type, 
+			int ditch_protection,
+			int soil_removed,  	
+			int soil_new,  		
+			int pipes_old,  		
+			int pipes_new,
+			*/  ) 
+	
 	{
 		super(owner, name, showInTrace);
 		myModel = (UtilitySimulation)owner;
 		NUM_PIPE = pipes;
 		NUM_CONNECTIONS = connections;
-		//pipe_length = 
-		//pipe_diameter
-		//Section_length
-		//NUM_Pipe = (Section_length / pipe_length ,  round up to nearest int)
-		//Section_width
-		//Area = Section_length * Section_width
+		/*
+		Put_connections = put_connections;  		// number of connections the put has, only if put
+		Old_pavement = old_pavement; 				// type of old pavement
+		New_pavement = new_pavement;  				// type of new pavement
+		Length = length;  							// length of section in
+		Pipe_length = pipe_length;  				// length of pipes in
+		Section_nwidth = section_nwidth;  			// width of section in
+		Ditch_width = ditch_width;  				// width of ditch v
+		Ditch_depth = ditch_depth;  				// depth of ditch in
+		Old_sewer_type = old_sewer_type; 			// type of old sewer
+		New_sewer_type = new_sewer_type; 			// type of new sewer
+		Old_diameter = old_diameter;  				// diameter of old sewer 
+		New_diameter = new_diameter;  				// diameter of new sewer
+		Asphalt_old = asphalt_old;  				// layer thickness of old asphalt in
+		Asphalt_new = asphalt_new;  				// layer thickness of new asphalt in // TODO what if multiple layers?
+		Pavement_old = pavement_old;  				// type of old pavement
+		Pavement_new = pavement_new;  				// type of new pavement
+		Cables = cables;  							// weight class of cables in the ground
+		Length_connections = length_connections;  	// average length of connections
+		Depth_connections = depth_connections;  	// average depth of connections
+		Funcation_type = funcation_type;  			// type fundation used: 1 = , 2 =
+		Ditch_protection = ditch_protection;  		// Type of ditch protection used: 1 = , 2 =
+		Soil_removed = 	soil_removed;  				// where is the removed soil placed: 1 = , 2 =
+		Soil_new = soil_new;  						// where is the new soil placed: 1 = , 2 =
+		Pipes_old = pipes_old;  					// where are the removed pipes placed: 1 = , 2 =
+		Pipes_new = pipes_new;  					// where are the new pipes placed: 1 = , 2 =
+		etc
+		 */
 	}
 	
 	/**
@@ -68,7 +153,7 @@ public class Section extends SimProcess
 		    * 
 		    * FIXME only works when puts are sections with special characteristics (with 2 different classes there is no way of maintaining chronological order)
 		    * 		So puts should become sections with special characteristics
-		    * FIXME difficult to model work on multiple sections at once --> drawback inherent to hard-coding the model
+		    * FIXME difficult to model work on multiple sections at once --> drawback inherent to hard-coding the model?
 		    */
 		   myModel.startingCondition.retrieve(1);
 		   
@@ -77,10 +162,11 @@ public class Section extends SimProcess
 		   // ActivityMessage msg;
 		   
 		   // TODO make section/put hold until all preceding sections & puts are done with certain activities
-		   // which activities this are is process dependent ( give different options) 
+		   // which activities this are is process dependent 
 		   // this requires a section to asses what its predecessors (puts and sections) are &
 		   // And if all these predecessors completed the specified activities. <-- use bins or counters?
 		   // this would prolly be a lot easier if puts where sections with specific put behavior as identitynumber then could be used, or a simple bin/res
+		   // think about when housing connections can start (maybe before entire main loop is finished) --> how to program?)
 		   
 		   // 1. break the section or remove stone pavement
 		   TimeInstant start = myModel.presentTime();
@@ -103,7 +189,6 @@ public class Section extends SimProcess
 			   	else{
 			   		// Breaking happens once for all sections
 			   		// so all preceding sections have no breaking activities
-			   		// TODO all following sections should hold until breaking activities of first are complete
 			   		System.out.println(this + " No breaking activities, all in first " + myModel.presentTime());
 			   	}
 		   }
@@ -154,7 +239,6 @@ public class Section extends SimProcess
 		   }
 		   
 		   // for loop iterating trough main loop (iterates trough all pipes in this section)
-		   // TODO make different number of pipes possible per section. --> make an array for number of pipes for all sections.
 		   for (int i=1; i<=this.NUM_PIPE; i++)
 		   {
 			   // gathers start time of every pipe in main loop, only active if turned on in utilitysimulation.java
@@ -203,8 +287,7 @@ public class Section extends SimProcess
 			   }
 			   
 			   // 4. remove the pipe
-			   // only for replacement projects (set variable Replacement in UtilitySimulation.java class to true/false )	
-			   // TODO implement different types of sewer to be removed (material, size, combined/seperate)
+			   // only for replacement projects (set variable Replacement in UtilitySimulation.java class to true/false )
 			   if(myModel.getReplacement()) {
 				   	myModel.excavators.provide(1);
 				   	if(myModel.getActivityMsg() == 3)
@@ -231,8 +314,6 @@ public class Section extends SimProcess
 			   myModel.crews.takeBack(1);
 			  
 			   // 6. install the pipe
-			   // TODO implement different types of sewer to be placed (material, size, combined/seperate)
-			   		// add option for mobile crane for heavy pipes
 			   myModel.crews.provide(1);
 			   myModel.excavators.provide(1);
 			   if(myModel.getActivityMsg() == 3)
@@ -272,6 +353,7 @@ public class Section extends SimProcess
 			   
 	 		   // 8. remove shoring
 			   // only for projects that require shoring (set variable Shore to right value in simulation class)
+			   // TODO add types of shoring.
 			   if(myModel.getShore() == 1)
 			   {	myModel.excavators.provide(1);
 			   		if(myModel.getActivityMsg() == 3)
@@ -287,6 +369,7 @@ public class Section extends SimProcess
 			   			if (UtilitySimulation.getShoreCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) 
 			   			{
 			   				//TODO Fix: counters get updated after every completed pipe instead of completed section so crews stop way to early if there are second crews
+			   				// FIX is to place counters outside of loop.
 			   				myModel.crews.stopUse();
 			   				myModel.excavators.stopUse();	
 			   				System.out.println("resource crews stopped at simulation time " + myModel.presentTime() + " 2nd crew finishes housing connections");
@@ -315,9 +398,7 @@ public class Section extends SimProcess
 		   	myModel.startingCondition.store(1);
 	   		}
 		   
-		   //TODO	make housing connections optional, not every section has them, <-- DONE
-		   //		add characteristics to connections, per connection are average per section/project these characteristics need to determine time needed
-		   //		think if model should iterate trough connections or if a sum of needed times suffices.
+		   //TODO	think if model should iterate trough connections or if a sum of needed times suffices.
 		   //		think about when housing connections can start (maybe before entire main loop is finished) --> how to program?)
 		   
 		   // 9. install the connections, only if there are connections.
@@ -389,9 +470,7 @@ public class Section extends SimProcess
 		   myModel.startingCondition.store(1);
 		   }
 		   
-		   // TODO insert if statement to only perform activity paving if this happens per section
-		   // if paving is a general activity it will become be a separate process and no paving should occur in section or put lifecycle.
-		   // It could also be that only a broken-stone road is constructed and paving alone is performed later
+		   // TODO It could also be that only a broken-stone road is constructed and paving alone is performed later
 		   
 		   // 11a. roll/prepare surface - sand
 		   myModel.rollers.provide(1);

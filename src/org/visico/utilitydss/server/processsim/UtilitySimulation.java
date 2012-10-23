@@ -4,10 +4,13 @@ package org.visico.utilitydss.server.processsim;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
 import javax.xml.parsers.ParserConfigurationException;
-import desmoj.core.simulator.*;
+
 import desmoj.core.advancedModellingFeatures.Bin;
-import desmoj.core.dist.*;
+import desmoj.core.dist.ContDistUniform;
+import desmoj.core.simulator.Model;
+import desmoj.core.simulator.TimeInstant;
 
 
 public class UtilitySimulation extends Model 
@@ -38,8 +41,7 @@ public class UtilitySimulation extends Model
 	   
 	   // set experiment parameters
 	   //
-	   
-	   	   
+	   	   	   
 	   exp.setShowProgressBar(true);  // display a progress bar (or not)
 
 	   //exp.stop(new TimeInstant(6000, TimeUnit.HOURS));   
@@ -97,21 +99,9 @@ public class UtilitySimulation extends Model
 			NUM_CREW = resources.get(3).intValue();
 			NUM_ROLLER = resources.get(4).intValue();
 			NUM_TRUCK = resources.get(5).intValue();
-			/* 
-			NUM_PAVECREWS = resources.get(6).intValue();
-			NUM_STONEPAVECREWS = resources.get(7).intValue();
-			NUM_2NDCREW = resources.get(8).intValue();
 			
-			NUM_SEC = resources.get(9).intValue();
-			NUM_PUT = resources.get(10).intValue();
-			
-			Replacement = resources.get(11).intValue();
-			OldPavement = resources.get(12).intValue();
-			NewPavement = resources.get(13).intValue();
-			Shore = resources.get(14).intValue();
-			secondCrew = resources.get(15).intValue();
-			TODO update to all current resources and other input functions.
-	*/
+			// TODO update to all current resources and other input functions.
+
 	}
 
    /** test giving sections a number of pipes to iterate trough
@@ -150,15 +140,40 @@ public void setNUM_SEC(int nUM_SEC) {
 	   for (int i=0; i<NUM_SEC; i++)
 	   {
 		   Section section = new Section(
-				   this, 			//owner
-				   "Section", 		//name
-				   true, 			// ?
-				   pipes[i],			// number of pipes in section
-				   connections[i]);	// number of connections in section
-		   
-		   // TODO Make this constructor able to select data corresponding to created section from an array of data
-		   // TODO Add more characteristics
-		   
+					this, 					//owner
+					"Section", 				//name
+					true, 					// ?
+					pipes[i],				// number of pipes in section
+					connections[i]);		// number of connections in section
+					/*
+					put_connections[i],		// number of connections the put has, only if put
+					old_pavement[i],		// type of old pavement
+					new_pavement[i],		// type of new pavement
+					length[i],				// length of section in
+					pipe_length[i],			// length of pipes in
+					section_nwidth[i],		// width of section in
+					ditch_width[i],			// width of ditch 
+					ditch_depth[i],			// depth of ditch in
+					old_sewer_type[i],		// type of old sewer
+					new_sewer_type[i],		// type of new sewer
+					old_diamete[i],			// diameter of old sewer 
+					new_diameter[i],		// diameter of new sewer
+					asphalt_old[i],			// layer thickness of old asphalt in
+					asphalt_new[i],			// layer thickness of new asphalt in // TODO what if multiple layers?
+					pavement_old[i],		// type of old pavement
+					pavement_new[i],		// type of new pavement
+					cables[i],				// weight class of cables in the ground
+					length_connections[i],	// average length of connections
+					depth_connections[i],	// average depth of connections
+					funcation_type[i], 		// type foundation used: 1 = , 2 =
+					ditch_protection[i],	// Type of ditch protection used: 1 = , 2 =
+					soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
+					soil_new[i],  			// where is the new soil placed: 1 = , 2 =
+					pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
+					pipes_new[i];  			// where are the new pipes placed: 1 = , 2 =
+					TODO Add more characteristics
+					*/
+ 
 		   section.activate();
 		   sections.add(section);
 		   SewerExperiment exp = (SewerExperiment)this.getExperiment();
@@ -187,8 +202,8 @@ public void setNUM_SEC(int nUM_SEC) {
 	      // Parameters:
 	      // this                = belongs to this model
 	      // "ServiceTimeStream" = the name of the stream
-	      // 3.0                 = minimum time in minutes to deliver a container
-	      // 7.0                 = maximum time in minutes to deliver a container
+	      // 10.0                 = minimum time in minutes to deliver a container
+	      // 30.0                 = maximum time in minutes to deliver a container
 	      // true                = show in report?
 	      // false               = show in trace?
 	      breakingTime= new ContDistUniform(this, "BreakingTimeStream",
@@ -350,57 +365,96 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int NUM_EXCAVATOR = 2;			// number of excavators
    private static int NUM_CRANE = 0;				// number of truck-mounted cranes
    private static int NUM_CREW = 1;					// number of crews
-   private static int NUM_2NDCREW = 1;				// number of 2ndcrews //TODO think about making a second process for when 2nd crews are used, just like for breaking entire road.
+   private static int NUM_2NDCREW = 1;				// number of 2ndcrews
    private static int NUM_ROLLER = 2;				// number of rollers
    private static int NUM_TRUCK = 1;				// number of trucks
    private static int NUM_PAVECREWS = 1;			// number of pave crews
    private static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
    private static int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
   
-   /** 
-    * Model parameters: Project parameters per section
+   /** FOR TESTING PURPOSES (arraylists should get filled by GUI in final code)
+    * Model parameters: Project parameters per section in static arrays 
     * Characteristics of each section/put, stored in arrays
-    * TODO other arrays can be made for other characteristics
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
-   private static int[] pipes = 				{ 5, 3, 2, 2, 1, 1, 2, 2, 2, 5 }; 		// number of pipes
-   private static int[] connections = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections
-   // private static int[] old_pavement = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement
-   // private static int[] new_pavement = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of new pavement
-   // private static int[] length = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
-   // private static int[] pipe_length = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of pipes in
-   // private static int[] sectio_nwidth = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of section in
-   // private static int[] ditch_width = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of ditch v
-   // private static int[] ditch_depth = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// depth of ditch in
-   // private static int[] old_sewer_type = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old sewer
-   // private static int[] new_sewer_type = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of new sewer
-   // private static int[] old_diameter = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// diameter of old sewer
-   // private static int[] new_diameter = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// diameter of new sewer
-   // private static int[] asphalt_old = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// layer thickness of old asphalt in
-   // private static int[] asphalt_new = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// layer thickness of new asphalt in // TODO what if multiple layers?
-   // private static int[] pavement_old = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of old pavement
-   // private static int[] pavement_new = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of new pavement
-   // private static int[] Cables =		 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// weight class of cables in the ground
-   // private static int[] length_connections =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average length of connections
-   // private static int[] depth_connections =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average depth of connections
-   // private static int[] funcation_type =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type fundation used: 1 = , 2 =
-   // private static int[] ditch_protection =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// Type of ditch protection used: 1 = , 2 =
-   // private static int[] Soil_removed = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the removed soil placed: 1 = , 2 =
-   // private static int[] Soil_new = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  			// where is the new soil placed: 1 = , 2 =
-   // private static int[] pipes_old = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where are the removed pipes placed: 1 = , 2 =
-   // private static int[] pipes_new = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where are the new pipes placed: 1 = , 2 =
-
+   // private static int[] PUT = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] pipes = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 5 }; 		// number of pipes, only if pipe section
+   private static int[] connections = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
+   /* 
+   private static int[] put_connections = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
+   private static int[] old_pavement = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement
+   private static int[] new_pavement = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of new pavement
+   private static int[] length = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
+   private static int[] pipe_length = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of pipes in
+   private static int[] section_nwidth = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of section in
+   private static int[] ditch_width = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of ditch in
+   private static int[] ditch_depth = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// depth of ditch in
+   private static int[] old_sewer_type = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old sewer
+   private static int[] new_sewer_type = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of new sewer
+   private static int[] old_diameter = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// diameter of old sewer 
+   private static int[] new_diameter = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// diameter of new sewer
+   private static int[] asphalt_old = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// layer thickness of old asphalt in
+   private static int[] asphalt_new = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// layer thickness of new asphalt in // TODO what if multiple layers?
+   private static int[] pavement_old = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of old pavement
+   private static int[] pavement_new = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of new pavement
+   private static int[] cables =		 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// weight class of cables in the ground
+   private static int[] length_connections =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average length of connections
+   private static int[] depth_connections =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average depth of connections
+   private static int[] funcation_type =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type foundation used: 1 = , 2 =
+   private static int[] ditch_protection =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// Type of ditch protection used: 1 = , 2 =
+   private static int[] soil_removed = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the removed soil placed: 1 = , 2 =
+   private static int[] soil_new = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the new soil placed: 1 = , 2 =
+   private static int[] pipes_old = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where are the removed pipes placed: 1 = , 2 =
+   private static int[] pipes_new = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where are the new pipes placed: 1 = , 2 =
+   etc
+      */
+   
+   /**  
+    * Model parameters: Project parameters per section in dynamic arraylists
+    * Characteristics of each section/put, stored in arrays
+    * examples: housing connections, K&L, puts to be placed with mobile crane
+    */
+   /* 
+   ArrayList<Integer> PUT = new ArrayList<Integer>(0); 					// indicates if section is pipe section or put, 0 is section, 1 is put.
+   ArrayList<Integer> pipes = new ArrayList<Integer>(0); 				// number of pipes, only if pipe section
+   ArrayList<Integer> connections = new ArrayList<Integer>(0);			// number of connections only if pipe section
+   ArrayList<Integer> put_connections = new ArrayList<Integer>(0);		// number of connections the put has, only if put
+   ArrayList<Integer> old_pavement = new ArrayList<Integer>(0);			// type of old pavement
+   ArrayList<Integer> new_pavement = new ArrayList<Integer>(0);			// type of new pavement
+   ArrayList<Integer> length = new ArrayList<Integer>(0);				// length of section in
+   ArrayList<Integer> pipe_length = new ArrayList<Integer>(0);			// length of pipes in
+   ArrayList<Integer> section_nwidth = new ArrayList<Integer>(0);		// width of section in	
+   ArrayList<Integer> ditch_width = new ArrayList<Integer>(0);			// width of ditch in
+   ArrayList<Integer> ditch_depth = new ArrayList<Integer>(0);			// depth of ditch in
+   ArrayList<Integer> old_sewer_type = new ArrayList<Integer>(0);		// type of old sewer	
+   ArrayList<Integer> new_sewer_type = new ArrayList<Integer>(0);		// type of new sewer
+   ArrayList<Integer> old_diameter = new ArrayList<Integer>(0);			// diameter of old sewer
+   ArrayList<Integer> new_diameter = new ArrayList<Integer>(0);			// diameter of new sewer
+   ArrayList<Integer> asphalt_old = new ArrayList<Integer>(0);			// layer thickness of old asphalt in
+   ArrayList<Integer> asphalt_new = new ArrayList<Integer>(0);			// layer thickness of new asphalt in // TODO what if multiple layers?
+   ArrayList<Integer> pavement_old = new ArrayList<Integer>(0);			// type of old pavement
+   ArrayList<Integer> pavement_new = new ArrayList<Integer>(0);    		// type of new pavement
+   ArrayList<Integer> cables = new ArrayList<Integer>(0);				// weight class of cables in the ground
+   ArrayList<Integer> length_connections = new ArrayList<Integer>(0);	// average length of connections	
+   ArrayList<Integer> depth_connections = new ArrayList<Integer>(0);	// average depth of connections
+   ArrayList<Integer> funcation_type = new ArrayList<Integer>(0);		// type foundation used: 1 = , 2 =
+   ArrayList<Integer> ditch_protection = new ArrayList<Integer>(0);		// Type of ditch protection used: 1 = , 2 =
+   ArrayList<Integer> soil_removed = new ArrayList<Integer>(0);			// where is the removed soil placed: 1 = , 2 =
+   ArrayList<Integer> soil_new = new ArrayList<Integer>(0);				// where is the new soil placed: 1 = , 2 =
+   ArrayList<Integer> pipes_old = new ArrayList<Integer>(0);			// where are the removed pipes placed: 1 = , 2 =
+   ArrayList<Integer> pipes_new = new ArrayList<Integer>(0);			// where are the new pipes placed: 1 = , 2 =
+   */  
    
 /**
    * Model parameters: Simulation settings
    */
    private static int OldPavement = 2;				// indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 													// 3 means asphalt; break all sections at start, other gives error
-   private static int Shore = 0;					// indicates if project requires shoring, 0 means no shoring, 1 means shoring //TODO needs expansion with different types of shoring
+   private static int Shore = 0;					// indicates if project requires shoring, 0 means no shoring, 1 means sliding casc, 2 means Sheet piling (damwand), 3 means supported walls
    private static boolean Replacement = false;		// indicates if the project is a replacement project
-   private static boolean pipeHeavy	= false; 		// indicates if the pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
+   private static boolean oldPipeHeavy	= false; 	// indicates if the old pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
+   private static boolean newPipeHeavy	= false; 	// indicates if the new pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    													// for puts this is indicated by an array per put as sizes differ.
-   													// TODO differentiate for new and old sewer pipes
    private static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
    private static int prepareSurface = 2;			// indicates if broken rock is placed per section or for all sections at once: 1 = per section, 2 = all sections
    private static int newPavement = 2;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
@@ -412,7 +466,7 @@ public void setNUM_SEC(int nUM_SEC) {
    /**   
    * Model parameters: Simulation output settings
    */
-   private static int activityMsg = 1;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsg = 2;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
    private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
    
    /**
