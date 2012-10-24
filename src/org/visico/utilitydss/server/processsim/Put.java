@@ -44,7 +44,6 @@ public class Put extends SimProcess
 	    * 10. wait for road crew to pave the surface with asphalt or stones
 	    * 
 	    * No housing connections with put, 
-	    * TODO Think about also only one backfill activity or two when sections do have housing connections?
 	    */
 
 	// TODO implement lifecycle changes from section or make put a section with specific behavior.
@@ -57,7 +56,7 @@ public class Put extends SimProcess
 			   myModel.breakers.provide(1);
 			   //start = myModel.presentTime();
 			   hold (new TimeSpan(myModel.getBreakingTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
-			   //TimeInstant end = myModel.presentTime(); //TODO is this necessary as ActivityMessage uses presentTime as end time?
+			   //TimeInstant end = myModel.presentTime(); 
 			   //ActivityMessage msg = new ActivityMessage(myModel, this, start, "Break Section", myModel.presentTime()) ;
 			   //sendMessage(msg);
 			   myModel.breakers.takeBack(1);
@@ -72,7 +71,7 @@ public class Put extends SimProcess
 		   {   myModel.crews.provide(1);
 		   		//start = myModel.presentTime();
 		   		hold (new TimeSpan(myModel.getBreakingTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
-		   		//TimeInstant end = myModel.presentTime(); //TODO is this necessary as ActivityMessage uses presentTime as end time?
+		   		//TimeInstant end = myModel.presentTime();
 		   		// ActivityMessage msg = new ActivityMessage(myModel, this, start, "Break Section", myModel.presentTime());
 		   		//sendMessage(msg);
 		   		myModel.crews.takeBack(1);

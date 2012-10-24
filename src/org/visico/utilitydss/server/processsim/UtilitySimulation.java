@@ -135,59 +135,96 @@ public void setNUM_SEC(int nUM_SEC) {
    public void doInitialSchedules() 
    { 
 	   sections = new ArrayList<Section>();
-	// initialize the sections 
+	   // initialize the sections 
 	   for (int i=0; i<NUM_SEC; i++)
 	   {
-		   Section section = new Section(
-					this, 					//owner
-					"Section", 				//name
-					true, 					// ?
-					pipes[i],				// number of pipes in section
-					connections[i]);		// number of connections in section
-					/*
-					put_connections[i],		// number of connections the put has, only if put
-					old_pavement[i],		// type of old pavement
-					new_pavement[i],		// type of new pavement
-					length[i],				// length of section in
-					pipe_length[i],			// length of pipes in
-					section_nwidth[i],		// width of section in
-					ditch_width[i],			// width of ditch 
-					ditch_depth[i],			// depth of ditch in
-					old_sewer_type[i],		// type of old sewer
-					new_sewer_type[i],		// type of new sewer
-					old_diamete[i],			// diameter of old sewer 
-					new_diameter[i],		// diameter of new sewer
-					asphalt_old[i],			// layer thickness of old asphalt in
-					asphalt_new[i],			// layer thickness of new asphalt in
-					pavement_old[i],		// type of old pavement
-					pavement_new[i],		// type of new pavement
-					cables[i],				// weight class of cables in the ground
-					length_connections[i],	// average length of connections
-					depth_connections[i],	// average depth of connections
-					funcation_type[i], 		// type foundation used: 1 = , 2 =
-					ditch_protection[i],	// Type of ditch protection used: 1 = , 2 =
-					soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
-					soil_new[i],  			// where is the new soil placed: 1 = , 2 =
-					pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
-					pipes_new[i];  			// where are the new pipes placed: 1 = , 2 =
-					*/
- 
-		   section.activate();
-		   sections.add(section);
-		   SewerExperiment exp = (SewerExperiment)this.getExperiment();
-		   exp.getReceiver().createSectionElement(section);
-	   }
-	   
-	   puts = new ArrayList<Put>();
-	// initialize the puts 
-	   for (int i=0; i<NUM_PUT; i++)
-	   {
-		   Put put = new Put(this, "put" , true);
-		   put.activate();
-		   puts.add(put);
-		   //SewerExperiment exp = (SewerExperiment)this.getExperiment();
-		   //exp.getReceiver().createPutElement(put);
-		   //TODO needs changes to Reciever.java and maybe ActivityMessage.java (those focus on section now which should be general to allow section, put, breaking and other processes)
+		   // TODO, currently a very cumbersome way to have a put named put and a section named section, see if it can be shortened.
+		   if(put[i]==0)
+		   {
+			   Section section = new Section(
+						this, 					//owner
+						"Section", 				//name
+						true, 					// ?
+						put[i],					// section or put:  0 is section, 1 is put.  
+						pipes[i],				// number of pipes in section
+						connections[i]);		// number of connections in section
+						/*
+						put_connections[i],		// number of connections the put has, only if put
+						old_pavement[i],		// type of old pavement
+						new_pavement[i],		// type of new pavement
+						length[i],				// length of section in
+						pipe_length[i],			// length of pipes in
+						section_nwidth[i],		// width of section in
+						ditch_width[i],			// width of ditch 
+						ditch_depth[i],			// depth of ditch in
+						old_sewer_type[i],		// type of old sewer
+						new_sewer_type[i],		// type of new sewer
+						old_diamete[i],			// diameter of old sewer 
+						new_diameter[i],		// diameter of new sewer
+						asphalt_old[i],			// layer thickness of old asphalt in
+						asphalt_new[i],			// layer thickness of new asphalt in
+						pavement_old[i],		// type of old pavement
+						pavement_new[i],		// type of new pavement
+						cables[i],				// weight class of cables in the ground
+						length_connections[i],	// average length of connections
+						depth_connections[i],	// average depth of connections
+						funcation_type[i], 		// type foundation used: 1 = , 2 =
+						ditch_protection[i],	// Type of ditch protection used: 1 = , 2 =
+						soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
+						soil_new[i],  			// where is the new soil placed: 1 = , 2 =
+						pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
+						pipes_new[i];  			// where are the new pipes placed: 1 = , 2 =
+						*/
+	 
+			   section.activate();
+			   sections.add(section);
+			   SewerExperiment exp = (SewerExperiment)this.getExperiment();
+			   exp.getReceiver().createSectionElement(section);
+		   }
+		   
+		   else
+		   {
+			   Section section = new Section(
+						this, 					//owner
+						"Put", 					//name
+						true, 					// ?
+						put[i],					// section or put:  0 is section, 1 is put.  
+						pipes[i],				// number of pipes in section
+						connections[i]);		// number of connections in section
+						/*
+						put_connections[i],		// number of connections the put has, only if put
+						old_pavement[i],		// type of old pavement
+						new_pavement[i],		// type of new pavement
+						length[i],				// length of section in
+						pipe_length[i],			// length of pipes in
+						section_nwidth[i],		// width of section in
+						ditch_width[i],			// width of ditch 
+						ditch_depth[i],			// depth of ditch in
+						old_sewer_type[i],		// type of old sewer
+						new_sewer_type[i],		// type of new sewer
+						old_diamete[i],			// diameter of old sewer 
+						new_diameter[i],		// diameter of new sewer
+						asphalt_old[i],			// layer thickness of old asphalt in
+						asphalt_new[i],			// layer thickness of new asphalt in
+						pavement_old[i],		// type of old pavement
+						pavement_new[i],		// type of new pavement
+						cables[i],				// weight class of cables in the ground
+						length_connections[i],	// average length of connections
+						depth_connections[i],	// average depth of connections
+						funcation_type[i], 		// type foundation used: 1 = , 2 =
+						ditch_protection[i],	// Type of ditch protection used: 1 = , 2 =
+						soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
+						soil_new[i],  			// where is the new soil placed: 1 = , 2 =
+						pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
+						pipes_new[i];  			// where are the new pipes placed: 1 = , 2 =
+						*/
+	 
+			   section.activate();
+			   sections.add(section);
+			   SewerExperiment exp = (SewerExperiment)this.getExperiment();
+			   exp.getReceiver().createSectionElement(section);
+			     
+		   }
 	   }
    }
    
@@ -337,7 +374,11 @@ public void setNUM_SEC(int nUM_SEC) {
       public int getNewPavement() {
 	      return newPavement;
 	   }
-   
+      
+      public int getSectionWait() {
+   	    return sectionWait;
+   		}
+        
    public int getActivityMsg() {
 	    return activityMsg;
 		}
@@ -346,10 +387,13 @@ public void setNUM_SEC(int nUM_SEC) {
 	    return activityMsgConnection;
 		}
    
-   public int getSectionWait() {
-	    return sectionWait;
+   public int getActivityMsgPut() {
+	    return activityMsgPut;
 		}
    
+   public int getActivityMsgConnectionPut() {
+	    return activityMsgConnectionPut;
+		}
     /**
     * Returns a sample of the random stream used to determine
     * the next truck arrival time. This is not used atm because trucks are modeled as a resource.
@@ -368,7 +412,7 @@ public void setNUM_SEC(int nUM_SEC) {
 /**
     * Model parameters: Project parameters (the number of sections, puts and resources, etc)
     */
-   public static int NUM_SEC = 4;					// number of sections
+   public static int NUM_SEC = 5;					// number of sections
    public static int NUM_PUT = 0;					// number of puts
    private static int NUM_BREAKER = 1;				// number of breakers
    private static int NUM_EXCAVATOR = 2;			// number of excavators
@@ -386,7 +430,7 @@ public void setNUM_SEC(int nUM_SEC) {
     * Characteristics of each section/put, stored in arrays
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
-   // private static int[] PUT = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] put = 					{ 1, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
    private static int[] pipes = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 5 }; 		// number of pipes, only if pipe section
    private static int[] connections = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
    /* 
@@ -418,13 +462,13 @@ public void setNUM_SEC(int nUM_SEC) {
    etc
       */
    
-   /**  COMMENTED out as the arrays above are used for testing purposes. This should be used with GUI
+   /**  COMMENTED OUT as the arrays above are used for testing purposes. This should be used with GUI
     * Model parameters: Project parameters per section in dynamic arraylists
     * Characteristics of each section/put, stored in arrays
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
    /* 
-   ArrayList<Integer> PUT = new ArrayList<Integer>(0); 					// indicates if section is pipe section or put, 0 is section, 1 is put.
+   ArrayList<Integer> put = new ArrayList<Integer>(0); 					// indicates if section is pipe section or put, 0 is section, 1 is put.
    ArrayList<Integer> pipes = new ArrayList<Integer>(0); 				// number of pipes, only if pipe section
    ArrayList<Integer> connections = new ArrayList<Integer>(0);			// number of connections only if pipe section
    ArrayList<Integer> put_connections = new ArrayList<Integer>(0);		// number of connections the put has, only if put
@@ -475,9 +519,10 @@ public void setNUM_SEC(int nUM_SEC) {
    /**   
    * Model parameters: Simulation output settings
    */
-   private static int activityMsg = 2;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsg = 3;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
    private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
-   
+   private static int activityMsgPut = 3;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsgConnectionPut = 1;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
    /**
     * Process versions
     */
