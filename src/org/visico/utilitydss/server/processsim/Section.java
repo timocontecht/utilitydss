@@ -29,7 +29,7 @@ public class Section extends SimProcess
 	private int old_diamete ;  			// diameter of old sewer 
 	private int new_diameter;  			// diameter of new sewer
 	private int asphalt_old;  			// layer thickness of old asphalt in
-	private int asphalt_new;  			// layer thickness of new asphalt in // TODO what if multiple layers?
+	private int asphalt_new;  			// layer thickness of new asphalt in
 	private int pavement_old;  			// type of old pavement
 	private int pavement_new;  			// type of new pavement
 	private int Cables;  				// weight class of cables in the ground

@@ -99,7 +99,6 @@ public class UtilitySimulation extends Model
 			NUM_CREW = resources.get(3).intValue();
 			NUM_ROLLER = resources.get(4).intValue();
 			NUM_TRUCK = resources.get(5).intValue();
-			
 			// TODO update to all current resources and other input functions.
 
 	}
@@ -159,7 +158,7 @@ public void setNUM_SEC(int nUM_SEC) {
 					old_diamete[i],			// diameter of old sewer 
 					new_diameter[i],		// diameter of new sewer
 					asphalt_old[i],			// layer thickness of old asphalt in
-					asphalt_new[i],			// layer thickness of new asphalt in // TODO what if multiple layers?
+					asphalt_new[i],			// layer thickness of new asphalt in
 					pavement_old[i],		// type of old pavement
 					pavement_new[i],		// type of new pavement
 					cables[i],				// weight class of cables in the ground
@@ -171,7 +170,6 @@ public void setNUM_SEC(int nUM_SEC) {
 					soil_new[i],  			// where is the new soil placed: 1 = , 2 =
 					pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
 					pipes_new[i];  			// where are the new pipes placed: 1 = , 2 =
-					TODO Add more characteristics
 					*/
  
 		   section.activate();
@@ -311,12 +309,19 @@ public void setNUM_SEC(int nUM_SEC) {
    public int getOldPavement() {
 	      return OldPavement;
 	   }
-  
-   
+     
    public int getShore() {
 	    return Shore;
 		}
    
+   public boolean getOldPipeHeavy() {
+	    return oldPipeHeavy;
+		}
+   
+   public boolean getNewPipeHeavy() {
+	    return newPipeHeavy;
+		}
+    
    public boolean getSecondCrew() {
     	return secondCrew;
 		}
@@ -325,6 +330,10 @@ public void setNUM_SEC(int nUM_SEC) {
 	    return prepareSurface;
 		}
    
+   public int getInspectionType() {
+	    return inspectionType;
+		}
+  
       public int getNewPavement() {
 	      return newPavement;
 	   }
@@ -409,7 +418,7 @@ public void setNUM_SEC(int nUM_SEC) {
    etc
       */
    
-   /**  
+   /**  COMMENTED out as the arrays above are used for testing purposes. This should be used with GUI
     * Model parameters: Project parameters per section in dynamic arraylists
     * Characteristics of each section/put, stored in arrays
     * examples: housing connections, K&L, puts to be placed with mobile crane
@@ -461,7 +470,7 @@ public void setNUM_SEC(int nUM_SEC) {
 													// 3 means asphalt; pave all sections at start, other gives error
    private static int sectionWait = 1;				// indicates after which activity the next section starts: 1 = after main loop, 2 = second backfill, 3 = surface prepared
 													// 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
-   // private static int inspectionType = 1;			// type of inspection applied: 1 = ????
+   private static int inspectionType = 1;			// type of inspection applied: 1 = ????
 
    /**   
    * Model parameters: Simulation output settings
