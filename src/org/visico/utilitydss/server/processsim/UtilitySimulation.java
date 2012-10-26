@@ -519,11 +519,11 @@ public void setNUM_SEC(int nUM_SEC) {
    /**   
    * Model parameters: Simulation output settings
    */
-   private static int activityMsg = 3;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsg = 2;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
    private static int activityMsgConnection = 2;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
    //TODO not working well yet
-   private static int activityMsgPut = 3;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
-   private static int activityMsgConnectionPut = 3;	// indicates what data is collected in connection loop: 3 = ?
+   private static int activityMsgPut = 2;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsgConnectionPut = 3;	// indicates what data is collected in connection loop: 3 =  per connection
    /**
     * Process versions
     */

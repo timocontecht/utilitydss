@@ -154,6 +154,7 @@ public class Section extends SimProcess
 	    * 12. wait for road crew to pave the surface with asphalt or stones
 	    */
 
+
 	public void lifeCycle() 
 	{
 	   /**
