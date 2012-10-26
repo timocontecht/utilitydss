@@ -222,7 +222,7 @@ public class Receiver implements MessageReceiver
 	
 	public void exportGantt()
 	{
-		schedule.createGanttJPGTaskMain();	
+		schedule.createGanttJPGSectionMain();	
 	}
 	
 	private static Date date(final int day, final int month, final int year) {

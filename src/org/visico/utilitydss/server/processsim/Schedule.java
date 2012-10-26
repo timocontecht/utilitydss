@@ -10,6 +10,8 @@ import java.util.Calendar;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.GanttRenderer;
 import org.jfree.data.category.IntervalCategoryDataset;
 import org.jfree.data.gantt.Task;
 import org.jfree.data.gantt.TaskSeries;
@@ -74,24 +76,44 @@ public class Schedule
 		try
 		{
 			final TaskSeriesCollection collection = new TaskSeriesCollection();
-	     
-			
+			TaskSeries series = new TaskSeries("Sewer Construction Schedule");
+			collection.add(series);
 			
 			Iterator<Location> locIt = this.locations.iterator();
+			int locNumber = 0;
 			while (locIt.hasNext())
 			{
+				locNumber++;
+				// one array list to store subtasks
+				ArrayList<Task> tasks = new ArrayList<Task>();
+				// two longs to store earliest start and latest end
+				long start = Long.MAX_VALUE, end = Long.MIN_VALUE;
+				
 				Location l = locIt.next();
-				TaskSeries ts = new TaskSeries(l.getName());
 				
 				
 				Iterator<WorkItem> wiIt = l.getTasks().iterator();
 				while (wiIt.hasNext())
 				{
 					WorkItem item = wiIt.next();
-					Task task = new Task(item.getName(), new SimpleTimePeriod(item.getStart(), item.getEnd()));
-					ts.add(task);
+					if (item.getStart() < start) 
+						start = item.getStart();
+					if (item.getEnd() > end) 
+						end = item.getEnd();
+					Task task = new Task(item.getName() + " " + locNumber, new SimpleTimePeriod(item.getStart(), item.getEnd()));
+					tasks.add(task);
 				}
-				collection.add(ts);
+				
+				// one task as an overarching summary task
+				Task summaryTask = new Task(l.getName(), new SimpleTimePeriod(start, end));
+				series.add(summaryTask);
+				
+				Iterator<Task> taskIt = tasks.iterator();
+				while (taskIt.hasNext())
+				{
+					series.add(taskIt.next());
+				}
+				
 			}			
 			
 			
@@ -145,6 +167,7 @@ public class Schedule
 			
 			
 	        final JFreeChart chart = createChart(collection);
+	        
 	        ChartUtilities.saveChartAsJPEG(new File("chart.jpg"), chart, 1000, 1500);
 		}
 		catch (Exception e)
@@ -153,7 +176,7 @@ public class Schedule
 		}
 	}
 	
-	private JFreeChart createChart(final IntervalCategoryDataset dataset) {
+	private JFreeChart createChart(final TaskSeriesCollection dataset) {
         final JFreeChart chart = ChartFactory.createGanttChart(
             "Gantt Chart Demo",  // chart title
             "Task",              // domain axis label
@@ -162,7 +185,12 @@ public class Schedule
             true,                // include legend
             true,                // tooltips
             false                // urls
-        );    
+        );   
+       
+        CategoryPlot categoryplot = (CategoryPlot)chart.getPlot();
+        categoryplot.getDomainAxis().setMaximumCategoryLabelWidthRatio(10F);
+        MyGanttRenderer ganttrenderer = new MyGanttRenderer(dataset);
+        categoryplot.setRenderer(ganttrenderer);
 
         return chart;    
     }
