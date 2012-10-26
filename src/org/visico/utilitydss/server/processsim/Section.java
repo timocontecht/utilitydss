@@ -252,7 +252,7 @@ public class Section extends SimProcess
 		   }
 		   
 		   
-		   // gathers start time of every activity main sewer, only active if turned on in utilitysimulation.java
+		   // gathers data on total duration of main sewer loop (1 task contains all pipes in section), only active if turned on in utilitysimulation.java
 		   if(myModel.getActivityMsg() == 1)
 		   {
 			   start = myModel.presentTime();
@@ -312,7 +312,7 @@ public class Section extends SimProcess
 				   	myModel.excavators.provide(1);
 				   	if(myModel.getActivityMsg() == 3)
 					   {start = myModel.presentTime();}
-			   		hold (new TimeSpan(myModel.getPipeRemoveTime(), TimeUnit.MINUTES));
+			   		hold (new TimeSpan(myModel.getPipeRemoveTime(), TimeUnit.HOURS));
 			   		if(myModel.getActivityMsg() == 3)
 					   {ActivityMessage msg_4 = new ActivityMessage(myModel, this, start, "Remove Pipe" + i, myModel.presentTime()) ;
 					   sendMessage(msg_4);}
@@ -405,11 +405,11 @@ public class Section extends SimProcess
 			   }
 			   
 		   }
-		   // gathers data on total duration of main sewer loop (all pipes in section), only active if turned on in utilitysimulation.java
+		   // gathers data on total duration of main sewer loop (1 task contains all pipes in section), only active if turned on in utilitysimulation.java
 		   if(myModel.getActivityMsg() == 1)
 		   {
-			   ActivityMessage msg_4 = new ActivityMessage(myModel, this, start, "main sewer loop", myModel.presentTime()) ;
-			   sendMessage(msg_4);
+			   ActivityMessage msg = new ActivityMessage(myModel, this, start, "main sewer loop", myModel.presentTime()) ;
+			   sendMessage(msg);
 		   }
 		   
 		   // Allows the next section to start if setting is set to 1 in UtilitySimulation.java)
@@ -621,11 +621,6 @@ public class Section extends SimProcess
 		   System.out.println("Section " + this + " completed");
 		}   
 		   
-	   // parameter for holding the volume of earth to excavate, currently as
-	   // number of trucks to fill ....   - Not (yet) used 
-	   // TODO make excavation_volume a function of section length, width and depth
-	   // TODO make excavation_volume influence nr. of trucks needed and excavating/backfill time
-       // private double excavation_volume = 20;
 		
 //=====================================================================================================================================================================
 //=====================================================================================================================================================================
@@ -700,8 +695,8 @@ public class Section extends SimProcess
 		   }
 		   
 		   
-		   // gathers start time of every activity main sewer, only active if turned on in utilitysimulation.java
-		   if(myModel.getActivityMsg() == 1)
+		   // gathers data on total duration of main put loop (1 task contains all activities for all put(s)), only active if turned on in utilitysimulation.java
+		   if(myModel.getActivityMsgPut() == 1)
 		   {
 			   start = myModel.presentTime();
 		   }
@@ -710,18 +705,19 @@ public class Section extends SimProcess
 		   //TODO usually only one put so no iteration, but with seperated sewer there are two puts.
 		   for (int i=1; i<=this.NUM_PIPE; i++)
 		   {
-			   // gathers start time of every pipe in main loop, only active if turned on in utilitysimulation.java
-			   if(myModel.getActivityMsg() == 2)
-			   {start = myModel.presentTime();
+			   // gathers start time of every put in main loop, only active if turned on in utilitysimulation.java
+			   if(myModel.getActivityMsgPut() == 2)
+			   {
+				   start = myModel.presentTime();
 			   }
 			   
 			   // 2. excavate the section
 			   myModel.excavators.provide(1);
 			   myModel.trucks.provide(1);
-			   if(myModel.getActivityMsg() == 3)
+			   if(myModel.getActivityMsgPut() == 3)
 			   		{start = myModel.presentTime();}
 			   hold (new TimeSpan(myModel.getExcavatingTime(), TimeUnit.HOURS)); //multiply by This.volume_section
-			   if(myModel.getActivityMsg() == 3)
+			   if(myModel.getActivityMsgPut() == 3)
 			   		{ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Excavate pipe" + i, myModel.presentTime()) ;
 			   		sendMessage(msg_2);}
 			   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Excavating Start: " + start.toString() + 
@@ -733,10 +729,10 @@ public class Section extends SimProcess
 			   // only for projects that require shoring (set variable Shore to right value in simulation class)
 			   if(myModel.getShore() == 1) {
 				   myModel.excavators.provide(1);
-				   if(myModel.getActivityMsg() == 3)
+				   if(myModel.getActivityMsgPut() == 3)
 				   		{start = myModel.presentTime();}
 				   hold (new TimeSpan(myModel.getShoringTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
-				   if(myModel.getActivityMsg() == 3)
+				   if(myModel.getActivityMsgPut() == 3)
 				   		{ActivityMessage msg_3 = new ActivityMessage(myModel, this, start, "Shore" + i, myModel.presentTime()) ;
 				   		sendMessage(msg_3);}
 				   sendTraceNote("Activity: " + getName() + " Shoring: " + start.toString() + 
@@ -759,10 +755,10 @@ public class Section extends SimProcess
 			   // only for replacement projects (set variable Replacement in UtilitySimulation.java class to true/false )
 			   if(myModel.getReplacement()) {
 				   	myModel.excavators.provide(1);
-				   	if(myModel.getActivityMsg() == 3)
+				   	if(myModel.getActivityMsgPut() == 3)
 					   {start = myModel.presentTime();}
-			   		hold (new TimeSpan(myModel.getPipeRemoveTime(), TimeUnit.MINUTES));
-			   		if(myModel.getActivityMsg() == 3)
+			   		hold (new TimeSpan(myModel.getPipeRemoveTime(), TimeUnit.HOURS));
+			   		if(myModel.getActivityMsgPut() == 3)
 					   {ActivityMessage msg_4 = new ActivityMessage(myModel, this, start, "Remove Put" + i, myModel.presentTime()) ;
 					   sendMessage(msg_4);}
 			   		sendTraceNote("Activity: " + getName() + " Shoring: " + start.toString() + 
@@ -772,10 +768,10 @@ public class Section extends SimProcess
 	
 			   // 5. prepare the bed
 			   myModel.crews.provide(1);
-			   if(myModel.getActivityMsg() == 3)
+			   if(myModel.getActivityMsgPut() == 3)
 			   		{start = myModel.presentTime();}
 			   hold (new TimeSpan(myModel.getBedPreparationTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
-			   if(myModel.getActivityMsg() == 3)
+			   if(myModel.getActivityMsgPut() == 3)
 			   		{ActivityMessage msg_5 = new ActivityMessage(myModel, this, start, "Prepare Bed" + i, myModel.presentTime()) ;
 			   		sendMessage(msg_5);}
 			   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start.toString() + 
@@ -785,53 +781,43 @@ public class Section extends SimProcess
 			   // 6. install the put
 			   myModel.crews.provide(1);
 			   myModel.excavators.provide(1);
-			   if(myModel.getActivityMsg() == 3)
+			   if(myModel.getActivityMsgPut() == 3)
 			   		{start = myModel.presentTime();}
 			   hold (new TimeSpan(myModel.getPipePlacingTime(), TimeUnit.HOURS));
-			   if(myModel.getActivityMsg() == 3)
+			   if(myModel.getActivityMsgPut() == 3)
 			   		{ActivityMessage msg_6 = new ActivityMessage(myModel, this, start, "Install Put" + i, myModel.presentTime()) ;
 			   		sendMessage(msg_6);}
-			   sendTraceNote("Activity: " + getName() + " Install Pipe: " + start.toString() + 
+			   sendTraceNote("Activity: " + getName() + " Install Put: " + start.toString() + 
 					   " End: " + myModel.presentTime().toString());
 			   myModel.excavators.takeBack(1);
 			   myModel.crews.takeBack(1);
 			   
 			   // 7. Put connections
 			   //TODO make time neccesary dependent on partial or full backfill, depending on if there are housing connections in the section)
-			
-			   if(myModel.getActivityMsgConnection() == 1)
-			   		{ start = myModel.presentTime();
-			   }
-			   for (int j=1; j<=this.NUM_CONNECTIONS; j++) {
+			   for (int j=1; j<=this.NUM_CONNECTIONS; j++) { // TODO change to put connections
 				   myModel.crews.provide(1);
-				   if(myModel.getActivityMsgConnection() == 2 ){
+				   if(myModel.getActivityMsgConnectionPut() == 3 ){
 				   		start = myModel.presentTime();
 				   }
-				   hold (new TimeSpan(myModel.getHousingConnectionTime(), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
-				   if(myModel.getActivityMsgConnection() == 2 ){
-				   		ActivityMessage msg_7 = new ActivityMessage(myModel, this, start, "Housing connections " + j, myModel.presentTime()) ;
+				   hold (new TimeSpan(myModel.getHousingConnectionTime(), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them TODO change to putConnectionTime
+				   if(myModel.getActivityMsgConnectionPut() == 3 ){
+				   		ActivityMessage msg_7 = new ActivityMessage(myModel, this, start, "Put connections " + j, myModel.presentTime()) ;
 				   		sendMessage(msg_7);
 				   }
-				   sendTraceNote("Activity: " + getName() + " Install housing connection: " + start.toString() + 
+				   sendTraceNote("Activity: " + getName() + " Connect pipes to put: " + start.toString() + 
 						   " End: " + myModel.presentTime().toString());
 				   myModel.crews.takeBack(1);
 			   }
-			   if(myModel.getActivityMsgConnection() == 1)
-			   {
-			   		ActivityMessage msg_7 = new ActivityMessage(myModel, this, start, "Housing connections", myModel.presentTime()) ;
-			   		sendMessage(msg_7);
-			   }
 			   		
-			   
-	 		   // 8. remove shoring
+			   // 8. remove shoring
 			   // only for projects that require shoring (set variable Shore to right value in simulation class)
 			   // TODO add types of shoring.
 			   if(myModel.getShore() == 1)
 			   {	myModel.excavators.provide(1);
-			   		if(myModel.getActivityMsg() == 3)
+			   		if(myModel.getActivityMsgPut() == 3)
 			   			{start = myModel.presentTime();}
 			   		hold (new TimeSpan(myModel.getRemoveTrenchTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
-			   		if(myModel.getActivityMsg() == 3)
+			   		if(myModel.getActivityMsgPut() == 3)
 					   {ActivityMessage msg_8 = new ActivityMessage(myModel, this, start, "Remove Shoring" + i, myModel.presentTime()) ;
 			   			sendMessage(msg_8);}
 			   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start.toString() + 
@@ -850,18 +836,18 @@ public class Section extends SimProcess
 			   		}
 			   }
  
-			   // gathers data on total construction time of pipe in main sewer loop, only active if turned on in utilitysimulation.java
-			   if(myModel.getActivityMsg() == 2){
+			   // gathers data on total construction time of put in main sewer loop, only active if turned on in utilitysimulation.java
+			   if(myModel.getActivityMsgPut() == 2){
 				   ActivityMessage msg = new ActivityMessage(myModel, this, start, "Pipe" + i + " construction", myModel.presentTime()) ;
 				   sendMessage(msg);  
 			   }
 			   
 		   }
-		   // gathers data on total duration of main sewer loop (all pipes in section), only active if turned on in utilitysimulation.java
-		   if(myModel.getActivityMsg() == 1)
+		   // gathers data on total duration of main put loop (1 task contains all puts in section), only active if turned on in utilitysimulation.java
+		   if(myModel.getActivityMsgPut() == 1)
 		   {
-			   ActivityMessage msg_4 = new ActivityMessage(myModel, this, start, "main sewer loop", myModel.presentTime()) ;
-			   sendMessage(msg_4);
+			   ActivityMessage msg = new ActivityMessage(myModel, this, start, "main sewer loop", myModel.presentTime()) ;
+			   sendMessage(msg);
 		   }
 		   
 		   // Allows the next section to start if setting is set to 1 in UtilitySimulation.java)
@@ -1042,7 +1028,11 @@ public class Section extends SimProcess
 		   
 		   System.out.println("Put " + this + " completed");   
 		}   
-		   
+		
+	   	// parameter for holding the volume of earth to excavate, currently as
+	   	// number of trucks to fill ....   - Not (yet) used 
+	   	// TODO make excavation_volume a function of section length, width and depth
+	   	// TODO make excavation_volume influence nr. of trucks needed and excavating/backfill time
+		// private double excavation_volume = 20;	   
 	}
-
 }

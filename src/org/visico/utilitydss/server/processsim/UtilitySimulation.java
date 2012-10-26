@@ -430,9 +430,9 @@ public void setNUM_SEC(int nUM_SEC) {
     * Characteristics of each section/put, stored in arrays
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
-   private static int[] put = 					{ 1, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
-   private static int[] pipes = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 5 }; 		// number of pipes, only if pipe section
-   private static int[] connections = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
+   private static int[] put = 					{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] pipes = 				{ 2, 1, 1, 1, 1, 1, 2, 2, 2, 5 }; 		// number of pipes, only if pipe section
+   private static int[] connections = 			{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
    /* 
    private static int[] put_connections = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
    private static int[] old_pavement = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement
@@ -503,13 +503,13 @@ public void setNUM_SEC(int nUM_SEC) {
    */
    private static int OldPavement = 2;				// indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 													// 3 means asphalt; break all sections at start, other gives error
-   private static int Shore = 0;					// indicates if project requires shoring, 0 means no shoring, 1 means sliding casc, 2 means Sheet piling (damwand), 3 means supported walls
-   private static boolean Replacement = false;		// indicates if the project is a replacement project
+   private static int Shore = 1;					// indicates if project requires shoring, 0 means no shoring, 1 means sliding casc, 2 means Sheet piling (damwand), 3 means supported walls
+   private static boolean Replacement = true;		// indicates if the project is a replacement project
    private static boolean oldPipeHeavy	= false; 	// indicates if the old pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    private static boolean newPipeHeavy	= false; 	// indicates if the new pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    													// for puts this is indicated by an array per put as sizes differ.
    private static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
-   private static int prepareSurface = 2;			// indicates if broken rock is placed per section or for all sections at once: 1 = per section, 2 = all sections
+   private static int prepareSurface = 2;			// indicates if broken rock is placed : 1 = yes, 2 = no
    private static int newPavement = 2;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 													// 3 means asphalt; pave all sections at start, other gives error
    private static int sectionWait = 1;				// indicates after which activity the next section starts: 1 = after main loop, 2 = second backfill, 3 = surface prepared
@@ -519,11 +519,11 @@ public void setNUM_SEC(int nUM_SEC) {
    /**   
    * Model parameters: Simulation output settings
    */
-   private static int activityMsg = 2;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
-   private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
+   private static int activityMsg = 3;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsgConnection = 2;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
    //TODO not working well yet
-   private static int activityMsgPut = 2;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
-   private static int activityMsgConnectionPut = 1;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
+   private static int activityMsgPut = 3;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsgConnectionPut = 3;	// indicates what data is collected in connection loop: 3 = ?
    /**
     * Process versions
     */
