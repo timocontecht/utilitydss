@@ -371,7 +371,7 @@ public void setNUM_SEC(int nUM_SEC) {
    public static int NUM_SEC = 4;					// number of sections
    public static int NUM_PUT = 0;					// number of puts
    private static int NUM_BREAKER = 1;				// number of breakers
-   private static int NUM_EXCAVATOR = 2;			// number of excavators
+   private static int NUM_EXCAVATOR = 1;			// number of excavators
    private static int NUM_CRANE = 0;				// number of truck-mounted cranes
    private static int NUM_CREW = 1;					// number of crews
    private static int NUM_2NDCREW = 1;				// number of 2ndcrews
@@ -457,7 +457,7 @@ public void setNUM_SEC(int nUM_SEC) {
 /**
    * Model parameters: Simulation settings
    */
-   private static int OldPavement = 2;				// indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+   private static int OldPavement = 3;				// indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 													// 3 means asphalt; break all sections at start, other gives error
    private static int Shore = 0;					// indicates if project requires shoring, 0 means no shoring, 1 means sliding casc, 2 means Sheet piling (damwand), 3 means supported walls
    private static boolean Replacement = false;		// indicates if the project is a replacement project
@@ -466,7 +466,7 @@ public void setNUM_SEC(int nUM_SEC) {
    													// for puts this is indicated by an array per put as sizes differ.
    private static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
    private static int prepareSurface = 2;			// indicates if broken rock is placed per section or for all sections at once: 1 = per section, 2 = all sections
-   private static int newPavement = 2;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+   private static int newPavement = 3;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 													// 3 means asphalt; pave all sections at start, other gives error
    private static int sectionWait = 1;				// indicates after which activity the next section starts: 1 = after main loop, 2 = second backfill, 3 = surface prepared
 													// 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
