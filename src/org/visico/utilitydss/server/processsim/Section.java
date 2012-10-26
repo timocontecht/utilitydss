@@ -155,6 +155,7 @@ public class Section extends SimProcess
 		    * 		So puts should become sections with special characteristics
 		    * FIXME difficult to model work on multiple sections at once --> drawback inherent to hard-coding the model?
 		    */
+		   
 		   myModel.startingCondition.retrieve(1);
 		   
 		   // variables to create messages for output charts
