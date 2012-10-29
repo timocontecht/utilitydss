@@ -9,48 +9,6 @@ import desmoj.core.simulator.TimeSpan;
 
 public class Section extends SimProcess
 {
-	/**
-	 * Section parameters initialized
-	 */
-	private UtilitySimulation myModel;
-	private int PUT; 
-	private int NUM_PIPE;
-	private int NUM_CONNECTIONS;
-	
-	/**
-	 * Test for reading the data from an arraylist in utilitysimulation corresponding to this section
-	 */
-	// private int pipe = myModel.pipes.get((int)this.getIdentNumber()).intValue();
-	/*
-	private int NUM_Pipe = Math.ceil(Section_length / pipe_length)
-	private int Area = (Section_length * Section_width)
-	private int put_connections;  		// number of connections the put has, only if put
-	private int old_pavement; 			// type of old pavement
-	private int new_pavement;  			// type of new pavement
-	private int length;  				// length of section in
-	private int pipe_length;  			// length of pipes in
-	private int section_nwidth;  		// width of section in
-	private int ditch_width;  			// width of ditch v
-	private int ditch_depth;  			// depth of ditch in
-	private int old_sewer_type; 		// type of old sewer
-	private int new_sewer_type; 		// type of new sewer
-	private int old_diamete ;  			// diameter of old sewer 
-	private int new_diameter;  			// diameter of new sewer
-	private int asphalt_old;  			// layer thickness of old asphalt in
-	private int asphalt_new;  			// layer thickness of new asphalt in
-	private int pavement_old;  			// type of old pavement
-	private int pavement_new;  			// type of new pavement
-	private int Cables;  				// weight class of cables in the ground
-	private int length_connections;  	// average length of connections
-	private int depth_connections;  	// average depth of connections
-	private int funcation_type;  		// type foundation used: 1 = , 2 =
-	private int ditch_protection;  		// Type of ditch protection used: 1 = , 2 =
-	private int Soil_removed;  			// where is the removed soil placed: 1 = , 2 =
-	private int Soil_new;  				// where is the new soil placed: 1 = , 2 =
-	private int pipes_old;  			// where are the removed pipes placed: 1 = , 2 =
-	private int pipes_new;  			// where are the new pipes placed: 1 = , 2 =
-	etc
-	*/
 	
 	/**
 	    * Constructor of the section 
@@ -72,9 +30,9 @@ public class Section extends SimProcess
 			int put_connections,
 			int old_pavement,
 			int new_pavement,
-			int length,
+			int section_length,
 			int pipe_length,
-			int section_nwidth,
+			int section_width,
 			int ditch_width,
 			int ditch_depth,
 			int old_sewer_type,
@@ -106,9 +64,9 @@ public class Section extends SimProcess
 		Put_connections = put_connections;  		// number of connections the put has, only if put
 		Old_pavement = old_pavement; 				// type of old pavement
 		New_pavement = new_pavement;  				// type of new pavement
-		Length = length;  							// length of section in
+		Section_length = section_length;  							// length of section in
 		Pipe_length = pipe_length;  				// length of pipes in
-		Section_nwidth = section_nwidth;  			// width of section in
+		Section_width = section_width;  			// width of section in
 		Ditch_width = ditch_width;  				// width of ditch v
 		Ditch_depth = ditch_depth;  				// depth of ditch in
 		Old_sewer_type = old_sewer_type; 			// type of old sewer
@@ -405,7 +363,14 @@ public class Section extends SimProcess
 				   sendMessage(msg);  
 			   }
 			   
+			   //	set flag to allow work on connections to start after a certain amount of sewer has been completed. 
+			   // 	TODO what if connections overtake pipes?
+			   //	if(i * pipe_length >= starting_distance){
+			   //   process_connections.initialize // or smth like that
+			   //}
+			   
 		   }
+		   
 		   // gathers data on total duration of main sewer loop (1 task contains all pipes in section), only active if turned on in utilitysimulation.java
 		   if(myModel.getActivityMsg() == 1)
 		   {
@@ -428,7 +393,7 @@ public class Section extends SimProcess
 			   if(myModel.getActivityMsgConnection() == 1)
 			   		{ start = myModel.presentTime();
 			   }
-			   for (int i=1; i<=this.NUM_CONNECTIONS; i++) {
+			   for (int j=1; j<=this.NUM_CONNECTIONS; j++) {
 				   if(myModel.getSecondCrew()) {
 					   myModel.secondcrews.provide(1);}
 				   else {myModel.crews.provide(1);}
@@ -437,7 +402,7 @@ public class Section extends SimProcess
 				   }
 				   hold (new TimeSpan(myModel.getHousingConnectionTime(), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
 				   if(myModel.getActivityMsgConnection() == 2 ){
-				   		ActivityMessage msg_9 = new ActivityMessage(myModel, this, start, "Housing connections " + i, myModel.presentTime()) ;
+				   		ActivityMessage msg_9 = new ActivityMessage(myModel, this, start, "Housing connections " + j, myModel.presentTime()) ;
 				   		sendMessage(msg_9);
 				   }
 				   sendTraceNote("Activity: " + getName() + " Install housing connection: " + start.toString() + 
@@ -1036,4 +1001,133 @@ public class Section extends SimProcess
 	   	// TODO make excavation_volume influence nr. of trucks needed and excavating/backfill time
 		// private double excavation_volume = 20;	   
 	}
+	
+	
+//=====================================================================================================================================================================
+//=====================================================================================================================================================================
+	
+	/**
+	 * Section parameters set by UtilitySimulation.jaca
+	 */
+	private UtilitySimulation myModel;
+	private int PUT; 
+	private int NUM_PIPE;
+	private int NUM_CONNECTIONS;
+	/*
+	private int put_connections;  		// number of connections the put has, only if put
+	private int old_pavement; 			// type of old pavement
+	private int new_pavement;  			// type of new pavement
+	private int Section_length;  		// length of section in
+	private int pipe_length;  			// length of pipes in
+	private int section_width;  		// width of section in
+	private int ditch_width;  			// width of ditch v
+	private int ditch_depth;  			// depth of ditch in
+	private int old_sewer_type; 		// type of old sewer
+	private int new_sewer_type; 		// type of new sewer
+	private int old_diamete ;  			// diameter of old sewer 
+	private int new_diameter;  			// diameter of new sewer
+	private int asphalt_old;  			// layer thickness of old asphalt in
+	private int asphalt_new;  			// layer thickness of new asphalt in
+	private int pavement_old;  			// type of old pavement
+	private int pavement_new;  			// type of new pavement
+	private int Cables;  				// weight class of cables in the ground
+	private int length_connections;  	// average length of connections
+	private int depth_connections;  	// average depth of connections
+	private int funcation_type;  		// type foundation used: 1 = , 2 =
+	private int ditch_protection;  		// Type of ditch protection used: 1 = , 2 =
+	private int Soil_removed;  			// where is the removed soil placed: 1 = , 2 =
+	private int Soil_new;  				// where is the new soil placed: 1 = , 2 =
+	private int pipes_old;  			// where are the removed pipes placed: 1 = , 2 =
+	private int pipes_new;  			// where are the new pipes placed: 1 = , 2 =
+	etc
+	*/
+	
+	/**
+	 * Test for reading the data from an arraylist in utilitysimulation corresponding to this section
+	 */
+	// private int pipe = myModel.pipes.get((int)this.getIdentNumber()).intValue();
+	
+	/**
+	* Internal section parameters
+	**/	
+	private int remove_pavement;
+	
+	//private int NUM_Pipe = Math.ceil(Section_length / pipe_length);
+	//private int Section_Area = (Section_length * Section_width);
+	//private int Ditch_Area = (Section_length * Ditch_width);
+	
+/**
+* production values 
+**/	
+	/*,
+	
+	// breaking
+	if(int old_pavement == 1){remove_pavement = 100;}
+	else if (int old_pavement == 2){remove_pavement = 169;}
+	else if (int old_pavement == 3){remove_pavement = 153;}
+	else if (int old_pavement == 4){remove_pavement = 134;}
+	else if (int old_pavement == 5){remove_pavement = 116;}
+	else if (int old_pavement == 6){remove_pavement = 99;}
+	
+	// Cables & plumming
+	if(int Cables == 1){cables_weight = 1,1;}
+	else if (int Cables == 1){cables_weight = 1,2;}
+	else if (int Cables == 1){cables_weight = 1,3;}
+	else if (int Cables == 1){cables_weight = 1,4;}
+	else if (int Cables == 1){cables_weight = 1,5;}
+	 
+	// Closing down sewer
+	Closing_sewer = 100; 
+	// Excavating
+	 
+	// Removing Pipe
+	 
+	// Shoring
+	 
+	// Preparing Bed
+	 
+	// Foundation
+	 
+	// Placing pipe
+	 
+	// Placing put
+	 
+	// Backfilling
+	 
+	// Connection
+	 
+	// Inspection
+
+	// Paving
+	 
+	// Safety
+	 
+	// Ground Improvement
+	 
+	// Groundwater extraction
+	 
+	int new_pavement,
+	int Section_length,
+	int pipe_length,
+	int section_width,
+	int ditch_width,
+	int ditch_depth,
+	int old_sewer_type,
+	int new_sewer_type,
+	int old_diamete,
+	int new_diameter,
+	int asphalt_old,
+	int asphalt_new,
+	int pavement_old,
+	int pavement_new,
+	int cables,
+	int length_connections,
+	int depth_connections,
+	int funcation_type, 
+	int ditch_protection,
+	int soil_removed,  	
+	int soil_new,  		
+	int pipes_old,  		
+	int pipes_new
+	*/	
 }

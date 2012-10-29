@@ -152,9 +152,9 @@ public void setNUM_SEC(int nUM_SEC) {
 						put_connections[i],		// number of connections the put has, only if put
 						old_pavement[i],		// type of old pavement
 						new_pavement[i],		// type of new pavement
-						length[i],				// length of section in
+						section_length[i],				// length of section in
 						pipe_length[i],			// length of pipes in
-						section_nwidth[i],		// width of section in
+						section_width[i],		// width of section in
 						ditch_width[i],			// width of ditch 
 						ditch_depth[i],			// depth of ditch in
 						old_sewer_type[i],		// type of old sewer
@@ -195,9 +195,9 @@ public void setNUM_SEC(int nUM_SEC) {
 						put_connections[i],		// number of connections the put has, only if put
 						old_pavement[i],		// type of old pavement
 						new_pavement[i],		// type of new pavement
-						length[i],				// length of section in
+						section_length[i],				// length of section in
 						pipe_length[i],			// length of pipes in
-						section_nwidth[i],		// width of section in
+						section_width[i],		// width of section in
 						ditch_width[i],			// width of ditch 
 						ditch_depth[i],			// depth of ditch in
 						old_sewer_type[i],		// type of old sewer
@@ -425,7 +425,7 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
    private static int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
   
-   /** FOR TESTING PURPOSES (arraylists should get filled by GUI in final code)
+   /** THIS IS FOR TESTING PURPOSES (arraylists should get filled by GUI in final code)
     * Model parameters: Project parameters per section in static arrays 
     * Characteristics of each section/put, stored in arrays
     * examples: housing connections, K&L, puts to be placed with mobile crane
@@ -437,9 +437,9 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int[] put_connections = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
    private static int[] old_pavement = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement
    private static int[] new_pavement = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of new pavement
-   private static int[] length = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
+   private static int[] section_length = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
    private static int[] pipe_length = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of pipes in
-   private static int[] section_nwidth = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of section in
+   private static int[] section_width = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of section in
    private static int[] ditch_width = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of ditch in
    private static int[] ditch_depth = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// depth of ditch in
    private static int[] old_sewer_type = 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old sewer
@@ -474,9 +474,9 @@ public void setNUM_SEC(int nUM_SEC) {
    ArrayList<Integer> put_connections = new ArrayList<Integer>(0);		// number of connections the put has, only if put
    ArrayList<Integer> old_pavement = new ArrayList<Integer>(0);			// type of old pavement
    ArrayList<Integer> new_pavement = new ArrayList<Integer>(0);			// type of new pavement
-   ArrayList<Integer> length = new ArrayList<Integer>(0);				// length of section in
+   ArrayList<Integer> section_length = new ArrayList<Integer>(0);				// length of section in
    ArrayList<Integer> pipe_length = new ArrayList<Integer>(0);			// length of pipes in
-   ArrayList<Integer> section_nwidth = new ArrayList<Integer>(0);		// width of section in	
+   ArrayList<Integer> section_width = new ArrayList<Integer>(0);		// width of section in	
    ArrayList<Integer> ditch_width = new ArrayList<Integer>(0);			// width of ditch in
    ArrayList<Integer> ditch_depth = new ArrayList<Integer>(0);			// depth of ditch in
    ArrayList<Integer> old_sewer_type = new ArrayList<Integer>(0);		// type of old sewer	
@@ -522,11 +522,12 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int activityMsg = 2;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
    private static int activityMsgConnection = 2;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
    //TODO not working well yet
-   private static int activityMsgPut = 2;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsgPut = 2;			// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
    private static int activityMsgConnectionPut = 3;	// indicates what data is collected in connection loop: 3 =  per connection
    /**
     * Process versions
     */
+   
   // static private processVersion pv = 1;  
    
    private enum processVersion
