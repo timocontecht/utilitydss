@@ -155,7 +155,7 @@ public class Put extends SimProcess
 		   // TODO remove or not?
 		   myModel.crews.provide(1);
 		   //start = myModel.presentTime();
-		   hold (new TimeSpan(myModel.getHandBackfillTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
+		   hold (new TimeSpan(myModel.getBackfillTime(), TimeUnit.HOURS)); //multiply by This.lenght_section
 		   sendTraceNote("Activity: " + getName() + " Hand Backfill: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.crews.takeBack(1);
