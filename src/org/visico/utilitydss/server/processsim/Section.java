@@ -42,17 +42,17 @@ public class Section extends SimProcess
 			int asphalt_new,
 			double cables,
 			double length_connections,
-			double depth_connections,
+			double diameter_connections,
 			int foundation_type, 
 			int soil_removed,  	
 			int soil_new,  		
 			int pipes_old,  		
 			int pipes_new,
-			double total_length,
 			double rock_layer,
 			double sand_layer,
 			double old_put_area,
-			double new_put_area
+			double new_put_area,
+			String put_connection_type
 			) 
 	
 	{
@@ -78,27 +78,28 @@ public class Section extends SimProcess
 		Asphalt_new = asphalt_new;  				// layer thickness of new asphalt in // 
 		Cables = cables;  							// weight class of cables in the ground
 		Length_connections = length_connections;  	// average length of connections
-		Depth_connections = depth_connections;  	// average depth of connections
+		Diameter_connections = diameter_connections;// average depth of connections
 		Foundation_type = foundation_type; 			// type foundation used: 1 = , 2 =
 		Soil_removed = 	soil_removed;  				// where is the removed soil placed: 1 = , 2 =
 		Soil_new = soil_new;  						// where is the new soil placed: 1 = , 2 =
 		Pipes_old = pipes_old;  					// where are the removed pipes placed: 1 = , 2 =
 		Pipes_new = pipes_new;  					// where are the new pipes placed: 1 = , 2 =
-		Total_length = total_length;				// length of all sections
 		Rock_layer = rock_layer;					// height of broken rock layer
 		Sand_layer = sand_layer;					// height of sand layer	
 		Old_put_area = old_put_area;				// area of the old put
 		New_put_area = new_put_area;				// area of the new put
+		Put_connection_type = put_connection_type;	// type of put connection (concrete or brick)
 		}
 	
 	/**
 	    * Describes this section's life cycle.
-	    * This is the actual description of the work that is done, the parameters are stored in UtilitySimulation.java
-	    *
-	    * the section will loop through the following stages:
-	    * TODO first section should perform action: setting out underground cables and tubes. -- if breaking is general process it can be done within that process
-	    * otherwise it should be done within first section/put (whatever is first object)
+	    * This is the actual description of the work that is done
 	    * 
+	    * First the section specific parameters are calculated
+	    * Next the activity durations are selected based on settings in UtilitySimulation.java
+	    * 
+	    * After this the actual lifecycle is handled
+	    * the section will loop through the following stages: 
 	    * 1. wait for breaker to break street or remove stones
 	    * 2. wait for excavator to excavate (excavator requires truck)(quantity of dirt not yet modelled)
 	    * 3. If shoring required: wait for crane to shore the section
@@ -119,12 +120,12 @@ public class Section extends SimProcess
 		/**
 		 * Calculation of section specific parameters
 		 */
-		NUM_Pipe = (int) Math.ceil(Section_length / Pipe_length); 			// calculation of the required numberof pip
-		Section_Area = (Section_length * Section_width);					// total surface of the section
+		NUM_Pipe = (int) Math.ceil(Section_length / Pipe_length); 		// calculation of the required numberof pip
+		Section_Area = (Section_length * Section_width);				// total surface of the section
 		Trench_Area = (Pipe_length * Trench_width);						// total surface of the trench
 		Excavation_volume = (Trench_Area * Trench_depth);  				// excavation volume per pipe
-		Total_Area = (Total_length * Section_width);						// total working area of all sections
-		first_backfill_height = New_diameter * 1.26 * 0.001;				// height of first backfill in m (pipe diameter + 2x average wall thinkness)
+		Total_Area = (myModel.getTotal_length() * Section_width);		// total working area of all sections
+		first_backfill_height = New_diameter * 1.26 * 0.001;			// height of first backfill in m (pipe diameter + 2x average wall thinkness)
 		second_backfill_height = Trench_depth - first_backfill_height;	// height of second backfill in m, only if there are connections
 		
 		/**
@@ -135,11 +136,11 @@ public class Section extends SimProcess
 		
 		// breaking (m^2 per hour)
 		if(Old_pavement == 2) {remove_pavement = 100;}			// brick pavement
-		else if (Asphalt_old == 40){remove_pavement = 169;}	// asphalt 40 mm
-		else if (Asphalt_old == 50){remove_pavement = 153;}
-		else if (Asphalt_old == 60){remove_pavement = 134;}
-		else if (Asphalt_old == 70){remove_pavement = 116;}
-		else if (Asphalt_old == 80){remove_pavement = 99;}
+		else if (Asphalt_old < 45){remove_pavement = 169;}		// asphalt 40 mm
+		else if (Asphalt_old < 55){remove_pavement = 153;}
+		else if (Asphalt_old < 65){remove_pavement = 134;}
+		else if (Asphalt_old < 75){remove_pavement = 116;}
+		else if (Asphalt_old >= 75){remove_pavement = 99;}
 		
 		// Cables & plumbing (weightclass)
 		if(Cables == 1){cables_weight = 1.1;}
@@ -200,14 +201,14 @@ public class Section extends SimProcess
 	 		if(Old_put_area < 1) {put_removal = 1/4.75;}
 			else if(Old_put_area == 1) {put_removal = 1/3.85;}
 			else if(Old_put_area > 2) {put_removal = 1/1.9;}
-			else {put_removal = 1/3;}								// area between 1 and 2
+			else {put_removal = 1/3;}								// area between 1 and 2 meter
 		}
 		
 		else if(Old_sewer_type == "Bricks"){						
 	 		if(Old_put_area < 1) {put_removal = 1/3.4;}
 			else if(Old_put_area == 1) {put_removal = 1/2.9;}
 			else if(Old_put_area > 2) {put_removal = 1/1.65;}
-			else {put_removal = 1/2.45;}							// area between 1 and 2
+			else {put_removal = 1/2.45;}							// area between 1 and 2 meter
 		}
 			 
 		// Preparing Bed (m^3 per hour)
@@ -223,10 +224,10 @@ public class Section extends SimProcess
 			if(Bed_preparation == 0.3){preparation = 11;}
 		}
 		 
-		// Foundation (duration per pipe)
-		//if(Foundation == 1){foundation_time = ?,? * pipe length);}
-		//if(Foundation == 2){foundation_time = ?,? * pipe length);}
-		//if(Foundation == 3){foundation_time = ?,? * pipe length);}
+		// Foundation (Production in m per hour)
+		//if(Foundation_type == 1){foundation = 30 );}		// verstevigd zand
+		//if(Foundation_type == 2){foundation = 20 );}		// piepschuim plaat
+		//if(Foundation_type == 3){foundation = 10 );}		// geheide palen
 		 
 		// Placing pipe (m per hour)
 		if(New_sewer_type == "Concrete"){							
@@ -275,51 +276,56 @@ public class Section extends SimProcess
 			else {put_placement = 1/0.1;}								// area between 1 and 2
 		//}
 		
-		//connection put
-		/*if(New_connection_type == "concrete"){						
-			connection_put_duration = 7;} 
+		//connection put (in hours per unit) (used average diameter)
+		if(Put_connection_type == "concrete"){						
+			connection_put_duration = 0.5;} 
 
-		
-		else if(New_connection_type == "brick"){						
+		else if(Put_connection_type == "brick"){						// TODO find actual production			
 	 		connection_put_duration = 15;} 
 			
-		*/ 
+		 
 		// Backfilling (m^3 per hour) // 
 		if(Trench_width <= 1 ) {backfill = 30;}
 		else if(Trench_depth >= 1.5 ) {backfill = 30;}
 		else {excavation = 25;}
 		 		
-		// Housing/Rainwater connection (in hours)
-		/*connection_duration = (Length_connections * standard_connection_time + Placing_kolk + Pipe_pipe_connection);
+		// Housing/Rainwater connection (in hours per meter) // TODO find actual production		
+		// TODO what if no kolk but housing connections?
+		connection_duration = (Length_connections * connection_duration + Placing_kolk + Pipe_pipe_connection);
+		if(Diameter_connections <= 100 ) {connection_pipe_duration = 0.07;}
+		else if(Diameter_connections <= 125 ) {connection_pipe_duration = 0.08;}
+		else if(Diameter_connections <= 150 ) {connection_pipe_duration = 0.10;}
+		else if(Diameter_connections <= 200 ) {connection_pipe_duration = 0.12;}
+		else if(Diameter_connections > 200 ) {connection_pipe_duration = 0.15;}
 		Placing_kolk = 1; 						//hours per unit
-		Pipe_pipe_connection = 0.1;				//hours per unit
-		*/
+		Pipe_pipe_connection = 0.05;			//hours per unit
+		
 		
 		// Inspection (in m per hour)
 		inspection = 75;
 
 		// Paving preparation (in m^2 per hour)
 		if(New_pavement == 2){								// brick pavement
-			if (Sand_layer == 0.04){paving_preparation = 30;}		
-			else if (Sand_layer == 0.05){paving_preparation = 28;}
-			else if (Sand_layer == 0.06){paving_preparation = 26;}
-			else if (Sand_layer == 0.07){paving_preparation = 24;}
-			else if (Sand_layer == 0.08){paving_preparation = 22;}	
+			if (Sand_layer < 0.045){paving_preparation = 30;}		
+			else if (Sand_layer < 0.055){paving_preparation = 28;}
+			else if (Sand_layer < 0.065){paving_preparation = 26;}
+			else if (Sand_layer < 0.075){paving_preparation = 24;}
+			else if (Sand_layer > 0.075){paving_preparation = 22;}	
 		}
 		
 		else {												// asphalt pavement
-			if (Rock_layer == 0.2){paving_preparation = 65;}		
-			else if (Rock_layer == 0.25){paving_preparation = 57;}
-			else if (Rock_layer == 0.3){paving_preparation = 50;}
+			if (Rock_layer < 0.25){paving_preparation = 65;}		
+			else if (Rock_layer < 0.3){paving_preparation = 57;}
+			else if (Rock_layer >= 0.3){paving_preparation = 50;}
 		}  
 		 
 		// Paving  (in m^2 per hour)
 		if(New_pavement == 2){paving_time = 22.5;} 				// brick pavement
-		else if (Asphalt_new == 40){paving_time = 20;}			// asphalt 
-		else if (Asphalt_new == 50){paving_time = 20;}			// TODO make seperate parameters
-		else if (Asphalt_new == 60){paving_time = 20;}
-		else if (Asphalt_new == 70){paving_time = 20;}
-		else if (Asphalt_new == 80){paving_time = 20;}
+		else if (Asphalt_new < 45){paving_time = 20;}			// asphalt 
+		else if (Asphalt_new < 55){paving_time = 20;}			
+		else if (Asphalt_new < 65){paving_time = 20;}
+		else if (Asphalt_new < 75){paving_time = 20;}
+		else if (Asphalt_new >= 75){paving_time = 20;}
 		else {paving_time = 25;}
 		// Safety
 
@@ -374,7 +380,7 @@ public class Section extends SimProcess
 			   	
 			   	else{
 			   		// Breaking happens once for all sections
-			   		// so all preceding sections have no breaking activities
+			   		// so all following sections have no breaking activities
 			   		System.out.println(this + " No breaking activities, all in first " + myModel.presentTime());
 			   	}
 		   }
@@ -397,7 +403,6 @@ public class Section extends SimProcess
 		   }
  
 		   // Remove brick pavement
-		   // TODO think about who removes stones
 		   else if(myModel.getOldPavement() == 2) { 
 			   myModel.crews.provide(1);
 			   start = myModel.presentTime();
@@ -472,6 +477,8 @@ public class Section extends SimProcess
 			   		myModel.excavators.takeBack(1);
 			   }
 	
+			   // add foundation
+			   
 			   // 5. prepare the bed
 			   myModel.crews.provide(1);
 			   if(myModel.getActivityMsg() == 3)
@@ -484,8 +491,6 @@ public class Section extends SimProcess
 					   " End: " + myModel.presentTime().toString());
 			   myModel.crews.takeBack(1);
 			   
-			   // add foundation
-			  
 			   // 6. install the pipe
 			   myModel.crews.provide(1);
 			   myModel.excavators.provide(1);
@@ -500,15 +505,24 @@ public class Section extends SimProcess
 			   myModel.excavators.takeBack(1);
 			   myModel.crews.takeBack(1);
 			   
-			   // 7. hand/first backfill + compacting
-			   //TODO make time neccesary dependent on partial or full backfill, depending on if there are housing connections in the section)
+			   // 7. First backfill + compacting
 			   myModel.crews.provide(1);
 			   if(myModel.getActivityMsg() == 3)
 			   		{start = myModel.presentTime();}
-			   hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Trench_Area)/backfill)), TimeUnit.HOURS));
-			   if(myModel.getActivityMsg() == 3)
-			   		{ActivityMessage msg_7 = new ActivityMessage(myModel, this, start, "First Backfill" + i, myModel.presentTime()) ;
-			   		sendMessage(msg_7);}
+			   if(this.NUM_CONNECTIONS != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
+				   {hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Trench_Area)/backfill)), TimeUnit.HOURS));
+				   if(myModel.getActivityMsg() == 3)
+		   				{ActivityMessage msg_7 = new ActivityMessage(myModel, this, start, "First Backfill" + i, myModel.presentTime());
+		   				sendMessage(msg_7);
+		   				}
+				   }
+			   else									// if there are no housing connections backfill is to ground level
+				   {hold (new TimeSpan((myModel.getBackfillTime() * ((Trench_depth * Trench_Area)/backfill)), TimeUnit.HOURS));
+				   if(myModel.getActivityMsg() == 3)
+			   			{ActivityMessage msg_7 = new ActivityMessage(myModel, this, start, "Backfill" + i, myModel.presentTime()) ;
+			   			sendMessage(msg_7);
+			   			}
+				   }
 			   sendTraceNote("Activity: " + getName() + " First Backfill: " + start.toString() + 
 					   " End: " + myModel.presentTime().toString());
 			   myModel.crews.takeBack(1);
@@ -577,8 +591,7 @@ public class Section extends SimProcess
 		   	myModel.startingCondition.store(1);
 	   		}
 		   
-		   //TODO	think if model should iterate trough connections or if a sum of needed times suffices.
-		   //think about when housing connections can start (maybe before entire main loop is finished) --> how to program?)
+		   //TODO think about when housing connections can start (maybe before entire main loop is finished) --> how to program?)
 		   
 		   // 9. install the connections, only if there are connections.
 		   if(this.NUM_CONNECTIONS != 0)
@@ -612,35 +625,36 @@ public class Section extends SimProcess
 	   		}
 		   
 		   // 10. (second) backfill + compacting
-		   //TODO make this action dependent on if there are housing connections, and on crews
-		   if(myModel.getSecondCrew()) {
-			   	myModel.secondcrews.provide(1);}
-		   else {myModel.excavators.provide(1);}
-		   myModel.trucks.provide(1);
-		   start = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getBackfillTime() * ((second_backfill_height * Trench_Area)/backfill)), TimeUnit.HOURS));
-		   ActivityMessage msg_10 = new ActivityMessage(myModel, this, start, "Second Backfill", myModel.presentTime()) ;
-		   sendMessage(msg_10);
-		   sendTraceNote("Activity: " + getName() + " Backfill: " + start.toString() + 
-				   " End: " + myModel.presentTime().toString());
-		   if(myModel.getSecondCrew()) {
-			   	myModel.secondcrews.takeBack(1);}
-		   else {myModel.excavators.takeBack(1);}
-		   myModel.trucks.takeBack(1);
-		   myModel.backfill();
-		   if (UtilitySimulation.getBackfillCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) {
-			   myModel.trucks.stopUse();
-			   myModel.excavators.stopUse();
-			   if(myModel.getSecondCrew()){
-				   myModel.secondcrews.stopUse();
-				   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
-			   }
-			   else {
+		   if(this.NUM_CONNECTIONS != 0) {
+			   if(myModel.getSecondCrew()) {
+				   	myModel.secondcrews.provide(1);}
+			   else {myModel.crews.provide(1);}
+			   myModel.trucks.provide(1);
+			   start = myModel.presentTime();
+			   hold (new TimeSpan((myModel.getBackfillTime() * ((second_backfill_height * Trench_Area)/backfill)), TimeUnit.HOURS));
+			   ActivityMessage msg_10 = new ActivityMessage(myModel, this, start, "Second Backfill", myModel.presentTime()) ;
+			   sendMessage(msg_10);
+			   sendTraceNote("Activity: " + getName() + " Backfill: " + start.toString() + 
+					   " End: " + myModel.presentTime().toString());
+			   if(myModel.getSecondCrew()) {
+				   	myModel.secondcrews.takeBack(1);}
+			   else {myModel.crews.takeBack(1);}
+			   myModel.trucks.takeBack(1);
+			   myModel.backfill();
+			   if (UtilitySimulation.getBackfillCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) {
+				   myModel.trucks.stopUse();
 				   myModel.crews.stopUse();
-				   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());
+				   if(myModel.getSecondCrew()){
+					   myModel.secondcrews.stopUse();
+					   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
+				   }
+				   else {
+					   myModel.crews.stopUse();
+					   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());
+				   }
+				   System.out.println("resource trucks stopped at simulation time " + myModel.presentTime());
+				   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
 			   }
-			   System.out.println("resource trucks stopped at simulation time " + myModel.presentTime());
-			   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
 		   }
 
 		   // Allows the next section to start if setting is set to 2 in UtilitySimulation.java)
@@ -803,7 +817,7 @@ public class Section extends SimProcess
 			   	
 			   	else{
 			   		// Breaking happens once for all sections
-			   		// so all preceding sections have no breaking activities
+			   		// so all following sections have no breaking activities
 			   		System.out.println(this + " No breaking activities, all in first " + myModel.presentTime());
 			   	}
 		   }
@@ -826,7 +840,6 @@ public class Section extends SimProcess
 		   }
  
 		   // Remove brick pavement
-		   // TODO think about who removes stones
 		   else if(myModel.getOldPavement() == 2) { 
 			   myModel.crews.provide(1);
 			   start = myModel.presentTime();
@@ -838,14 +851,6 @@ public class Section extends SimProcess
 					   " End: " + myModel.presentTime().toString());
 			   System.out.println("stones removed at simulation time " + myModel.presentTime());
 		   }
-		   
-		   else {
-			   System.out.println("Breaking setting incorrect, experiment aborted. Choose one of the following settings: 1 for asphalt, " +
-			   		"2 for stone, 3 for breaking all sections at once, 0 for no breaking activities");
-			   myModel.getExperiment().stop();
-			   //TODO can be removed when numbers are connected to GUI selection so no false selection can be made
-		   }
-		   
 		   
 		   // gathers data on total duration of main put loop (1 task contains all activities for all put(s)), only active if turned on in utilitysimulation.java
 		   if(myModel.getActivityMsgPut() == 1)
@@ -902,7 +907,7 @@ public class Section extends SimProcess
 				   	myModel.excavators.provide(1);
 				   	if(myModel.getActivityMsgPut() == 3)
 					   {start = myModel.presentTime();}
-				   	hold (new TimeSpan((myModel.getPipeRemoveTime() * put_removal), TimeUnit.HOURS)); 		// TODO PutRemoveTimeStream needed?
+				   	hold (new TimeSpan((myModel.getPutRemoveTime() * put_removal), TimeUnit.HOURS)); 		
 			   		if(myModel.getActivityMsgPut() == 3)
 					   {ActivityMessage msg_4 = new ActivityMessage(myModel, this, start, "Remove Put" + i, myModel.presentTime()) ;
 					   sendMessage(msg_4);}
@@ -911,6 +916,8 @@ public class Section extends SimProcess
 			   		myModel.excavators.takeBack(1);
 			   }
 	
+			   // add foundation
+			   
 			   // 5. prepare the bed
 			   myModel.crews.provide(1);
 			   if(myModel.getActivityMsgPut() == 3)
@@ -922,15 +929,13 @@ public class Section extends SimProcess
 			   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start.toString() + 
 					   " End: " + myModel.presentTime().toString());
 			   myModel.crews.takeBack(1);
-			   
-			   // add foundation
 			  
 			   // 6. install the put
 			   myModel.crews.provide(1);
 			   myModel.excavators.provide(1);
 			   if(myModel.getActivityMsgPut() == 3)
 			   		{start = myModel.presentTime();}
-			   hold (new TimeSpan((myModel.getPipePlacingTime() * put_placement), TimeUnit.HOURS));    			// TODO PutplacingTimeStream needed?
+			   hold (new TimeSpan((myModel.getPutPlacingTime() * put_placement), TimeUnit.HOURS));    			
 			   if(myModel.getActivityMsgPut() == 3)
 			   		{ActivityMessage msg_6 = new ActivityMessage(myModel, this, start, "Install Put" + i, myModel.presentTime()) ;
 			   		sendMessage(msg_6);}
@@ -940,14 +945,13 @@ public class Section extends SimProcess
 			   myModel.crews.takeBack(1);
 			   
 			   // 7. Put connections
-			   //TODO make time neccesary dependent on partial or full backfill, depending on if there are housing connections in the section)
-			   for (int j=1; j<=this.Num_Put_connections; j++) { // TODO change to put connections
+			   for (int j=1; j<=this.Num_Put_connections; j++) { 
 				   myModel.crews.provide(1);
 				   if(myModel.getActivityMsgPut() == 3 ){
 				   		start = myModel.presentTime();
 				   }
-				   hold (new TimeSpan((myModel.getHousingConnectionTime() * connection_put_duration), TimeUnit.HOURS));
-				   if(myModel.getActivityMsgPut() == 3 ){ ////////////////// put connections instead of pipe connections
+				   hold (new TimeSpan((myModel.getPutConnectionTime() * connection_put_duration), TimeUnit.HOURS));
+				   if(myModel.getActivityMsgPut() == 3 ){ 
 				   		ActivityMessage msg_7 = new ActivityMessage(myModel, this, start, "Put connections " + j, myModel.presentTime()) ;
 				   		sendMessage(msg_7);
 				   }
@@ -955,15 +959,48 @@ public class Section extends SimProcess
 						   " End: " + myModel.presentTime().toString());
 				   myModel.crews.takeBack(1);
 			   }
-			   		
-			   // 8. remove shoring
+			   
+			   // 8. First backfill + compacting
+			   myModel.crews.provide(1);
+			   if(myModel.getActivityMsg() == 3)
+			   		{start = myModel.presentTime();}
+			   if(this.NUM_CONNECTIONS != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
+				   {hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Trench_Area)/backfill)), TimeUnit.HOURS));
+				   if(myModel.getActivityMsg() == 3)
+		   				{ActivityMessage msg_7 = new ActivityMessage(myModel, this, start, "First Backfill" + i, myModel.presentTime());
+		   				sendMessage(msg_7);
+		   				}
+				   }
+			   else									// if there are no housing connections backfill is to ground level
+				   {hold (new TimeSpan((myModel.getBackfillTime() * ((Trench_depth * Trench_Area)/backfill)), TimeUnit.HOURS));
+				   if(myModel.getActivityMsg() == 3)
+			   			{ActivityMessage msg_7 = new ActivityMessage(myModel, this, start, "Backfill" + i, myModel.presentTime()) ;
+			   			sendMessage(msg_7);
+			   			}
+				   }
+			   sendTraceNote("Activity: " + getName() + " First Backfill: " + start.toString() + 
+					   " End: " + myModel.presentTime().toString());
+			   myModel.crews.takeBack(1);
+			   myModel.handbackfill();
+			   if(myModel.getSecondCrew()) // if there are second crews:
+			   {	if(myModel.getShore() == 0) // if there is no shoring to be removed:
+			   		{	if (UtilitySimulation.getHandBackfillCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT))
+			   			{	myModel.crews.stopUse();
+			   				myModel.excavators.stopUse();
+			   				System.out.println("resource crews stopped at simulation time " + myModel.presentTime() + " 2nd crew finishes housing connections");
+			   				System.out.println("resource excavators stopped at simulation time " + myModel.presentTime());
+			   			}
+			   		}
+			   }
+			   
+			   // 9. remove shoring
 			   // only for projects that require shoring (set variable Shore to right value in simulation class)
 			   if(myModel.getShore() == 3)
 			   {	myModel.excavators.provide(1);
 			   		if(myModel.getActivityMsgPut() == 3)
 			   			{start = myModel.presentTime();}
 			   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length/shoring_remove)), TimeUnit.HOURS)); 
-			   		// TODO bigger length than pipes needed? 
+			   		// TODO bigger length than pipes needed for put? 
 			   		if(myModel.getActivityMsgPut() == 3)
 					   {ActivityMessage msg_8 = new ActivityMessage(myModel, this, start, "Remove Shoring" + i, myModel.presentTime()) ;
 			   			sendMessage(msg_8);}
@@ -1003,40 +1040,38 @@ public class Section extends SimProcess
 		   	myModel.startingCondition.store(1);
 	   		}
 		   
-		   //TODO	think if model should iterate trough connections or if a sum of needed times suffices.
-		   //think about when housing connections can start (maybe before entire main loop is finished) --> how to program?)
-		   
 		   // 10. backfill + compacting
-		   //TODO make this action dependent on if there are housing connections, and on crews
-		   if(myModel.getSecondCrew()) {
-			   	myModel.secondcrews.provide(1);}
-		   else {myModel.excavators.provide(1);}
-		   myModel.trucks.provide(1);
-		   start = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getBackfillTime() * (Excavation_volume/backfill)), TimeUnit.HOURS));
-		   ActivityMessage msg_10 = new ActivityMessage(myModel, this, start, "Second Backfill", myModel.presentTime()) ;
-		   sendMessage(msg_10);
-		   sendTraceNote("Activity: " + getName() + " Backfill: " + start.toString() + 
-				   " End: " + myModel.presentTime().toString());
-		   if(myModel.getSecondCrew()) {
-			   	myModel.secondcrews.takeBack(1);}
-		   else {myModel.excavators.takeBack(1);}
-		   myModel.trucks.takeBack(1);
-		   myModel.backfill();
-		   if (UtilitySimulation.getBackfillCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) {
-			   myModel.trucks.stopUse();
-			   myModel.excavators.stopUse();
-			   if(myModel.getSecondCrew()){
-				   myModel.secondcrews.stopUse();
-				   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
-			   }
-			   else {
+		   if(this.NUM_CONNECTIONS != 0){
+			   if(myModel.getSecondCrew()) {
+				   	myModel.secondcrews.provide(1);}
+			   else {myModel.crews.provide(1);}
+			   myModel.trucks.provide(1);
+			   start = myModel.presentTime();
+			   hold (new TimeSpan((myModel.getBackfillTime() * (Excavation_volume/backfill)), TimeUnit.HOURS));
+			   ActivityMessage msg_10 = new ActivityMessage(myModel, this, start, "Second Backfill", myModel.presentTime()) ;
+			   sendMessage(msg_10);
+			   sendTraceNote("Activity: " + getName() + " Backfill: " + start.toString() + 
+					   " End: " + myModel.presentTime().toString());
+			   if(myModel.getSecondCrew()) {
+				   	myModel.secondcrews.takeBack(1);}
+			   else {myModel.crews.takeBack(1);}
+			   myModel.trucks.takeBack(1);
+			   myModel.backfill(); 
+			   if (UtilitySimulation.getBackfillCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) {
+				   myModel.trucks.stopUse();
 				   myModel.crews.stopUse();
-				   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());
-			   }
-			   System.out.println("resource trucks stopped at simulation time " + myModel.presentTime());
-			   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
-		   }
+				   if(myModel.getSecondCrew()){
+					   myModel.secondcrews.stopUse();
+					   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
+				   }
+				   else {
+					   myModel.crews.stopUse();
+					   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());
+				   }
+				   System.out.println("resource trucks stopped at simulation time " + myModel.presentTime());
+				   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
+			   }	
+			}
 
 		   // Allows the next section to start if setting is set to 2 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 2) 
@@ -1204,15 +1239,15 @@ public class Section extends SimProcess
 	private int Asphalt_new;  			// layer thickness of new asphalt in mm 
 	private double Cables;  			// weight class of cables in the ground
 	private double Length_connections;  // average length of connections in m
-	private double Depth_connections;  	// average depth of connections in m
+	private double Diameter_connections;// average depth of connections in m
 	private int Foundation_type;  		// type foundation used: 1 = , 2 =
 	private int Soil_removed;  			// where is the removed soil placed: 1 = , 2 =
 	private int Soil_new;  				// where is the new soil placed: 1 = , 2 =
 	private int Pipes_old;  			// where are the removed pipes placed: 1 = , 2 =
 	private int Pipes_new;  			// where are the new pipes placed: 1 = , 2 =
-	private double Total_length;		// length of all sections
 	private double Rock_layer;			// height of pavement preparation rock layer in m
 	private double Sand_layer;			// height of pavement preparation sand layer in m
+	private String Put_connection_type; // type of put connection (concrete or brick)
 	/**
 	 * Test for reading the data from an arraylist in UtilitySimulation corresponding to this section
 	 */
@@ -1230,11 +1265,13 @@ public class Section extends SimProcess
 	private int preparation;				// production quantity of pavement removal in m^3 per hour
 	private double pipe_placement;			// production quantity of pipe placement in m per hour
 	private double put_placement;			// production quantity of put placement in hours per unit
-	private int connection_duration;		// production duration of a housing or rain water connection in units per hour
+	private double connection_duration;		// production duration of a housing or rain water connection in units per hour
+	private double connection_pipe_duration;// production duration of a housing or rain water pipe in meter per hour
+	private double Pipe_pipe_connection;	// production duration of a housing connection pipe to main sewer pipe in units per hour
 	private int Placing_kolk;				// TODO production quantity of a kolk in units per hour
 	private double cables_weight;			// TODO weightclass of cables and plumbing in the ground as a factor
-	private int foundation_time;			// TODO production quantity of foundation in m per hour
-	private int connection_put_duration;	// production duration of a connection to a put in units per hour
+	private double foundation_time;			// TODO production quantity of foundation in m per hour
+	private double connection_put_duration;	// production duration of a connection to a put in units per hour
 	private int backfill;					// production quantity of backfill in m^3 per hour
 	private int inspection;					// TODO production quantity of inspection in m per hour
 	private double Bed_preparation;			// production quantity of bed preparation in m^2 per hour

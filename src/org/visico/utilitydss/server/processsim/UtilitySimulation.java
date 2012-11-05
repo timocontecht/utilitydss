@@ -165,17 +165,17 @@ public void setNUM_SEC(int nUM_SEC) {
 						asphalt_new[i],			// layer thickness of new asphalt in
 						cables[i],				// weight class of cables in the ground
 						length_connections[i],	// average length of connections
-						depth_connections[i],	// average depth of connections
+						diameter_connections[i],	// average depth of connections
 						foundation_type[i], 	// type foundation used: 1 = , 2 =
 						soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
 						soil_new[i],  			// where is the new soil placed: 1 = , 2 =
 						pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
 						pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
-						total_length, 			// total length of all sections (for breaking all sections at once)
 						rock_layer,				// height of pavement preparation rock layer in m
 						sand_layer,				// height of pavement preparation sand layer in m
 						old_put_area[i],			// area of the old put
-						new_put_area[i]			// area of the new put
+						new_put_area[i],			// area of the new put
+						put_connection_type[i]	// type of put connection (concrete or brick)
 						);
 	 
 			   section.activate();
@@ -210,17 +210,17 @@ public void setNUM_SEC(int nUM_SEC) {
 						asphalt_new[i],			// layer thickness of new asphalt in
 						cables[i],				// weight class of cables in the ground
 						length_connections[i],	// average length of connections
-						depth_connections[i],	// average depth of connections
+						diameter_connections[i],	// average depth of connections
 						foundation_type[i], 	// type foundation used: 1 = , 2 =
 						soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
 						soil_new[i],  			// where is the new soil placed: 1 = , 2 =
 						pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
 						pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
-						total_length, 			// total length of all sections (for breaking all sections at once)
 						rock_layer,				// height of pavement preparation rock layer in m
 						sand_layer,				// height of pavement preparation sand layer in m
 						old_put_area[i],			// area of the old put
-						new_put_area[i]			// area of the new put
+						new_put_area[i],			// area of the new put
+						put_connection_type[i]	// type of put connection (concrete or brick)
 						);
 	 
 			   section.activate();
@@ -255,13 +255,19 @@ public void setNUM_SEC(int nUM_SEC) {
                   10.0, 30.0, true, false);
 	      PipeRemoveTime = new ContDistUniform(this, "PipeRemoveTimeStream",
                   10.0, 30.0, true, false);
+	      PutRemoveTime = new ContDistUniform(this, "putRemoveTimeStream",
+                  10.0, 30.0, true, false);
 	      bedPreparationTime= new ContDistUniform(this, "BedPreparationTimeStream",
                   10.0, 30.0, true, false);
 	      pipePlacingTime= new ContDistUniform(this, "PipePlacingTimeStream",
                   10.0, 30.0, true, false);
-	      removeTrenchTime= new ContDistUniform(this, "TrenchRemoverTimeStream",
+	      putPlacingTime= new ContDistUniform(this, "PutPlacingTimeStream",
+                  10.0, 30.0, true, false);
+	      removeTrenchTime= new ContDistUniform(this, "TrenchRemoveTimeStream",
                   10.0, 30.0, true, false);
 	      housingConnectionTime= new ContDistUniform(this, "HousingConnectionTimeStream",
+                  10.0, 30.0, true, false);
+	      putConnectionTime= new ContDistUniform(this, "PutConnectionTimeStream",
                   10.0, 30.0, true, false);
 	      backfillTime= new ContDistUniform(this, "BackfillTimeStream",
                   10.0, 30.0, true, false);
@@ -307,17 +313,26 @@ public void setNUM_SEC(int nUM_SEC) {
    public double getPipeRemoveTime() {
 	      return PipeRemoveTime.sample();
 		}
+   public double getPutRemoveTime() {
+	      return PutRemoveTime.sample();
+		}
    public double getBedPreparationTime() {
 	      return bedPreparationTime.sample();
 	   }
    public double getPipePlacingTime() {
 	      return pipePlacingTime.sample();
 	   }
+   public double getPutPlacingTime() {
+	      return putPlacingTime.sample();
+	   }
    public double getRemoveTrenchTime() {
 	      return removeTrenchTime.sample();
    		}
    public double getHousingConnectionTime() {
 	      return housingConnectionTime.sample();
+		}
+   public double getPutConnectionTime() {
+	      return putConnectionTime.sample();
 		}
    public double getBackfillTime() {
 	      return backfillTime.sample();
@@ -389,6 +404,9 @@ public void setNUM_SEC(int nUM_SEC) {
    public int getActivityMsgPut() {
 	    return activityMsgPut;
 		}
+   public int getTotal_length() {
+	   return total_length;
+   }
    
     /**
     * Returns a sample of the random stream used to determine
@@ -420,7 +438,7 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int NUM_PAVECREWS = 1;			// number of pave crews
    private static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
    private static int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
-
+   private static int total_length = 400;			// total length of all sections (for breaking all sections at once) in meter
   
    /** THIS IS FOR TESTING PURPOSES (arraylists should get filled by GUI in final code)
     * Model parameters: Project parameters per section in static arrays 
@@ -434,20 +452,20 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int[] num_put_connections = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
    private static int[] old_pavement = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement
    private static int[] new_pavement = 			{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 2 };  		// type of new pavement
-   private static int[] section_length = 		{ 20, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
+   private static int[] section_length = 		{ 20, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  	// length of section in
    private static int[] pipe_length = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of pipes in
    private static int[] section_width = 		{ 4, 4, 4, 4, 1, 1, 2, 2, 2, 2 };  		// width of section in
    private static int[] trench_width = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of Trench in  					///////////// bigger with puts?
    private static int[] trench_depth = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// depth of Trench in
-   private static String[] old_sewer_type = 	{ "Concrete", "Concrete", "Concrete"}; 		// type of old sewer
-   private static String[] new_sewer_type = 	{ "Concrete", "Concrete", "Concrete"}; 		// type of new sewer
+   private static String[] old_sewer_type = 	{ "Concrete", "Concrete", "Concrete"}; 		// type of old sewer	Concrete, Gres, Plastic
+   private static String[] new_sewer_type = 	{ "Concrete", "Concrete", "Concrete"}; 		// type of new sewer	Concrete, Gres, Plastic
    private static int[] old_diameter = 			{ 300, 300, 300, 300, 300, 300, 2, 2, 2, 2 };  		// diameter of old sewer 
    private static int[] new_diameter = 			{ 300, 300, 300, 300, 300, 300, 2, 2, 2, 2 };  		// diameter of new sewer
    private static int[] asphalt_old = 			{ 40, 40, 40, 40, 1, 1, 2, 2, 2, 2 };  		// layer thickness of old asphalt in
    private static int[] asphalt_new = 			{ 40, 40, 40, 40, 1, 1, 2, 2, 2, 2 };  		// layer thickness of new asphalt in // TODO what if multiple layers?
    private static int[] cables =		 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// weight class of cables in the ground
    private static int[] length_connections =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average length of connections
-   private static int[] depth_connections =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average depth of connections
+   private static int[] diameter_connections =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average depth of connections
    private static int[] foundation_type =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type foundation used: 1 = , 2 =
    private static int[] soil_removed = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the removed soil placed: 1 = , 2 =
    private static int[] soil_new = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the new soil placed: 1 = , 2 =
@@ -455,15 +473,14 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int[] pipes_new = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where are the new pipes placed: 1 = , 2 =
    private static int[] old_put_area =			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// Area of the old put
    private static int[] new_put_area =			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// Area of the new put
-   private static int total_length = 400;												// total length of all sections (for breaking all sections at once)
-   private static double rock_layer = 0.3;												// height of pavement preparation rock layer in m 
-   private static double sand_layer = 0.04;												// height of pavement preparation sand layer in m
-
+   private static double rock_layer = 0.3;		//{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation rock layer in m 
+   private static double sand_layer = 0.04;		//{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
+   private static String[] put_connection_type =	{ "Concrete", "Concrete", "Concrete" };		// type of put connection (concrete or brick) 
    
-   /**  COMMENTED OUT as the arrays above are used for testing purposes. This should be used with GUI
+   /**  COMMENTED OUT as the arrays above are used for testing purposes. 
+    * This is preparation for use with GUI
     * Model parameters: Project parameters per section in dynamic arraylists
     * Characteristics of each section/put, stored in arrays
-    * examples: housing connections, K&L, puts to be placed with mobile crane
     */
    /* 
    ArrayList<Integer> put = new ArrayList<Integer>(0); 					// indicates if section is pipe section or put, 0 is section, 1 is put.
@@ -477,12 +494,12 @@ public void setNUM_SEC(int nUM_SEC) {
    ArrayList<Integer> section_width = new ArrayList<Integer>(0);		// width of section in	
    ArrayList<Integer> trench_width = new ArrayList<Integer>(0);			// width of Trench in
    ArrayList<Integer> trench_depth = new ArrayList<Integer>(0);			// depth of Trench in
-   ArrayList<Integer> old_sewer_type = new ArrayList<Integer>(0);		// type of old sewer	
-   ArrayList<Integer> new_sewer_type = new ArrayList<Integer>(0);		// type of new sewer
+   ArrayList<Integer> old_sewer_type = new ArrayList<Integer>(0);		// type of old sewer	Concrete, Gres, Plastic
+   ArrayList<Integer> new_sewer_type = new ArrayList<Integer>(0);		// type of new sewer	Concrete, Gres, Plastic
    ArrayList<Integer> old_diameter = new ArrayList<Integer>(0);			// diameter of old sewer
    ArrayList<Integer> new_diameter = new ArrayList<Integer>(0);			// diameter of new sewer
    ArrayList<Integer> asphalt_old = new ArrayList<Integer>(0);			// layer thickness of old asphalt in
-   ArrayList<Integer> asphalt_new = new ArrayList<Integer>(0);			// layer thickness of new asphalt in // TODO what if multiple layers?
+   ArrayList<Integer> asphalt_new = new ArrayList<Integer>(0);			// layer thickness of new asphalt in 
    ArrayList<Integer> cables = new ArrayList<Integer>(0);				// weight class of cables in the ground
    ArrayList<Integer> length_connections = new ArrayList<Integer>(0);	// average length of connections	
    ArrayList<Integer> depth_connections = new ArrayList<Integer>(0);	// average depth of connections
@@ -497,6 +514,7 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int total_length = 400								// total length of all sections (for breaking all sections at once)
    private static double rock_layer = 0,3								// height of pavement preparation rock layer in m 
    private static double sand_layer = 0,3								// height of pavement preparation sand layer in m
+   ArrayList<Integer> put_connection_type = new ArrayList<Integer>(0);
    */  
    
 /**
@@ -554,10 +572,13 @@ public void setNUM_SEC(int nUM_SEC) {
    private desmoj.core.dist.ContDistUniform excavatingTime;
    private desmoj.core.dist.ContDistUniform shoreTime;
    private desmoj.core.dist.ContDistUniform PipeRemoveTime;
+   private desmoj.core.dist.ContDistUniform PutRemoveTime;
    private desmoj.core.dist.ContDistUniform bedPreparationTime;
    private desmoj.core.dist.ContDistUniform pipePlacingTime;
+   private desmoj.core.dist.ContDistUniform putPlacingTime;
    private desmoj.core.dist.ContDistUniform removeTrenchTime;
    private desmoj.core.dist.ContDistUniform housingConnectionTime;
+   private desmoj.core.dist.ContDistUniform putConnectionTime;
    private desmoj.core.dist.ContDistUniform backfillTime;
    private desmoj.core.dist.ContDistUniform surfacePrepareTime;
    private desmoj.core.dist.ContDistUniform paveTime;
