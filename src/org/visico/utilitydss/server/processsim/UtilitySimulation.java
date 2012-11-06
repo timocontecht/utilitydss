@@ -424,7 +424,7 @@ public void setNUM_SEC(int nUM_SEC) {
    }
    
 /**
-    * Model parameters: Project parameters (the number of sections, puts and resources, etc)
+    * Model parameters: GENERAL PROJECT PARAMETERS (the number of sections, puts and resources, etc)
     */
    public static int NUM_SEC = 3;					// number of sections
    public static int NUM_PUT = 0;					// number of puts
@@ -441,7 +441,8 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int total_length = 400;			// total length of all sections (for breaking all sections at once) in meter
   
    /** THIS IS FOR TESTING PURPOSES (arraylists should get filled by GUI in final code)
-    * Model parameters: Project parameters per section in static arrays 
+    * 
+    * SECTION PROJECT PARAMETERS: Project parameters per section in static arrays 
     * Characteristics of each section/put, stored in arrays
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
@@ -465,7 +466,7 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int[] asphalt_new = 			{ 40, 40, 40, 40, 1, 1, 2, 2, 2, 2 };  		// layer thickness of new asphalt in // TODO what if multiple layers?
    private static int[] cables =		 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// weight class of cables in the ground
    private static int[] length_connections =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average length of connections
-   private static int[] diameter_connections =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average depth of connections
+   private static int[] diameter_connections =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average depth of connections
    private static int[] foundation_type =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type foundation used: 1 = , 2 =
    private static int[] soil_removed = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the removed soil placed: 1 = , 2 =
    private static int[] soil_new = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the new soil placed: 1 = , 2 =
@@ -475,7 +476,7 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int[] new_put_area =			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// Area of the new put
    private static double rock_layer = 0.3;		//{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation rock layer in m 
    private static double sand_layer = 0.04;		//{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
-   private static String[] put_connection_type =	{ "Concrete", "Concrete", "Concrete" };		// type of put connection (concrete or brick) 
+   private static String[] put_connection_type = { "Concrete", "Concrete", "Concrete" };		// type of put connection (concrete or brick) 
    
    /**  COMMENTED OUT as the arrays above are used for testing purposes. 
     * This is preparation for use with GUI
@@ -518,7 +519,7 @@ public void setNUM_SEC(int nUM_SEC) {
    */  
    
 /**
-   * Model parameters: Simulation settings
+   * Model parameters: SIMULATION SETTINGS
    */
    private static int OldPavement = 2;				// indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 													// 3 means asphalt; break all sections at start, other gives error
@@ -624,8 +625,8 @@ public void setNUM_SEC(int nUM_SEC) {
    public void stonepave()   {	
 	   stonepavecounter ++;
    }
-   public void handbackfill()   {	
-	   handbackfillcounter ++;
+   public void shore()	{
+	   pipecounter ++;
    }
    
    /**
@@ -638,8 +639,8 @@ public void setNUM_SEC(int nUM_SEC) {
    public static int getBreakCounter() {
 	  return breakcounter;
   }
-   public static int getShoreCounter() {
-	  return shorecounter;
+   public static int getPipeCounter() {
+	  return pipecounter;
   }
    public static int getBackfillCounter() {
 	  return backfillcounter;
@@ -650,9 +651,7 @@ public void setNUM_SEC(int nUM_SEC) {
    public static int getStonePaveCounter() {
 	  return stonepavecounter;
   }
-   public static int getHandBackfillCounter() {
-	  return handbackfillcounter;
-  }
+
    
    /**
     * Activity counters
@@ -660,8 +659,7 @@ public void setNUM_SEC(int nUM_SEC) {
     * Allows end of part time resources when the required number of activities has passed
     */   
    private static int breakcounter = 0;
-   private static int handbackfillcounter = 0;
-   private static int shorecounter = 0;
+   private static int pipecounter = 0;
    private static int backfillcounter = 0;   
    private static int preparecounter = 0;
    private static int pavecounter = 0;

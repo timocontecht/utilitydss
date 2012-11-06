@@ -337,29 +337,32 @@ public class Section extends SimProcess
 	    * After which activity this is can be controlled by setting  in UtilitySimulation.java
 	    * 
 	    * FIXME difficult to model work on multiple sections at once --> drawback inherent to hard-coding the model?
+	    * Examples: work on connections can start before entire main sewer of section is laid
+	    * 			brick paving can start before entire section is closes as this is a slow process anyway
+	    * possibility is to work with flags that allow start of these activities after several pipes have been laid
 	    */
-	   
-		// make section/put hold until all preceding sections & puts are done with certain activities
-		// this requires a section to asses what its predecessors (puts and sections) are &
-		// And if all these predecessors completed the specified activities. <-- use bins or counters?
-		// this would prolly be a lot easier if puts where sections with specific put behavior as identitynumber then could be used, or a simple bin/res
+
 		// think about when housing connections can start (maybe before entire main loop is finished) --> how to program?)
 		
+		/**
+		 * Section needs to retrieve 1 of this resource in order to start
+		 * This allows control to make the section wait to start the lifecycle until the user wants this.
+		 * The resource is supplied with 1 unit after a specified activity of the preceding section
+		 * Which activity this is can be selected in UtlitySimulation.java
+		 */
 		myModel.startingCondition.retrieve(1);
 	   
-		// variables to create messages for output charts
-		// TimeInstant start, end; 
-		// ActivityMessage msg;
-		
 		/**
-		 * selects the right lifecycle for section or put based on setting in UtilitySimulation.java
+		 * selects the lifecycle, section or put, this is based on a setting in UtilitySimulation.java
 		 */
+		// if this is a section and no put
 		if(this.PUT == 0)
 		{
 		
 			/**
 			 * Lifecycle Sewer section
 			 */
+			
 		   // 1. break the section or remove stone pavement
 		   TimeInstant start = myModel.presentTime();
 		   // Break all sections at once.
@@ -492,6 +495,7 @@ public class Section extends SimProcess
 			   myModel.crews.takeBack(1);
 			   
 			   // 6. install the pipe
+			   // TODO x2 for separated sewers, rest can be same but the ditch and section will be wider.
 			   myModel.crews.provide(1);
 			   myModel.excavators.provide(1);
 			   if(myModel.getActivityMsg() == 3)
@@ -516,7 +520,7 @@ public class Section extends SimProcess
 		   				sendMessage(msg_7);
 		   				}
 				   }
-			   else									// if there are no housing connections backfill is to ground level
+			   else									// if there are no housing connections backfill is to bottom of surface layer
 				   {hold (new TimeSpan((myModel.getBackfillTime() * ((Trench_depth * Trench_Area)/backfill)), TimeUnit.HOURS));
 				   if(myModel.getActivityMsg() == 3)
 			   			{ActivityMessage msg_7 = new ActivityMessage(myModel, this, start, "Backfill" + i, myModel.presentTime()) ;
@@ -585,7 +589,7 @@ public class Section extends SimProcess
 			   sendMessage(msg);
 		   }
 		   
-		   // Allows the next section to start if setting is set to 1 in UtilitySimulation.java)
+		   // Allows the next section to start after this if setting is set to 1 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 1) 
 	   		{
 		   	myModel.startingCondition.store(1);
@@ -657,7 +661,7 @@ public class Section extends SimProcess
 			   }
 		   }
 
-		   // Allows the next section to start if setting is set to 2 in UtilitySimulation.java)
+		   // Allows the next section to start after this if setting is set to 2 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 2) 
 		   {
 		   myModel.startingCondition.store(1);
@@ -680,7 +684,7 @@ public class Section extends SimProcess
 			   System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
 		   }
 		  
-		   // Allows the next section to start if setting is set to 3 in UtilitySimulation.java)
+		   // Allows the next section to start after this if setting is set to 3 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 3) 
 		   {
 		   myModel.startingCondition.store(1);
@@ -702,7 +706,7 @@ public class Section extends SimProcess
 			    	  myModel.rollers.stopUse();
 			       System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
 	   		   		}
-			   // Allows the next section to start if setting is set to 4 in UtilitySimulation.java)
+			   // Allows the next section to start after this if setting is set to 4 in UtilitySimulation.java)
 			   if(myModel.getSectionWait() == 4) 
 			   {
 			   myModel.startingCondition.store(1);
@@ -779,7 +783,7 @@ public class Section extends SimProcess
 			   	}
 		   }
 		   
-		   // Allows the next section to start if setting is set to 5 in UtilitySimulation.java)
+		   // Allows the next section to start after this if setting is set to 5 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 5) 
 		   {
 		   myModel.startingCondition.store(1);
@@ -790,13 +794,15 @@ public class Section extends SimProcess
 		
 //=====================================================================================================================================================================
 //=====================================================================================================================================================================
-		
-/**
-* Lifecycle Put
-**/	
+
+		// if this is a put and no section
 		else
 		{
 	   
+			/**
+			* Lifecycle Put
+			**/	
+			
 			// 1. break the section or remove stone pavement
 		   TimeInstant start = myModel.presentTime();
 		   // Break all sections at once.
@@ -1034,7 +1040,7 @@ public class Section extends SimProcess
 			   sendMessage(msg);
 		   }
 		   
-		   // Allows the next section to start if setting is set to 1 in UtilitySimulation.java)
+		   // Allows the next section to start after this if setting is set to 1 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 1) 
 	   		{
 		   	myModel.startingCondition.store(1);
@@ -1073,7 +1079,7 @@ public class Section extends SimProcess
 			   }	
 			}
 
-		   // Allows the next section to start if setting is set to 2 in UtilitySimulation.java)
+		   // Allows the next section to start after this if setting is set to 2 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 2) 
 		   {
 		   myModel.startingCondition.store(1);
@@ -1096,7 +1102,7 @@ public class Section extends SimProcess
 			   System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
 		   }
 		  
-		   // Allows the next section to start if setting is set to 3 in UtilitySimulation.java)
+		   // Allows the next section to start after this if setting is set to 3 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 3) 
 		   {
 		   myModel.startingCondition.store(1);
@@ -1118,7 +1124,7 @@ public class Section extends SimProcess
 			    	  myModel.rollers.stopUse();
 			       System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
 	   		   		}
-			   // Allows the next section to start if setting is set to 4 in UtilitySimulation.java)
+			   // Allows the next section to start after this if setting is set to 4 in UtilitySimulation.java)
 			   if(myModel.getSectionWait() == 4) 
 			   {
 			   myModel.startingCondition.store(1);
@@ -1195,7 +1201,7 @@ public class Section extends SimProcess
 			   	}
 		   }
 
-		   // Allows the next section to start if setting is set to 5 in UtilitySimulation.java)
+		   // Allows the next section to start after this if setting is set to 5 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 5) 
 		   {
 		   myModel.startingCondition.store(1);
@@ -1262,17 +1268,17 @@ public class Section extends SimProcess
 	private double put_removal; 			// production quantity of pipe removal in hour per unit
 	private double shoring;					// production quantity of shoring in m per hour
 	private double shoring_remove;			// production quantity of shoring removal in m per hour
-	private int preparation;				// production quantity of pavement removal in m^3 per hour
+	private double preparation;				// production quantity of pavement removal in m^3 per hour
 	private double pipe_placement;			// production quantity of pipe placement in m per hour
 	private double put_placement;			// production quantity of put placement in hours per unit
 	private double connection_duration;		// production duration of a housing or rain water connection in units per hour
 	private double connection_pipe_duration;// production duration of a housing or rain water pipe in meter per hour
 	private double Pipe_pipe_connection;	// production duration of a housing connection pipe to main sewer pipe in units per hour
-	private int Placing_kolk;				// TODO production quantity of a kolk in units per hour
+	private double Placing_kolk;			// TODO production quantity of a rainwater put in units per hour
 	private double cables_weight;			// TODO weightclass of cables and plumbing in the ground as a factor
 	private double foundation_time;			// TODO production quantity of foundation in m per hour
 	private double connection_put_duration;	// production duration of a connection to a put in units per hour
-	private int backfill;					// production quantity of backfill in m^3 per hour
+	private double backfill;				// production quantity of backfill in m^3 per hour
 	private int inspection;					// TODO production quantity of inspection in m per hour
 	private double Bed_preparation;			// production quantity of bed preparation in m^2 per hour
 	private int paving_preparation;			// production quantity of sand or rock layer in m^3 per hour
