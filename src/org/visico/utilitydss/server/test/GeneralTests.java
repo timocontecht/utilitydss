@@ -21,8 +21,8 @@ public class GeneralTests
 		
 		double dist1 = model.getBreakingTime();
 		double dist2 = model.getBreakingTime();
-		
-		
+		System.out.println(dist1);
+		System.out.println(dist2);		
 		
 	}
 }

@@ -47,8 +47,11 @@ public class Project implements Serializable
 	
 	
 	
+	
 	String name;
 	String location;
 	String description;
 	Long id;
+	
+	
 }
