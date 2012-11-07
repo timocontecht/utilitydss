@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.visico.utilitydss.shared.Scenario;
+
 import desmoj.core.advancedModellingFeatures.Bin;
 import desmoj.core.dist.ContDistUniform;
 import desmoj.core.simulator.Model;
@@ -88,19 +90,12 @@ public class UtilitySimulation extends Model
    }
    
    public UtilitySimulation(Model owner, String modelName, boolean showInReport, 
-           boolean showInTrace, ArrayList<Integer> resources) {
+           boolean showInTrace, Scenario scenario) {
 	   
 	   		
 			super(owner, modelName, showInReport, showInTrace);
 			
-			NUM_BREAKER = resources.get(0).intValue();
-			NUM_EXCAVATOR = resources.get(1).intValue();
-			NUM_CRANE = resources.get(2).intValue();
-			NUM_CREW = resources.get(3).intValue();
-			NUM_ROLLER = resources.get(4).intValue();
-			NUM_TRUCK = resources.get(5).intValue();
-			
-			// TODO update to all current resources and other input functions.
+			this.scenario = scenario;
 
 	}
 
@@ -109,11 +104,11 @@ public class UtilitySimulation extends Model
     */
 
    public int getNUM_SEC() {
-	return NUM_SEC;
+	return scenario.getNUM_SEC();
 }
 
 public void setNUM_SEC(int nUM_SEC) {
-	NUM_SEC = nUM_SEC;
+	scenario.setNUM_SEC(nUM_SEC);
 }
 
 /**
@@ -137,7 +132,7 @@ public void setNUM_SEC(int nUM_SEC) {
    { 
 	   sections = new ArrayList<Section>();
 	// initialize the sections 
-	   for (int i=0; i<NUM_SEC; i++)
+	   for (int i=0; i<scenario.getNUM_SEC(); i++)
 	   {
 		   Section section = new Section(
 					this, 					//owner
@@ -182,7 +177,7 @@ public void setNUM_SEC(int nUM_SEC) {
 	   
 	   puts = new ArrayList<Put>();
 	// initialize the puts 
-	   for (int i=0; i<NUM_PUT; i++)
+	   for (int i=0; i<scenario.getNUM_PUT(); i++)
 	   {
 		   Put put = new Put(this, "put" , true);
 		   put.activate();
@@ -236,16 +231,16 @@ public void setNUM_SEC(int nUM_SEC) {
                   10.0, 30.0, true, false);
 
 	      // resources
-	      breakers = new PartTimeRes(this, "Resource breakers", NUM_BREAKER, true, true);
-	      excavators = new PartTimeRes(this, "Resource Excavators", NUM_EXCAVATOR, true, true);
-	      cranes = new PartTimeRes(this, "Resource cranes", NUM_CRANE, true, true);
-	      crews = new PartTimeRes(this, "Resource crews", NUM_CREW, true, true);
-	      secondcrews = new PartTimeRes(this, "Resource 2ndcrews", NUM_2NDCREW, true, true);
-	      rollers = new PartTimeRes(this, "Resource rollers", NUM_ROLLER, true, true);
-	      trucks = new PartTimeRes(this, "Resource trucks", NUM_TRUCK, true, true);
-	      pavecrews = new PartTimeRes(this, "Resource pavecrews", NUM_PAVECREWS, true, true);
-	      stonepavecrews = new PartTimeRes(this, "Resource stonepavecrews", NUM_STONEPAVECREWS, true, true);
-	      startingCondition = new Bin (this, "starting condition check", NUM_STARTINGCONDITION, true, true);
+	      breakers = new PartTimeRes(this, "Resource breakers", scenario.getNUM_BREAKER(), true, true);
+	      excavators = new PartTimeRes(this, "Resource Excavators", scenario.getNUM_EXCAVATOR(), true, true);
+	      cranes = new PartTimeRes(this, "Resource cranes", scenario.getNUM_CRANE(), true, true);
+	      crews = new PartTimeRes(this, "Resource crews", scenario.getNUM_CREW(), true, true);
+	      secondcrews = new PartTimeRes(this, "Resource 2ndcrews", scenario.getNUM_2NDCREW(), true, true);
+	      rollers = new PartTimeRes(this, "Resource rollers", scenario.getNUM_ROLLER(), true, true);
+	      trucks = new PartTimeRes(this, "Resource trucks", scenario.getNUM_TRUCK(), true, true);
+	      pavecrews = new PartTimeRes(this, "Resource pavecrews", scenario.getNUM_PAVECREWS(), true, true);
+	      stonepavecrews = new PartTimeRes(this, "Resource stonepavecrews", scenario.getNUM_STONEPAVECREWS(), true, true);
+	      startingCondition = new Bin (this, "starting condition check", scenario.getNUM_STARTINGCONDITION(), true, true);
 }
 
    
@@ -318,10 +313,18 @@ public void setNUM_SEC(int nUM_SEC) {
 		}
    
    public boolean getSecondCrew() {
-    	return secondCrew;
+    	return scenario.isSecondCrew();
 		}
    
-   public int getPrepareSurface() {
+   public Scenario getScenario() {
+	return scenario;
+}
+
+public void setScenario(Scenario scenario) {
+	this.scenario = scenario;
+}
+
+public int getPrepareSurface() {
 	    return prepareSurface;
 		}
    
@@ -356,22 +359,9 @@ public void setNUM_SEC(int nUM_SEC) {
 	   
    }
    
-/**
-    * Model parameters: Project parameters (the number of sections, puts and resources, etc)
-    */
-   public static int NUM_SEC = 4;					// number of sections
-   public static int NUM_PUT = 0;					// number of puts
-   private static int NUM_BREAKER = 1;				// number of breakers
-   private static int NUM_EXCAVATOR = 2;			// number of excavators
-   private static int NUM_CRANE = 0;				// number of truck-mounted cranes
-   private static int NUM_CREW = 1;					// number of crews
-   private static int NUM_2NDCREW = 1;				// number of 2ndcrews
-   private static int NUM_ROLLER = 2;				// number of rollers
-   private static int NUM_TRUCK = 1;				// number of trucks
-   private static int NUM_PAVECREWS = 1;			// number of pave crews
-   private static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
-   private static int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
-  
+   
+   Scenario scenario = new Scenario();
+
    /** FOR TESTING PURPOSES (arraylists should get filled by GUI in final code)
     * Model parameters: Project parameters per section in static arrays 
     * Characteristics of each section/put, stored in arrays
@@ -455,7 +445,7 @@ public void setNUM_SEC(int nUM_SEC) {
    private static boolean oldPipeHeavy	= false; 	// indicates if the old pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    private static boolean newPipeHeavy	= false; 	// indicates if the new pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    													// for puts this is indicated by an array per put as sizes differ.
-   private static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
+  
    private static int prepareSurface = 2;			// indicates if broken rock is placed per section or for all sections at once: 1 = per section, 2 = all sections
    private static int newPavement = 2;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 													// 3 means asphalt; pave all sections at start, other gives error

@@ -205,7 +205,8 @@ public class Section extends SimProcess
 					   " End: " + myModel.presentTime().toString());
 			   myModel.breakers.takeBack(1);
 			   myModel.breaking();
-			   if (UtilitySimulation.getBreakCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)){
+			   if (UtilitySimulation.getBreakCounter() == (myModel.getScenario().getNUM_SEC() + 
+					   myModel.getScenario().getNUM_PUT())){
 				   myModel.breakers.stopUse();
 				   System.out.println("resource breakers stopped at simulation time " + myModel.presentTime());
 			   }
@@ -343,7 +344,8 @@ public class Section extends SimProcess
 			   myModel.handbackfill();
 			   if(myModel.getSecondCrew()) // if there are second crews:
 			   {	if(myModel.getShore() == 0) // if there is no shoring to be removed:
-			   		{	if (UtilitySimulation.getHandBackfillCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT))
+			   		{	if (UtilitySimulation.getHandBackfillCounter() == (myModel.getScenario().getNUM_SEC() + 
+			   				myModel.getScenario().getNUM_PUT()))
 			   			{	myModel.crews.stopUse();
 			   				myModel.excavators.stopUse();
 			   				System.out.println("resource crews stopped at simulation time " + myModel.presentTime() + " 2nd crew finishes housing connections");
@@ -367,7 +369,8 @@ public class Section extends SimProcess
 			   				" End: " + myModel.presentTime().toString());
 			   		myModel.excavators.takeBack(1);
 			   		if(myModel.getSecondCrew()){ // if there are second crews:
-			   			if (UtilitySimulation.getShoreCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) 
+			   			if (UtilitySimulation.getShoreCounter() == (myModel.getScenario().getNUM_SEC() + 
+			   					myModel.getScenario().getNUM_PUT())) 
 			   			{
 			   				//TODO Fix: counters get updated after every completed pipe instead of completed section so crews stop way to early if there are second crews
 			   				// FIX is to place counters outside of loop.
@@ -450,7 +453,8 @@ public class Section extends SimProcess
 		   else {myModel.excavators.takeBack(1);}
 		   myModel.trucks.takeBack(1);
 		   myModel.backfill();
-		   if (UtilitySimulation.getBackfillCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) {
+		   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + 
+				   myModel.getScenario().getNUM_PUT())) {
 			   myModel.trucks.stopUse();
 			   myModel.excavators.stopUse();
 			   if(myModel.getSecondCrew()){
@@ -483,7 +487,8 @@ public class Section extends SimProcess
 				   " End: " + myModel.presentTime().toString());
 		   myModel.rollers.takeBack(1);
 		   myModel.prepare();
-   		   if (UtilitySimulation.getPrepareCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) {
+   		   if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + 
+   				myModel.getScenario().getNUM_PUT())) {
 			   myModel.rollers.stopUse();
 			   System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
 		   }
@@ -506,7 +511,8 @@ public class Section extends SimProcess
 					   " End: " + myModel.presentTime().toString());
 			   myModel.trucks.takeBack(1);
 			   myModel.prepare();
-	   		   if (UtilitySimulation.getPrepareCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) {
+	   		   if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + 
+	   				myModel.getScenario().getNUM_PUT() )) {
 			    	  myModel.rollers.stopUse();
 			       System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
 	   		   		}
@@ -529,7 +535,8 @@ public class Section extends SimProcess
 					   " End: " + myModel.presentTime().toString());
 			   myModel.pavecrews.takeBack(1);
 			   myModel.pave();
-			   if (UtilitySimulation.getPaveCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) {
+			   if (UtilitySimulation.getPaveCounter() == (myModel.getScenario().getNUM_SEC() + 
+					   myModel.getScenario().getNUM_PUT())) {
 		   			myModel.pavecrews.stopUse();
 		   			myModel.getExperiment().stop();
 		   			System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
@@ -548,7 +555,8 @@ public class Section extends SimProcess
 			   myModel.stonepavecrews.takeBack(1);
 			   myModel.stonepave();
    
-			   if (UtilitySimulation.getStonePaveCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)) {
+			   if (UtilitySimulation.getStonePaveCounter() == (myModel.getScenario().getNUM_SEC() + 
+					   myModel.getScenario().getNUM_PUT())) {
 		   			myModel.stonepavecrews.stopUse();
 		   			myModel.getExperiment().stop();
 		   			System.out.println("resource stonepavecrews stopped at simulation time " + myModel.presentTime());
@@ -557,7 +565,8 @@ public class Section extends SimProcess
 		   
 		   // no paving activities
 		   else if(myModel.getNewPavement() == 0) {
-			   	if (UtilitySimulation.getPrepareCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)){
+			   	if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + 
+			   			myModel.getScenario().getNUM_PUT())){
 			   		myModel.getExperiment().stop();
 			   		System.out.println("no paving activities performed " + myModel.presentTime());
 			   	}	
@@ -565,7 +574,8 @@ public class Section extends SimProcess
 		   
 		   // paving all sections at once.
 		   else if(myModel.getNewPavement() == 3) {
-			   	if (UtilitySimulation.getPrepareCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT)){
+			   	if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + 
+			   			myModel.getScenario().getNUM_PUT())){
 			   		myModel.pavecrews.provide(1);
 					   start = myModel.presentTime();
 					   hold (new TimeSpan(myModel.getPaveTime(), TimeUnit.HOURS)); //multiply by Sum{ALL.lenght_section}
