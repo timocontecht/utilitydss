@@ -159,13 +159,6 @@ public class Put extends SimProcess
 		   sendTraceNote("Activity: " + getName() + " Hand Backfill: " + start.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.crews.takeBack(1);
-		   myModel.handbackfill();
-		   if(myModel.getSecondCrew())
-		   {	if (UtilitySimulation.getHandBackfillCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT))
-		   		{myModel.crews.stopUse();
-		   		System.out.println("resource crews stopped at simulation time " + myModel.presentTime() + " because 2nd crew takes over");
-		   		}
-		   }
 	   
 		   // 7. remove shoring
 		   // only for projects that require shoring (set variable Shore right value in simulation class)
@@ -183,6 +176,15 @@ public class Put extends SimProcess
 		   		//	myModel.excavators.stopUse();	
 		   		//	System.out.println("resource cranes stopped at simulation time " + myModel.presentTime());
 		   		//}
+		   }
+		   
+		   // Stops main sewer crew if there are second crews for connections and they completed all their work. 
+		   myModel.pipes_done();
+		   if(myModel.getSecondCrew())
+		   {	if (UtilitySimulation.getPipeCounter() == (UtilitySimulation.NUM_SEC + UtilitySimulation.NUM_PUT))
+		   		{myModel.crews.stopUse();
+		   		System.out.println("resource crews stopped at simulation time " + myModel.presentTime() + " because 2nd crew takes over");
+		   		}
 		   }
 		   
 		   // 8. backfill

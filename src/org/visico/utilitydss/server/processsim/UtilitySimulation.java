@@ -384,26 +384,31 @@ public void setNUM_SEC(int nUM_SEC) {
    public int getInspectionType() {
 	    return inspectionType;
 		}
+   
+   public boolean getFoundation()	{
+	   return foundation;
+   }
   
-      public int getNewPavement() {
-	      return newPavement;
-	   }
+   public int getNewPavement() {
+	   return newPavement;
+   }
       
-      public int getSectionWait() {
-   	    return sectionWait;
-   		}
+   public int getSectionWait() {
+	   return sectionWait;
+   }
         
    public int getActivityMsg() {
-	    return activityMsg;
-		}
+	   return activityMsg;
+   }
    
    public int getActivityMsgConnection() {
-	    return activityMsgConnection;
-		}
+	   return activityMsgConnection;
+   }
    
    public int getActivityMsgPut() {
-	    return activityMsgPut;
-		}
+	   return activityMsgPut;
+   }
+   
    public int getTotal_length() {
 	   return total_length;
    }
@@ -438,7 +443,7 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int NUM_PAVECREWS = 1;			// number of pave crews
    private static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
    private static int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
-   private static int total_length = 400;			// total length of all sections (for breaking all sections at once) in meter
+   private static int total_length = 24;			// total length of all sections (for breaking all sections at once) in meter
   
    /** THIS IS FOR TESTING PURPOSES (arraylists should get filled by GUI in final code)
     * 
@@ -467,7 +472,7 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int[] cables =		 		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// weight class of cables in the ground
    private static int[] length_connections =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average length of connections
    private static int[] diameter_connections =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average depth of connections
-   private static int[] foundation_type =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type foundation used: 1 = , 2 =
+   private static int[] foundation_type =		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = , 2 =
    private static int[] soil_removed = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the removed soil placed: 1 = , 2 =
    private static int[] soil_new = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the new soil placed: 1 = , 2 =
    private static int[] pipes_old = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where are the removed pipes placed: 1 = , 2 =
@@ -529,22 +534,19 @@ public void setNUM_SEC(int nUM_SEC) {
    private static boolean newPipeHeavy	= false; 	// indicates if the new pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    													// for puts this is indicated by an array per put as sizes differ.
    private static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
-<<<<<<< HEAD
-   private static int prepareSurface = 2;			// indicates if broken rock is placed per section or for all sections at once: 1 = per section, 2 = all sections
-   private static int newPavement = 3;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
-=======
    private static int prepareSurface = 2;			// indicates if broken rock is placed : 1 = yes, 2 = no
    private static int newPavement = 2;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
->>>>>>> one_general_road_section
+
 													// 3 means asphalt; pave all sections at start, other gives error
-   private static int sectionWait = 1;				// indicates after which activity the next section starts: 1 = after main loop, 2 = second backfill, 3 = surface prepared
-													// 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
+   private static int sectionWait = 2;				// indicates after which activity the next section starts: 1 = after main loop (only possible if there is a 2nd crew), 
+   													// 2 = second backfill, 3 = surface prepared, 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
    private static int inspectionType = 1;			// type of inspection applied: 1 = ????
+   private static boolean foundation = false;		// indicates if the project requires foundation beneath the new sewer
 
    /**   
    * Model parameters: Simulation output settings
    */
-   private static int activityMsg = 2;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsg = 3;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
    private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
    private static int activityMsgPut = 2;			// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
 
@@ -630,7 +632,7 @@ public void setNUM_SEC(int nUM_SEC) {
    public void stonepave()   {	
 	   stonepavecounter ++;
    }
-   public void shore()	{
+   public void pipes_done()	{
 	   pipecounter ++;
    }
    
