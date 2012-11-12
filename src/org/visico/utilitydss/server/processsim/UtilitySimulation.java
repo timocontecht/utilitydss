@@ -461,6 +461,7 @@ public int getPrepareSurface() {
  */ 
    
    private static int total_length = 24;			// total length of all sections (for breaking all sections at once) in meter
+   //TODO think about: calculate this based on section lengths or keep it as manual input?
   
    /** THIS IS FOR TESTING PURPOSES (arraylists should get filled by GUI in final code)
     * 
@@ -468,20 +469,20 @@ public int getPrepareSurface() {
     * Characteristics of each section/put, stored in arrays
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
-   private static int[] put = 					{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] put = 					{ 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
    private static int[] pipes = 				{ 2, 1, 1, 1, 1, 1, 2, 2, 2, 5 }; 		// number of pipes, only if pipe section
    private static int[] connections = 			{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
 
    private static int[] num_put_connections = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
    private static int[] old_pavement = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement
    private static int[] new_pavement = 			{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 2 };  		// type of new pavement
-   private static int[] section_length = 		{ 20, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  	// length of section in
+   private static int[] section_length = 		{ 5, 5, 5, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
    private static int[] pipe_length = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of pipes in
    private static int[] section_width = 		{ 4, 4, 4, 4, 1, 1, 2, 2, 2, 2 };  		// width of section in
    private static int[] trench_width = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of Trench in  					///////////// bigger with puts?
    private static int[] trench_depth = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// depth of Trench in
-   private static String[] old_sewer_type = 	{ "Concrete", "Concrete", "Concrete"}; 		// type of old sewer	Concrete, Gres, Plastic
-   private static String[] new_sewer_type = 	{ "Concrete", "Concrete", "Concrete"}; 		// type of new sewer	Concrete, Gres, Plastic
+   private static String[] old_sewer_type = 	{ "Concrete", "Concrete", "Concrete", "Concrete"}; 		// type of old sewer	Concrete, Gres, Plastic
+   private static String[] new_sewer_type = 	{ "Concrete", "Concrete", "Concrete", "Concrete"}; 		// type of new sewer	Concrete, Gres, Plastic
    private static int[] old_diameter = 			{ 300, 300, 300, 300, 300, 300, 2, 2, 2, 2 };  		// diameter of old sewer 
    private static int[] new_diameter = 			{ 300, 300, 300, 300, 300, 300, 2, 2, 2, 2 };  		// diameter of new sewer
    private static int[] asphalt_old = 			{ 40, 40, 40, 40, 1, 1, 2, 2, 2, 2 };  		// layer thickness of old asphalt in
@@ -498,7 +499,7 @@ public int getPrepareSurface() {
    private static int[] new_put_area =			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// Area of the new put
    private static double rock_layer = 0.3;		//{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation rock layer in m 
    private static double sand_layer = 0.04;		//{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
-   private static String[] put_connection_type = { "Concrete", "Concrete", "Concrete" };		// type of put connection (concrete or brick) 
+   private static String[] put_connection_type = { "Concrete", "Concrete", "Concrete", "Concrete" };		// type of put connection (concrete or brick) 
    
    /**  COMMENTED OUT as the arrays above are used for testing purposes. 
     * This is preparation for use with GUI
@@ -565,7 +566,7 @@ public int getPrepareSurface() {
    */
    private static int activityMsg = 3;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
    private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
-   private static int activityMsgPut = 2;			// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsgPut = 3;			// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
 
    /**
     * Process versions

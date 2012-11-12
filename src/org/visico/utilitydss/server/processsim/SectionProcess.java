@@ -1022,11 +1022,11 @@ public class SectionProcess extends SimProcess
 			   
 			   // 8. First backfill + compacting
 			   myModel.crews.provide(1);
-			   if(myModel.getActivityMsg() == 3)
+			   if(myModel.getActivityMsgPut() == 3)
 			   		{start = myModel.presentTime();}
 			   if(this.NUM_CONNECTIONS != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
 				   {hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Trench_Area)/backfill)), TimeUnit.HOURS));
-				   if(myModel.getActivityMsg() == 3)
+				   if(myModel.getActivityMsgPut() == 3)
 		   				{ActivityMessage msg_9 = new ActivityMessage(myModel, this, start, "First Backfill " + i, myModel.presentTime());
 		   				sendMessage(msg_9);
 		   				}
@@ -1060,7 +1060,7 @@ public class SectionProcess extends SimProcess
  
 			   // gathers data on total construction time of put in main sewer loop, only active if turned on in utilitysimulation.java
 			   if(myModel.getActivityMsgPut() == 2){
-				   ActivityMessage msg = new ActivityMessage(myModel, this, start, "Pipe" + i + " construction", myModel.presentTime()) ;
+				   ActivityMessage msg = new ActivityMessage(myModel, this, start, "Put " + i + " construction", myModel.presentTime()) ;
 				   sendMessage(msg);  
 			   }
 			  
