@@ -5,8 +5,6 @@ import java.io.Serializable;
 public class Project implements Serializable
 {
 	
-	
-	
 	public Long getId() 
 	{
 		return id;
@@ -47,8 +45,13 @@ public class Project implements Serializable
 		this.description = description;
 	}
 	
+	
+	
+	
 	String name;
 	String location;
 	String description;
 	Long id;
+	
+	
 }

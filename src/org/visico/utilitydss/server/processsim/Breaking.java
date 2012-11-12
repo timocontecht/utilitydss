@@ -40,8 +40,7 @@ public class Breaking extends SimProcess
 		   myModel.breakers.provide(1);
 		   TimeInstant start = myModel.presentTime();
 		   hold (new TimeSpan(myModel.getBreakingTime() * myModel.getNUM_SEC(), TimeUnit.HOURS));
-		   TimeInstant end = myModel.presentTime();
-		   ActivityMessage msg = new ActivityMessage(myModel, this, start, "Breaking all sections", myModel.presentTime()) ;
+		   ActivityMessage msg = new ActivityMessage(myModel, null, start, "Breaking all sections", myModel.presentTime()) ;
 		   sendMessage(msg);
 		   myModel.breakers.takeBack(1);
 		   myModel.breakers.stopUse();

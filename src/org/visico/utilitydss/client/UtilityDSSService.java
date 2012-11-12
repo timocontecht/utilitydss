@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.visico.utilitydss.shared.Project;
+import org.visico.utilitydss.shared.Scenario;
 import org.visico.utilitydss.shared.User;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -19,6 +20,6 @@ public interface UtilityDSSService extends RemoteService
 	User login (String username, String password) throws IllegalArgumentException;
 	ArrayList<Project> getProjects(User user) throws IllegalArgumentException;
 	
-	String simulate(ArrayList<Integer> resources) throws IllegalArgumentException;
+	String simulate(Scenario scenario) throws IllegalArgumentException;
 }
 

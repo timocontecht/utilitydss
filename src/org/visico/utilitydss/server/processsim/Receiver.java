@@ -203,7 +203,7 @@ public class Receiver implements MessageReceiver
 	
 	
 	
-	public void createSectionElement(Section sec)
+	public void createSectionElement(SectionProcess sec)
 	{
 		Element section = doc.createElement("task");
 		

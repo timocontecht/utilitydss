@@ -19,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.visico.utilitydss.server.processsim.SewerExperiment;
 import org.visico.utilitydss.server.processsim.UtilitySimulation;
 import org.visico.utilitydss.shared.Project;
+import org.visico.utilitydss.shared.Scenario;
 import org.visico.utilitydss.shared.User;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -171,12 +172,13 @@ public class UtilityDSSServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public String simulate(ArrayList<Integer> resources)
+	public String simulate(Scenario scenario)
 			throws IllegalArgumentException {
 		
 		// create model and experiment as a first step
 		   UtilitySimulation model = new UtilitySimulation(null,
-		                         "Simple Process-Oriented Sewerage Re-construction Model", true, true, resources);
+		                         "Simple Process-Oriented Sewerage Re-construction Model", 
+		                         true, true, scenario);
 		   // null as first parameter because it is the main model and has no master model
 		   
 		  
