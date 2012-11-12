@@ -132,7 +132,7 @@ public void setNUM_SEC(int nUM_SEC) {
     */
    public void doInitialSchedules() 
    { 
-	   sections = new ArrayList<Section>();
+	   sections = new ArrayList<SectionProcess>();
 
 	   // initialize the sections 
 	   for (int i=0; i<scenario.getNUM_SEC(); i++)
@@ -140,7 +140,7 @@ public void setNUM_SEC(int nUM_SEC) {
 		   // TODO, currently a very cumbersome way to have a put named put and a section named section, see if it can be shortened.
 		   if(put[i]==0)
 		   {
-			   Section section = new Section(
+			   SectionProcess section = new SectionProcess(
 						this, 					//owner
 						"Section", 				//name
 						true, 					// ?
@@ -185,7 +185,7 @@ public void setNUM_SEC(int nUM_SEC) {
 		   
 		   else
 		   {
-			   Section section = new Section(
+			   SectionProcess section = new SectionProcess(
 						this, 					//owner
 						"Put", 					//name
 						true, 					// ?
@@ -622,7 +622,7 @@ public int getPrepareSurface() {
    
    protected Bin startingCondition;
    
-   ArrayList<Section> sections;
+   ArrayList<SectionProcess> sections;
    ArrayList<Put> puts;
    
    

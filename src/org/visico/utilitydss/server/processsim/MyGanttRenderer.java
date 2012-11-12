@@ -38,21 +38,28 @@ public class MyGanttRenderer extends GanttRenderer {
 
     private void initClut(int row, int col) {
         clut.clear();
-        Color c = (Color) super.getItemPaint(row, col);
-        float[] a = new float[3];
-        Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), a);
+        
         TaskSeries series = (TaskSeries) model.getRowKeys().get(row);
         List<Task> tasks = series.getTasks(); // unchecked
-        Iterator<Task> taskIt = tasks.iterator();
-        while (taskIt.hasNext())
+        Task t = tasks.get(col);
+       
+        if (t instanceof UtilityTask)
         {
-        	Task t = taskIt.next();
-        	if (t.getDescription().contains("Section"))
+        	if (((UtilityTask) t).isSummaryTask())
         	{
-        		clut.add(Color.BLUE);
+        		clut.add(Color.GREEN);
+        		System.out.println(t.getDescription() + " green");
         	}
         	else
-        		clut.add(Color.GREEN);
+        	{
+        		clut.add(Color.BLUE);
+        		System.out.println(t.getDescription() + " blue");
+        	}
         }
+        else
+        	System.out.println("not a utlity task");
+       
+        		
+      
     }
 }

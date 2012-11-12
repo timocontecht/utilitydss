@@ -100,12 +100,13 @@ public class Schedule
 						start = item.getStart();
 					if (item.getEnd() > end) 
 						end = item.getEnd();
-					Task task = new Task(item.getName() + " " + locNumber, new SimpleTimePeriod(item.getStart(), item.getEnd()));
+					UtilityTask task = new UtilityTask(item.getName() + " " + locNumber, new SimpleTimePeriod(item.getStart(), item.getEnd()));
 					tasks.add(task);
 				}
 				
 				// one task as an overarching summary task
-				Task summaryTask = new Task(l.getName(), new SimpleTimePeriod(start, end));
+				UtilityTask summaryTask = new UtilityTask(l.getName(), new SimpleTimePeriod(start, end));
+				summaryTask.setSummaryTask(true);
 				series.add(summaryTask);
 				
 				Iterator<Task> taskIt = tasks.iterator();
