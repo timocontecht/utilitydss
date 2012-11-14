@@ -140,7 +140,8 @@ public void setNUM_SEC(int nUM_SEC) {
 		   // TODO, currently a very cumbersome way to have a put named put and a section named section, see if it can be shortened.
 		   if(put[i]==0)
 		   {
-			   SectionProcess section = new SectionProcess(
+			   
+			   SectionProcessAll section = new SectionProcessAll(
 						this, 					//owner
 						"Section", 				//name
 						true, 					// ?
@@ -176,7 +177,7 @@ public void setNUM_SEC(int nUM_SEC) {
 						new_put_area[i],			// area of the new put
 						put_connection_type[i]	// type of put connection (concrete or brick)
 						);
-	 
+	
 			   section.activate();
 			   sections.add(section);
 			   SewerExperiment exp = (SewerExperiment)this.getExperiment();
@@ -185,7 +186,9 @@ public void setNUM_SEC(int nUM_SEC) {
 		   
 		   else
 		   {
-			   SectionProcess section = new SectionProcess(
+			   //SectionProcess section = new SectionProcess(this, "Test", true);
+			   
+			   SectionProcessAll section = new SectionProcessAll(
 						this, 					//owner
 						"Put", 					//name
 						true, 					// ?
@@ -463,7 +466,7 @@ public int getPrepareSurface() {
     * Characteristics of each section/put, stored in arrays
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
-   private static int[] put = 					{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] put = 					{ 1, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
    private static int[] pipes = 				{ 2, 1, 1, 1, 1, 1, 2, 2, 2, 5 }; 		// number of pipes, only if pipe section
    private static int[] connections = 			{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
 
