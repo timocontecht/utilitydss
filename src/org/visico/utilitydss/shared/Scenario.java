@@ -23,7 +23,7 @@ public class Scenario implements Serializable
 	   private int NUM_BREAKER = 1;				// number of breakers
 	   private int NUM_EXCAVATOR = 2;			// number of excavators
 	   private int NUM_CRANE = 0;				// number of truck-mounted cranes
-	   private int NUM_CREW = 1;					// number of crews
+	   private int NUM_CREW = 1;				// number of crews
 	   private int NUM_2NDCREW = 1;				// number of 2ndcrews
 	   private int NUM_ROLLER = 2;				// number of rollers
 	   private int NUM_TRUCK = 1;				// number of trucks

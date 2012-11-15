@@ -230,6 +230,11 @@ public void setNUM_SEC(int nUM_SEC) {
 		   }
 
 	   }
+	   
+	   // calculates the total length of the work area for breaking and paving operations over the full length of the project.
+	   for (int i=0; i<=scenario.getNUM_SEC()-1; i++)
+	   { total_length = total_length + section_length[i];
+	   }
    }
    
    /**
@@ -250,6 +255,8 @@ public void setNUM_SEC(int nUM_SEC) {
 	      stoneRemovalTime= new ContDistUniform(this, "StoneRemovalTimeStream",
                   10.0, 30.0, true, false);
 	      excavatingTime= new ContDistUniform(this, "ExcavatingTimeStream",
+                  10.0, 30.0, true, false);	
+	      closingTime= new ContDistUniform(this, "ClosingTimeStream",
                   10.0, 30.0, true, false);	
 	      shoreTime= new ContDistUniform(this, "ShoringTimeStream",
                   10.0, 30.0, true, false);
@@ -278,7 +285,13 @@ public void setNUM_SEC(int nUM_SEC) {
 	      stonePaveTime= new ContDistUniform(this, "StonePaveTimeStream",
                   10.0, 30.0, true, false);
 
-	      // resources
+	      // Initialize the resources and bins
+	      // Parameters:
+	      // this                		= belongs to this model
+	      // "Resource breakers" 		= the name of the r
+	      // scenario.getNUM_CRANE()    = the number of resources available
+	      // true                		= show in report?
+	      // false               		= show in trace?
 	      breakers = new PartTimeRes(this, "Resource breakers", scenario.getNUM_BREAKER(), true, true);
 	      excavators = new PartTimeRes(this, "Resource Excavators", scenario.getNUM_EXCAVATOR(), true, true);
 	      cranes = new PartTimeRes(this, "Resource cranes", scenario.getNUM_CRANE(), true, true);
@@ -306,6 +319,9 @@ public void setNUM_SEC(int nUM_SEC) {
 		}
    public double getExcavatingTime() {
 	      return excavatingTime.sample();
+	   }
+   public double getClosingTime() {
+	      return closingTime.sample();
 	   }
    public double getShoringTime() {
 	      return shoreTime.sample();
@@ -374,18 +390,18 @@ public void setNUM_SEC(int nUM_SEC) {
 		}
     
    public boolean getSecondCrew() {
-    	return scenario.isSecondCrew();
+    	return Scenario.isSecondCrew();
 		}
    
    public Scenario getScenario() {
-	return scenario;
-}
+	   	return scenario;
+   		}
 
-public void setScenario(Scenario scenario) {
-	this.scenario = scenario;
-}
+   public void setScenario(Scenario scenario) {
+	   	this.scenario = scenario;
+   		}
 
-public int getPrepareSurface() {
+   public int getPrepareSurface() {
 	    return prepareSurface;
 		}
    
@@ -436,33 +452,10 @@ public int getPrepareSurface() {
 	   
    }
    
-
    
    Scenario scenario = new Scenario();
-/*
-   /** FOR TESTING PURPOSES (arraylists should get filled by GUI in final code)
-    * Model parameters: Project parameters per section in static arrays 
-=======
-/**
-    * Model parameters: GENERAL PROJECT PARAMETERS (the number of sections, puts and resources, etc)
-    *
-   public static int NUM_SEC = 3;					// number of sections
-   public static int NUM_PUT = 0;					// number of puts
-   private static int NUM_BREAKER = 1;				// number of breakers
-   private static int NUM_EXCAVATOR = 1;			// number of excavators
-   private static int NUM_CRANE = 0;				// number of truck-mounted cranes
-   private static int NUM_CREW = 1;					// number of crews
-   private static int NUM_2NDCREW = 1;				// number of 2ndcrews
-   private static int NUM_ROLLER = 2;				// number of rollers
-   private static int NUM_TRUCK = 1;				// number of trucks
-   private static int NUM_PAVECREWS = 1;			// number of pave crews
-   private static int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
-   private static int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
- */ 
-   
-   private static int total_length = 24;			// total length of all sections (for breaking all sections at once) in meter
-   //TODO think about: calculate this based on section lengths or keep it as manual input?
   
+   
    /** THIS IS FOR TESTING PURPOSES (arraylists should get filled by GUI in final code)
     * 
     * SECTION PROJECT PARAMETERS: Project parameters per section in static arrays 
@@ -470,13 +463,14 @@ public int getPrepareSurface() {
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
    private static int[] put = 					{ 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
-   private static int[] pipes = 				{ 2, 1, 1, 1, 1, 1, 2, 2, 2, 5 }; 		// number of pipes, only if pipe section
-   private static int[] connections = 			{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
+   private static int[] pipes = 				{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 5 }; 		// TODO can be deleted, nr is calculated based on section and pipe length,
+   												//number of pipes, only if pipe section
+   private static int[] connections = 			{ 2, 1, 1, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
 
    private static int[] num_put_connections = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
    private static int[] old_pavement = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement
    private static int[] new_pavement = 			{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 2 };  		// type of new pavement
-   private static int[] section_length = 		{ 5, 5, 5, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
+   private static int[] section_length = 		{ 2, 5, 5, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
    private static int[] pipe_length = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of pipes in
    private static int[] section_width = 		{ 4, 4, 4, 4, 1, 1, 2, 2, 2, 2 };  		// width of section in
    private static int[] trench_width = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of Trench in  					///////////// bigger with puts?
@@ -500,6 +494,8 @@ public int getPrepareSurface() {
    private static double rock_layer = 0.3;		//{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation rock layer in m 
    private static double sand_layer = 0.04;		//{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
    private static String[] put_connection_type = { "Concrete", "Concrete", "Concrete", "Concrete" };		// type of put connection (concrete or brick) 
+ 
+   private static int total_length = 0;			// total length of all sections, calculated by summing up the length of all sections.
    
    /**  COMMENTED OUT as the arrays above are used for testing purposes. 
     * This is preparation for use with GUI
@@ -539,7 +535,9 @@ public int getPrepareSurface() {
    private static double rock_layer = 0,3								// height of pavement preparation rock layer in m 
    private static double sand_layer = 0,3								// height of pavement preparation sand layer in m
    ArrayList<Integer> put_connection_type = new ArrayList<Integer>(0);
+   private static int total_length = 0;			// total length of all sections, calculated by summing up the length of all sections.
    */  
+   
    
 /**
    * Model parameters: SIMULATION SETTINGS
@@ -551,10 +549,8 @@ public int getPrepareSurface() {
    private static boolean oldPipeHeavy	= false; 	// indicates if the old pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    private static boolean newPipeHeavy	= false; 	// indicates if the new pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    													// for puts this is indicated by an array per put as sizes differ.
-
    private static int prepareSurface = 2;			// indicates if broken rock is placed : 1 = yes, 2 = no
    private static int newPavement = 2;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
-
 													// 3 means asphalt; pave all sections at start, other gives error
    private static int sectionWait = 2;				// indicates after which activity the next section starts: 1 = after main loop (only possible if there is a 2nd crew), 
    													// 2 = second backfill, 3 = surface prepared, 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
@@ -565,8 +561,9 @@ public int getPrepareSurface() {
    * Model parameters: Simulation output settings
    */
    private static int activityMsg = 3;				// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
-   private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = per connection, 3 = ?
-   private static int activityMsgPut = 3;			// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
+   private static int activityMsgConnection = 3;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = total time per connection, 
+   													//3 = per each activity per connection
+   private static int activityMsgPut = 2;			// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per put, 4 = ?
 
    /**
     * Process versions
@@ -596,6 +593,7 @@ public int getPrepareSurface() {
    private desmoj.core.dist.ContDistUniform breakingTime;
    private desmoj.core.dist.ContDistUniform stoneRemovalTime;
    private desmoj.core.dist.ContDistUniform excavatingTime;
+   private desmoj.core.dist.ContDistUniform closingTime;
    private desmoj.core.dist.ContDistUniform shoreTime;
    private desmoj.core.dist.ContDistUniform PipeRemoveTime;
    private desmoj.core.dist.ContDistUniform PutRemoveTime;

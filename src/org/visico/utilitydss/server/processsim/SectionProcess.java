@@ -59,7 +59,7 @@ public class SectionProcess extends SimProcess
 		super(owner, name, showInTrace);
 		myModel = (UtilitySimulation)owner;
 		PUT = put;									// section or put:  0 is section, 1 is put.  
-		NUM_PIPE = pipes;
+		NUM_PIPE = pipes;							// TODO not used anymore
 		NUM_CONNECTIONS = connections;
 		
 		Num_Put_connections = num_put_connections; 	// number of connections the put has, only if put
@@ -134,7 +134,7 @@ public class SectionProcess extends SimProcess
 	* all data is from bouwkostenonline.nl unless stated otherwise.
 	**/	
 		
-		// breaking (m^2 per hour)
+		// breaking (m^2 per hour)		
 		if(Old_pavement == 2) {remove_pavement = 100;}			// brick pavement
 		else if (Asphalt_old < 45){remove_pavement = 169;}		// asphalt 40 mm
 		else if (Asphalt_old < 55){remove_pavement = 153;}
@@ -160,7 +160,7 @@ public class SectionProcess extends SimProcess
 		else {soil_rm_factor = 1;}
 		
 		// Shoring (in meter per hours) 											!!! data from gwwkosten.n !!!
-		// Average ditch width used													no data found for removal, placement used
+		// Average ditch width used													no data found for removal, therefore placement is used
 		if(myModel.getShore() == 1){shoring = 0.1; shoring_remove = 0.1;}			// sliding cask
 		
 		else if(myModel.getShore() == 2){shoring = 0.25; shoring_remove = 0.25;}	// sheet piling (damwand)
@@ -272,21 +272,22 @@ public class SectionProcess extends SimProcess
 		else {pipe_pl_factor = 1;}
 		
 		// Placing put (duration in hours)							
-		//if(New_put_type == "Pre-Fab"){														
+		//if(New_put_type == "Pre-Fab"){								TODO								
 	 		if(New_put_area < 1) {put_placement = 1/0.63;}
 			else if(New_put_area == 1) {put_placement = 1/0.6;}
 			else if(New_put_area > 2) {put_placement = 1/0.42;}
 			else {put_placement = 1/0.5;}								// area between 1 and 2
 		//}
 		
-		//else if(New_put_type == "Brick"){						
+	 	//TODO add New_put_type to rest of code
+		/*(else if(New_put_type == "Brick"){						
 	 		if(New_put_area < 1) {put_placement = 1/0.23;}
 			else if(New_put_area == 1) {put_placement = 1/0.15;}
 			else if(New_put_area > 2) {put_placement = 1/0.09;}
 			else {put_placement = 1/0.1;}								// area between 1 and 2
-		//}
+		}*/
 		
-		//connection put (in hours per unit) (used average pipe diameter)
+		// Connection put (in hours per unit) (used average pipe diameter)
 		if(Put_connection_type == "concrete"){						
 			connection_put_duration = 2;} 
 
@@ -312,7 +313,7 @@ public class SectionProcess extends SimProcess
 		Pipe_pipe_connection = 0.05;			//hours per unit
 		
 		
-		// Inspection (in m per hour)
+		// TODO Inspection (in m per hour)
 		inspection = 75;
 
 		// Paving preparation (in m^2 per hour)
@@ -330,7 +331,7 @@ public class SectionProcess extends SimProcess
 			else if (Rock_layer >= 0.3){paving_preparation = 50;}
 		}  
 		 
-		// Paving  (in m^2 per hour)
+		// Paving  (in m^2 per hour)							// TODO what if multiple layers of asphalt?
 		if(New_pavement == 2){paving_time = 22.5;} 				// brick pavement
 		else if (Asphalt_new < 45){paving_time = 20;}			// asphalt 
 		else if (Asphalt_new < 55){paving_time = 20;}			
@@ -341,7 +342,7 @@ public class SectionProcess extends SimProcess
 		// Safety
 
 		
-		// Groundwater extraction
+		// TODO Groundwater extraction
 		
 		
 //=====================================================================================================================================================================
@@ -440,7 +441,7 @@ public class SectionProcess extends SimProcess
 		   }
 		   
 		   // for loop iterating trough main loop (iterates trough all pipes in this section)
-		   for (int i=1; i<=this.NUM_PIPE; i++)
+		   for (int i=1; i<=this.NUM_Pipe; i++)
 		   {
 			   // gathers start time of every pipe in main loop, only active if turned on in utilitysimulation.java
 			   if(myModel.getActivityMsg() == 2)
@@ -467,7 +468,7 @@ public class SectionProcess extends SimProcess
 				   	myModel.crews.provide(1);
 				   	if(myModel.getActivityMsg() == 3)
 			   			{start = myModel.presentTime();}
-				   	hold (new TimeSpan((myModel.getExcavatingTime() * closing_sewer), TimeUnit.HOURS));
+				   	hold (new TimeSpan((myModel.getClosingTime() * closing_sewer), TimeUnit.HOURS));
 				   	if(myModel.getActivityMsg() == 3){
 			   			ActivityMessage msg_2a = new ActivityMessage(myModel, this, start, "Closing sewer " + i, myModel.presentTime()) ;
 			   			sendMessage(msg_2a);}
@@ -525,6 +526,7 @@ public class SectionProcess extends SimProcess
 			   }
 			   
 			   // 5b prepare the bed
+			   // TODO bed preparations not always necessary? is already possible by keeping the activity 0 but then it stil shows in output.
 			   myModel.crews.provide(1);
 			   if(myModel.getActivityMsg() == 3)
 			   		{start = myModel.presentTime();}
@@ -573,7 +575,6 @@ public class SectionProcess extends SimProcess
 					   " End: " + myModel.presentTime().toString());
 			   myModel.crews.takeBack(1);
 			   
-
 			   
 	 		   // 8. remove shoring
 			   // only for projects that require shoring (set variable Shore to right value in simulation class)
@@ -634,10 +635,11 @@ public class SectionProcess extends SimProcess
 	   		}
 		   
 		   //TODO think about when housing connections can start (maybe before entire main loop is finished) --> how to program?)
+		   // use flags after a certain amount of pipes that the housing crew can start.
 		   
 		   // 9. install the connections, only if there are connections.
 		   if(this.NUM_CONNECTIONS != 0)
-			{
+		   {
 			   if(myModel.getActivityMsgConnection() == 1)
 			   		{ start = myModel.presentTime();
 			   }
@@ -648,9 +650,12 @@ public class SectionProcess extends SimProcess
 				   if(myModel.getActivityMsgConnection() == 2 ){
 				   		start = myModel.presentTime();
 				   }
+				   if(myModel.getActivityMsgConnection() == 3 ){
+				   		start = myModel.presentTime();
+				   }
 				   hold (new TimeSpan((myModel.getHousingConnectionTime() * connection_duration_hwa), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
-				   if(myModel.getActivityMsgConnection() == 2 ){
-				   		ActivityMessage msg_10 = new ActivityMessage(myModel, this, start, "Housing connections " + j, myModel.presentTime()) ;
+				   if(myModel.getActivityMsgConnection() == 3 ){
+				   		ActivityMessage msg_10 = new ActivityMessage(myModel, this, start, "Housing pipe " + j, myModel.presentTime()) ;
 				   		sendMessage(msg_10);
 				   }
 				   sendTraceNote("Activity: " + getName() + " Install housing connection: " + start.toString() + 
@@ -658,46 +663,57 @@ public class SectionProcess extends SimProcess
 				   if(myModel.getSecondCrew()){
 					   myModel.secondcrews.takeBack(1);}
 				   else {myModel.crews.takeBack(1);}
+			   
+		   
+				   // 10. (second) backfill + compacting
+				   if(myModel.getSecondCrew()) {
+					   	myModel.secondcrews.provide(1);}
+				   else {myModel.crews.provide(1);}
+				   myModel.trucks.provide(1);
+				   if(myModel.getActivityMsgConnection() == 3 ){
+				   		start = myModel.presentTime();
+				   }
+				   hold (new TimeSpan((myModel.getBackfillTime() * ((second_backfill_height * Trench_Area)/backfill)), TimeUnit.HOURS));
+				   if(myModel.getActivityMsgConnection() == 3 ){
+					   ActivityMessage msg_11 = new ActivityMessage(myModel, this, start, "Second Backfill " + j, myModel.presentTime());
+				   	   sendMessage(msg_11);
+				   }
+				   sendTraceNote("Activity: " + getName() + " Backfill: " + start.toString() + 
+						   " End: " + myModel.presentTime().toString());
+				   if(myModel.getSecondCrew()) {
+					   	myModel.secondcrews.takeBack(1);}
+				   else {myModel.crews.takeBack(1);}
+				   myModel.trucks.takeBack(1);
+				   
+				   if(myModel.getActivityMsgConnection() == 2 ){
+					   ActivityMessage msg_11 = new ActivityMessage(myModel, this, start, "Housing connection " + j, myModel.presentTime());
+				   	   sendMessage(msg_11);
+				   }
 			   }
 			   if(myModel.getActivityMsgConnection() == 1)
 			   {
-			   		ActivityMessage msg_10 = new ActivityMessage(myModel, this, start, "Housing connections ", myModel.presentTime()) ;
+			   		ActivityMessage msg_10 = new ActivityMessage(myModel, this, start, "All Housing connections ", myModel.presentTime()) ;
 			   		sendMessage(msg_10);
-			   }
-	   		}
+			   } 
+			}
+		
 		   
-		   // 10. (second) backfill + compacting
-		   if(this.NUM_CONNECTIONS != 0) {
-			   if(myModel.getSecondCrew()) {
-				   	myModel.secondcrews.provide(1);}
-			   else {myModel.crews.provide(1);}
-			   myModel.trucks.provide(1);
-			   start = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getBackfillTime() * ((second_backfill_height * Trench_Area)/backfill)), TimeUnit.HOURS));
-			   ActivityMessage msg_11 = new ActivityMessage(myModel, this, start, "Second Backfill ", myModel.presentTime()) ;
-			   sendMessage(msg_11);
-			   sendTraceNote("Activity: " + getName() + " Backfill: " + start.toString() + 
-					   " End: " + myModel.presentTime().toString());
-			   if(myModel.getSecondCrew()) {
-				   	myModel.secondcrews.takeBack(1);}
-			   else {myModel.crews.takeBack(1);}
-			   myModel.trucks.takeBack(1);
-			   myModel.backfill();
-			   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
-				   myModel.trucks.stopUse();
-				   myModel.crews.stopUse();
-				   if(myModel.getSecondCrew()){
-					   myModel.secondcrews.stopUse();
-					   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
-				   }
-				   else {
-					   myModel.crews.stopUse();
-					   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());
-				   }
-				   System.out.println("resource trucks stopped at simulation time " + myModel.presentTime());
-				   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
+		   myModel.backfill();
+		   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
+			   myModel.trucks.stopUse();
+			   myModel.crews.stopUse();
+			   if(myModel.getSecondCrew()){
+				   myModel.secondcrews.stopUse();
+				   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
 			   }
+			   else {
+				   myModel.crews.stopUse();
+				   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());
+			   }
+			   System.out.println("resource trucks stopped at simulation time " + myModel.presentTime());
+			   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
 		   }
+		   
 
 		   // Allows the next section to start after this if setting is set to 2 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 2) 
@@ -906,7 +922,7 @@ public class SectionProcess extends SimProcess
 			   start = myModel.presentTime();
 		   }
 		   
-		   // for loop iterating trough main loop (iterates trough all pipes in this section)
+		   // for loop iterating trough main loop (iterates trough all puts in this section)
 		   //TODO usually only one put so no iteration, but with separated sewer there are two puts.
 		   for (int i=1; i<=this.NUM_PIPE; i++)
 		   {
@@ -929,6 +945,21 @@ public class SectionProcess extends SimProcess
 					   " End: " + myModel.presentTime().toString());
 			   myModel.excavators.takeBack(1);
 			   myModel.trucks.takeBack(1);
+			   
+			   // Closing sewer
+			   // One time activity in first section or put in first iteration of pipe
+			   if(this.getIdentNumber() == 1 && i == 1){
+				   	myModel.crews.provide(1);
+				   	if(myModel.getActivityMsg() == 3)
+			   			{start = myModel.presentTime();}
+				   	hold (new TimeSpan((myModel.getClosingTime() * closing_sewer), TimeUnit.HOURS));
+				   	if(myModel.getActivityMsg() == 3){
+			   			ActivityMessage msg_2a = new ActivityMessage(myModel, this, start, "Closing sewer " + i, myModel.presentTime()) ;
+			   			sendMessage(msg_2a);}
+				   	sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Closing sewer: " + start.toString() + 
+					   " End: " + myModel.presentTime().toString());
+				   	myModel.crews.takeBack(1);
+			   }
 			   
 			   // 3. shore the section
 			   // only for projects that require shoring (set variable Shore to right value in simulation class)
@@ -1108,22 +1139,23 @@ public class SectionProcess extends SimProcess
 				   	myModel.secondcrews.takeBack(1);}
 			   else {myModel.crews.takeBack(1);}
 			   myModel.trucks.takeBack(1);
-			   myModel.backfill(); 
-			   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
-				   myModel.trucks.stopUse();
+		   }
+		   myModel.backfill(); 
+		   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
+			   myModel.trucks.stopUse();
+			   myModel.crews.stopUse();
+			   if(myModel.getSecondCrew()){
+				   myModel.secondcrews.stopUse();
+				   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
+			   }
+			   else {
 				   myModel.crews.stopUse();
-				   if(myModel.getSecondCrew()){
-					   myModel.secondcrews.stopUse();
-					   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
-				   }
-				   else {
-					   myModel.crews.stopUse();
-					   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());
-				   }
-				   System.out.println("resource trucks stopped at simulation time " + myModel.presentTime());
-				   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
-			   }	
-			}
+				   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());
+			   }
+			   System.out.println("resource trucks stopped at simulation time " + myModel.presentTime());
+			   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
+		   }	
+			
 
 		   // Allows the next section to start after this if setting is set to 2 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 2) 
@@ -1276,7 +1308,7 @@ public class SectionProcess extends SimProcess
 	 */
 	private UtilitySimulation myModel;
 	private int PUT; 
-	private int NUM_PIPE;
+	private int NUM_PIPE;				// TODO not used anymore
 	private int NUM_CONNECTIONS;
 	
 	private int Num_Put_connections;  	// number of connections the put has, only if put
@@ -1332,8 +1364,9 @@ public class SectionProcess extends SimProcess
 	private double foundation_duration;		// TODO production quantity of foundation in m per hour
 	private double connection_put_duration;	// production duration of a connection to a put in units per hour
 	private double backfill;				// production quantity of backfill in m^3 per hour
-	private int inspection;					// TODO production quantity of inspection in m per hour
-	private double Bed_preparation;			// production quantity of bed preparation in m^2 per hour
+	private int inspection;					// TODO add to code, easier after restructuring as inspection can happen at various times
+											// production quantity of inspection in m per hour
+	private double Bed_preparation;			// TODO add to utilitysimulation.java production quantity of bed preparation in m^2 per hour
 	private int paving_preparation;			// production quantity of sand or rock layer in m^3 per hour
 	private double paving_time;				// duration of paving time in hours per m^2			
 	private double closing_sewer; 			// TODO duration of closing down sewer in hours

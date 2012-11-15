@@ -185,7 +185,7 @@ public class Schedule
             dataset,             // data
             true,                // include legend
             true,                // tooltips
-            false                // urls
+            true                // urls
         );   
        
         CategoryPlot categoryplot = (CategoryPlot)chart.getPlot();
