@@ -18,7 +18,7 @@ import desmoj.core.simulator.TimeInstant;
 public class ActivityMessage extends Message 
 {
 
-	public ActivityMessage(Model model, SectionProcess s, TimeInstant st, 
+	public ActivityMessage(Model model, SectionProcessAll s, TimeInstant st, 
 			String w, TimeInstant e) 
 	{
 		super(model, "Customized Schedule Message", st);
@@ -31,7 +31,7 @@ public class ActivityMessage extends Message
 		endtime = e;
 	}
 	
-	public SectionProcess getSection()
+	public SectionProcessAll getSection()
 	{
 		return sec;
 	}
@@ -59,7 +59,7 @@ public class ActivityMessage extends Message
 	private String work;
 	private TimeInstant starttime;
 	private double duration;
-	private SectionProcess sec; 
+	private SectionProcessAll sec; 
 	private TimeInstant endtime;
 
 }
