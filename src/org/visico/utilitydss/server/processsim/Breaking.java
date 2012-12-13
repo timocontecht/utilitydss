@@ -21,10 +21,11 @@ public class Breaking extends SimProcess
 	    * @param showInTrace flag to indicate if this process shall produce output
 	    *                    for the trace
 	    */
-	public Breaking(Model owner, String name, boolean showInTrace)
+	public Breaking(Model owner, String name, boolean showInTrace, int Old_pavement)
 	{
 		super(owner, name, showInTrace);
 		myModel = (UtilitySimulation)owner;
+		oldpavement = Old_pavement;
 	}
 	
 	/**
@@ -32,19 +33,79 @@ public class Breaking extends SimProcess
 	    *process for breaking all sections upfront, only active if 
 	    * experiments process version is set to BREAK_ALL_UPFRONT
 	    */
+	public void lifeCycle() {
 
-	   public void lifeCycle() 
+		removePavement(oldpavement);
+		
+	}
+	
+	   public void removePavement(int oldPavement)
 	   {
-			myModel.startingCondition.retrieve(1);
-		   // break the section
-		   myModel.breakers.provide(1);
 		   TimeInstant start = myModel.presentTime();
-		   hold (new TimeSpan(myModel.getBreakingTime() * myModel.getNUM_SEC(), TimeUnit.HOURS));
-		   ActivityMessage msg = new ActivityMessage(myModel, null, start, "Breaking all sections", myModel.presentTime()) ;
-		   sendMessage(msg);
-		   myModel.breakers.takeBack(1);
-		   myModel.breakers.stopUse();
-		   myModel.startingCondition.store(1);
-		}
+		   
+		   switch(oldPavement){
+	    		case 1:
+	    			// asphalt pavement removal per section
+	    			// Break asphalt per section
+				   myModel.breakers.provide(1);
+				   start = myModel.presentTime();
+				   hold (new TimeSpan((myModel.getBreakingTime() * (10af;lksdfg;kjh/2)), TimeUnit.HOURS)); //multiply by This.lenght_section
+				   //ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Break Section ", myModel.presentTime(), 0) ;
+				   //sendMessage(msg_1);
+				   System.out.println("start time " + start + " finish time " + myModel.presentTime());
+				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
+						   " End: " + myModel.presentTime().toString());
+				   myModel.breakers.takeBack(1);
+				   myModel.breaking();
+				   if (UtilitySimulation.getBreakCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())){
+					   myModel.breakers.stopUse();
+					   System.out.println("resource breakers stopped at simulation time " + myModel.presentTime());
+				   }
+				   break;
+	    			
+	    		case 2:
+	    			// brick pavement removal per section
+				   myModel.crews.provide(1);
+				   start = myModel.presentTime();
+				   hold (new TimeSpan((myModel.getBreakingTime() * (10/2)), TimeUnit.HOURS)); //multiply by This.lenght_section
+				   //ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Remove Stones Section ", myModel.presentTime(), 0);
+				   //sendMessage(msg_2);
+				   System.out.println("start time " + start + " finish time " + myModel.presentTime());
+				   myModel.crews.takeBack(1);
+				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
+						   " End: " + myModel.presentTime().toString());
+				   System.out.println("stones removed at simulation time " + myModel.presentTime());
+	    			break;
+	    			
+	    		case 3:
+	    			// Breaking ashpalt pavement all sections at once.
+ 				   	if (this.getIdentNumber() == (1)){
+ 				   		myModel.breakers.provide(1);
+ 				   		start = myModel.presentTime();
+ 				   		hold (new TimeSpan((myModel.getBreakingTime() * (10/2)), TimeUnit.HOURS));
+ 					   //ActivityMessage msg_3 = new ActivityMessage(myModel, this, start, "Break all ", myModel.presentTime(), 0) ;
+ 					   //sendMessage(msg_3);
+ 				   	System.out.println("start time " + start + " finish time " + myModel.presentTime());
+ 					   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
+ 							   " End: " + myModel.presentTime().toString());
+ 					   myModel.breakers.takeBack(1);
+ 					   myModel.breakers.stopUse();
+ 					   System.out.println("resource breakers stopped at simulation time " + myModel.presentTime());
+ 				   	}
+ 				   	
+ 				   	else{
+ 				   		// Breaking happens once for all sections
+ 				   		// so all following sections have no breaking activities
+ 				   		System.out.println(this + " No breaking activities, all in first " + myModel.presentTime());
+ 				   	}
+	    			   
+	    			break;
+	    			
+	    		default:
+ 			    // no pavement removal
+				   		System.out.println("no breaking blabla activities performed " + myModel.presentTime());	   
+	    			break;
+	   }}
 	  
+	   private int oldpavement;
 }

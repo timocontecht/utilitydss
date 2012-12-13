@@ -9,6 +9,8 @@ import java.io.Serializable;
 public class Scenario implements Serializable
 {
 
+	// how to start connections after a certain amount of time?
+	// implement start connections after certain amount of pipes
 	/**
 	 * 
 	 */
@@ -22,17 +24,23 @@ public class Scenario implements Serializable
 	   // MAX 4 FOR NOW as the arrays in UtilitySimulation.java arent longer.
 	   private int NUM_PUT = 0;					// number of puts
 	   private int NUM_BREAKER = 1;				// number of breakers
-	   private int NUM_EXCAVATOR = 2;			// number of excavators
+	   private int NUM_EXCAVATOR = 1;			// number of excavators
 	   private int NUM_CRANE = 0;				// number of truck-mounted cranes
 	   private int NUM_CREW = 1;				// number of crews
 	   private int NUM_2NDCREW = 1;				// number of 2ndcrews
-	   private int NUM_ROLLER = 2;				// number of rollers
+	   private int NUM_ROLLER = 1;				// number of rollers
 	   private int NUM_TRUCK = 1;				// number of trucks
 	   private int NUM_PAVECREWS = 1;			// number of pave crews
 	   private int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
 	   private int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
 	  
-	   private static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
+	   private static boolean secondCrew = true;		// indicates if there is a 2nd crew present to perform housing connections
+	   
+	   //TODO thinks about if we need different scenario's for different sections ( crossing streets might have different pavement types oid.
+	   private static int pavement_removal_process = 0;
+	   private static int main_sewer_process = 0;
+	   private static int connection_process = 0;
+	   private static int pavement_process = 0;
 
 	public int getNUM_SEC() {
 		return NUM_SEC;

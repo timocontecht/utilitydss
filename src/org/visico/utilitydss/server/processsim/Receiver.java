@@ -116,6 +116,11 @@ public class Receiver implements MessageReceiver
 		
 		if (m instanceof ActivityMessage)
 		{
+			
+			if(((ActivityMessage) m).getDetaillevel() == UtilitySimulation.getActivityMsg() || (((ActivityMessage) m).getDetaillevel()-3) == UtilitySimulation.getActivityMsgConnection() 
+					|| (((ActivityMessage) m).getDetaillevel()-6) == UtilitySimulation.getActivityMsgPut()  || ((ActivityMessage) m).getDetaillevel() == 0) 
+			{
+			
 			// this function collects the ActivityMessage based messages sent from 
 			// the life-cycle of each section and creates a CPM schedule. 
 			ActivityMessage am = (ActivityMessage)m;
@@ -127,8 +132,7 @@ public class Receiver implements MessageReceiver
 			WorkItem t = new WorkItem(am.work(), am.start().getTimeInMillis(), am.end().getTimeInMillis());
 			l.addWorkItem(t);
 			
-			
-			
+						
 			
 			// add XML entry
 			// TODO: move to schedule class
@@ -167,7 +171,12 @@ public class Receiver implements MessageReceiver
 			// SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), (long) (am.start().getTimeInMillis() + am.duration() * 8.64e7)); - replaced by line below - 
 			SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), am.end().getTimeInMillis() );
 			s1.add(new Task(am.getSection().getName() + " " + am.work(), p));
-
+			}
+			else{
+				//System.out.println("booo" + ((ActivityMessage) m).getDetaillevel() + UtilitySimulation.getActivityMsg() + ((ActivityMessage) m).work());		
+				}
+				
+		
 		}
 		
 	}
@@ -203,7 +212,7 @@ public class Receiver implements MessageReceiver
 	
 	
 	
-	public void createSectionElement(SectionProcessAll sec)
+	public void createSectionElement(ProcessAll section2)
 	{
 		Element section = doc.createElement("task");
 		
@@ -212,11 +221,11 @@ public class Receiver implements MessageReceiver
 		section.setAttributeNode(id);
 		
 		Attr name = doc.createAttribute("name");
-		name.setValue(sec.getName());
+		name.setValue(section2.getName());
 		section.setAttributeNode(name);
 		
 		tasks.appendChild(section);
-		sectiontasks.put(sec.getName(), section);
+		sectiontasks.put(section2.getName(), section);
 		id_counter++;
 	}
 	
@@ -247,6 +256,6 @@ public class Receiver implements MessageReceiver
 //	        chart.getCategoryPlot().getDomainAxis().setMaxCategoryLabelWidthRatio(10.0f);
 	        return chart;    
 	    }
-	
+
 	 
 }

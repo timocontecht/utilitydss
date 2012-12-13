@@ -1,12 +1,27 @@
 package org.visico.utilitydss.shared;
 
-public class Section 
+import java.util.concurrent.TimeUnit;
+
+import desmoj.core.simulator.Model;
+import desmoj.core.simulator.SimProcess;
+import desmoj.core.simulator.TimeInstant;
+import desmoj.core.simulator.TimeSpan;
+
+public class Section extends SimProcess
 {
 
+	public Section(Model owner, 
+			String name, 
+			boolean showInTrace)
+	{super(owner, name, showInTrace);
+		
+	}
+		
 	
 	/**
 	 * Calculation of section specific parameters
 	 */
+	/*
 	NUM_Pipe = (int) Math.ceil(Section_length / Pipe_length); 		// calculation of the required number of pipes
 	Section_Area = (Section_length * Section_width);				// total surface of the section
 	Trench_Area = (Pipe_length * Trench_width);						// total surface of the trench
@@ -22,6 +37,10 @@ public class Section
 	private double Total_Area;				// total working area of all sections
 	private double first_backfill_height;	// height of first backfill in m (pipe diameter + 2x average wall thinkness)
 	private double second_backfill_height;	// height of second backfill in m, only if there are connections
-	
+	*/
 
+	
+	/**
+	 * Section specific parameters.
+	 */
 }

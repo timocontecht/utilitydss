@@ -19,9 +19,7 @@ public class SectionProcess extends SimProcess
 	@Override
 	public void lifeCycle() {
 		
-		  
-		
-		
+
 	}
 	
 	

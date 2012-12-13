@@ -48,12 +48,12 @@ public class MyGanttRenderer extends GanttRenderer {
         	if (((UtilityTask) t).isSummaryTask())
         	{
         		clut.add(Color.GREEN);
-        		System.out.println(t.getDescription() + " green");
+        		//System.out.println(t.getDescription() + " green");
         	}
         	else
         	{
         		clut.add(Color.BLUE);
-        		System.out.println(t.getDescription() + " blue");
+        		//System.out.println(t.getDescription() + " blue");
         	}
         }
         else

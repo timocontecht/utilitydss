@@ -18,8 +18,8 @@ import desmoj.core.simulator.TimeInstant;
 public class ActivityMessage extends Message 
 {
 
-	public ActivityMessage(Model model, SectionProcessAll s, TimeInstant st, 
-			String w, TimeInstant e) 
+	public ActivityMessage(Model model, ProcessAll s, TimeInstant st, 
+			String w, TimeInstant e, int d) 
 	{
 		super(model, "Customized Schedule Message", st);
 		// TODO Auto-generated constructor stub
@@ -29,9 +29,10 @@ public class ActivityMessage extends Message
 		work = w;
 		duration = e.getTimeAsDouble() - st.getTimeAsDouble();
 		endtime = e;
+		detailLevel = d;
 	}
 	
-	public SectionProcessAll getSection()
+	public ProcessAll getSection()
 	{
 		return sec;
 	}
@@ -56,10 +57,15 @@ public class ActivityMessage extends Message
 		return endtime.getTimeAsCalender();
 	}
 	
+	public int getDetaillevel()
+	{
+		return detailLevel;
+	}
+	
 	private String work;
 	private TimeInstant starttime;
 	private double duration;
-	private SectionProcessAll sec; 
+	private ProcessAll sec; 
 	private TimeInstant endtime;
-
+	private int detailLevel;
 }
