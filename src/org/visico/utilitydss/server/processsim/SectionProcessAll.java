@@ -668,7 +668,7 @@ public class SectionProcessAll extends SimProcess
 		    			// Break asphalt per section
     				   myModel.breakers.provide(1);
     				   start = myModel.presentTime();
-    				   hold (new TimeSpan((myModel.getBreakingTime() * (Section_Area/remove_pavement)), TimeUnit.HOURS)); //multiply by This.lenght_section
+    				   hold (new TimeSpan((myModel.getBreakingTime() * (Section_Area/remove_pavement)), TimeUnit.HOURS));
     				   ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Break Section ", myModel.presentTime()) ;
     				   sendMessage(msg_1);
     				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
@@ -685,7 +685,7 @@ public class SectionProcessAll extends SimProcess
 		    			// brick pavement removal per section
     				   myModel.crews.provide(1);
     				   start = myModel.presentTime();
-    				   hold (new TimeSpan((myModel.getBreakingTime() * (Section_Area/remove_pavement)), TimeUnit.HOURS)); //multiply by This.lenght_section
+    				   hold (new TimeSpan((myModel.getBreakingTime() * (Section_Area/remove_pavement)), TimeUnit.HOURS));
     				   ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Remove Stones Section ", myModel.presentTime());
     				   sendMessage(msg_1);
     				   myModel.crews.takeBack(1);

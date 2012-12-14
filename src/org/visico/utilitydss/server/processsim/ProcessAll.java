@@ -364,16 +364,19 @@ public class ProcessAll extends SimProcess
 			TimeInstant startConnection_2 = myModel.presentTime();		// starting time of connection activity corresponding to detail level 2 as selected in UtilitySimulation.java
 			
 		   // 1. break the section or remove stone pavement
-
+			
 			/*Breaking pavementbreaking = new Breaking(
 					myModel, 					//owner
-					"Breaking", 					//name
+					"Section", 					//name
 					true, 					// ?
-					Old_pavement
-					);
+					Old_pavement,
+					Total_Area, 
+					Section_Area, 
+					remove_pavement);
   
 			pavementbreaking.activate();
-			this needs to passivate while breaking performs it's activities
+			//passivate()
+			// this needs to passivate while breaking performs it's activities
 			*/
 			removePavement(Old_pavement);
 			
@@ -670,9 +673,12 @@ public class ProcessAll extends SimProcess
    		   // 12. pave 
 		   /*Paving pavement = new Paving(
 			myModel, 					//owner
-			"Paving", 					//name
+			"Section", 					//name
 			true, 					// ?
-			New_pavement
+			New_pavement,
+			Total_Area,
+			Section_Area,
+			paving_time
 			);
 
 			pavement.activate();
@@ -706,15 +712,20 @@ public class ProcessAll extends SimProcess
 			// 1. break the section or remove stone pavement
 			/*Breaking pavementbreaking = new Breaking(
 			myModel, 					//owner
-			"Breaking", 					//name
+			"Put", 					//name
+			(this.getIdentNumber()).intValue(),
 			true, 					// ?
 			Old_pavement
-			);
+			Total_Area, 
+			Section_Area, 
+			remove_pavement);
 
 			pavementbreaking.activate();
-			this needs to passivate while breaking performs it's activities
+			passivate()
+			// this needs to passivate while breaking performs it's activities
 			*/
 			removePavement(Old_pavement);
+		    //activateAfter(Breaking.class); ;lkkkasdfohiawohg;oasjflknasdfhaosfhlsadjfl;asjdfo;jhawo;ghe;ldfhla
 		   
 		   // gathers data on total duration of main put loop (1 task contains all activities for all put(s)), only active if turned on in utilitysimulation.java
 			   start_1 = myModel.presentTime();
@@ -979,7 +990,7 @@ public class ProcessAll extends SimProcess
    		   // 12. pave  
 		   /*Paving pavement = new BPavingreaking(
 			myModel, 					//owner
-			"Paving", 					//name
+			"Put", 					//name
 			true, 					// ?
 			New_pavement
 			);
@@ -1015,7 +1026,7 @@ public class ProcessAll extends SimProcess
 	    			// Break asphalt per section
 				   myModel.breakers.provide(1);
 				   start = myModel.presentTime();
-				   hold (new TimeSpan((myModel.getBreakingTime() * (Section_Area/remove_pavement)), TimeUnit.HOURS)); //multiply by This.lenght_section
+				   hold (new TimeSpan((myModel.getBreakingTime() * (Section_Area/remove_pavement)), TimeUnit.HOURS)); 
 				   ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Break Section ", myModel.presentTime(), 0) ;
 				   sendMessage(msg_1);
 				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
@@ -1032,7 +1043,7 @@ public class ProcessAll extends SimProcess
 	    			// brick pavement removal per section
 				   myModel.crews.provide(1);
 				   start = myModel.presentTime();
-				   hold (new TimeSpan((myModel.getBreakingTime() * (Section_Area/remove_pavement)), TimeUnit.HOURS)); //multiply by This.lenght_section
+				   hold (new TimeSpan((myModel.getBreakingTime() * (Section_Area/remove_pavement)), TimeUnit.HOURS)); 
 				   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Remove Stones Section ", myModel.presentTime(), 0);
 				   sendMessage(msg_2);
 				   myModel.crews.takeBack(1);
@@ -1092,6 +1103,7 @@ public class ProcessAll extends SimProcess
 	    			   			myModel.getExperiment().stop();
 	    			   			System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
 	    			   		}   
+
 	    			break;
 
 	    		case 2:

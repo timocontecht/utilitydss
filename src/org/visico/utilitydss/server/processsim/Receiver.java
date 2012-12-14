@@ -116,62 +116,88 @@ public class Receiver implements MessageReceiver
 		
 		if (m instanceof ActivityMessage)
 		{
-			
+			// only AM's that match with the selected detail level in myModel are allowed to pass
 			if(((ActivityMessage) m).getDetaillevel() == UtilitySimulation.getActivityMsg() || (((ActivityMessage) m).getDetaillevel()-3) == UtilitySimulation.getActivityMsgConnection() 
 					|| (((ActivityMessage) m).getDetaillevel()-6) == UtilitySimulation.getActivityMsgPut()  || ((ActivityMessage) m).getDetaillevel() == 0) 
 			{
+				
+				// this function collects the ActivityMessage based messages sent from 
+				// the life-cycle of each section and creates a CPM schedule. 
+				ActivityMessage am = (ActivityMessage)m;
+				//Name = null;
+				//if(am.getSection() != null)
+				//{
+				Location l = schedule.addNew(am.getSection().getName());
+				//}
+				/*
+				else if (am.getSection1() != null)
+				{
+				Location l = schedule.addNew(am.getSection1().getName());
+				}
+				
+				else if (am.getSection2() != null)
+				{
+				Location l = schedule.addNew(am.getSection2().getName());
+				}
+				
+				else if (am.getSection3() != null)
+				{
+				Location l = schedule.addNew(am.getSection3().getName());
+				}	
+					
+				else if (am.getSection4() != null)
+				{
+				Location l = schedule.addNew(am.getSection4().getName());
+				}
+				
+				*/
+				Calendar end = am.start();
+				end.add(Calendar.DAY_OF_MONTH, (int) am.duration());
+				
+				WorkItem t = new WorkItem(am.work(), am.start().getTimeInMillis(), am.end().getTimeInMillis());
+				l.addWorkItem(t);
+				
+							
+				
+				// add XML entry
+				// TODO: move to schedule class
+				
+				Element secTask = sectiontasks.get(am.getSection().getName());
+				
+				Element work = doc.createElement("task");
+				
+				Attr id = doc.createAttribute("id");
+				id.setValue(Integer.toString(id_counter));
+				work.setAttributeNode(id);
+				
+				Attr name = doc.createAttribute("name");
+				name.setValue(am.work());
+				work.setAttributeNode(name);
+				
+				Calendar start = am.start();
+				Attr start_att = doc.createAttribute("start");
+				start_att.setValue((start.get(Calendar.MONTH) + 1) + "-"
+				        + start.get(Calendar.DATE) + "-" + start.get(Calendar.YEAR));
+				work.setAttributeNode(start_att);
+				
+				Attr duration = doc.createAttribute("duration");
+				duration.setValue(Double.toString(am.duration()));
+				work.setAttributeNode(duration);
+				
+				secTask.appendChild(work);
+				
+				id_counter++;
+				
+				// and add to the chart
+				// TODO: move to schedule class
+				// Calendar end = am.start();
+				// end.add(Calendar.DAY_OF_MONTH, (int) am.duration());
+				
+				// SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), (long) (am.start().getTimeInMillis() + am.duration() * 8.64e7)); - replaced by line below - 
+				SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), am.end().getTimeInMillis() );
+				s1.add(new Task(am.getSection().getName() + " " + am.work(), p));
+				}
 			
-			// this function collects the ActivityMessage based messages sent from 
-			// the life-cycle of each section and creates a CPM schedule. 
-			ActivityMessage am = (ActivityMessage)m;
-			Location l = schedule.addNew(am.getSection().getName());
-			
-			Calendar end = am.start();
-			end.add(Calendar.DAY_OF_MONTH, (int) am.duration());
-			
-			WorkItem t = new WorkItem(am.work(), am.start().getTimeInMillis(), am.end().getTimeInMillis());
-			l.addWorkItem(t);
-			
-						
-			
-			// add XML entry
-			// TODO: move to schedule class
-			
-			Element secTask = sectiontasks.get(am.getSection().getName());
-			
-			Element work = doc.createElement("task");
-			
-			Attr id = doc.createAttribute("id");
-			id.setValue(Integer.toString(id_counter));
-			work.setAttributeNode(id);
-			
-			Attr name = doc.createAttribute("name");
-			name.setValue(am.work());
-			work.setAttributeNode(name);
-			
-			Calendar start = am.start();
-			Attr start_att = doc.createAttribute("start");
-			start_att.setValue((start.get(Calendar.MONTH) + 1) + "-"
-			        + start.get(Calendar.DATE) + "-" + start.get(Calendar.YEAR));
-			work.setAttributeNode(start_att);
-			
-			Attr duration = doc.createAttribute("duration");
-			duration.setValue(Double.toString(am.duration()));
-			work.setAttributeNode(duration);
-			
-			secTask.appendChild(work);
-			
-			id_counter++;
-			
-			// and add to the chart
-			// TODO: move to schedule class
-			// Calendar end = am.start();
-			// end.add(Calendar.DAY_OF_MONTH, (int) am.duration());
-			
-			// SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), (long) (am.start().getTimeInMillis() + am.duration() * 8.64e7)); - replaced by line below - 
-			SimpleTimePeriod p = new SimpleTimePeriod(am.start().getTimeInMillis(), am.end().getTimeInMillis() );
-			s1.add(new Task(am.getSection().getName() + " " + am.work(), p));
-			}
 			else{
 				//System.out.println("booo" + ((ActivityMessage) m).getDetaillevel() + UtilitySimulation.getActivityMsg() + ((ActivityMessage) m).work());		
 				}

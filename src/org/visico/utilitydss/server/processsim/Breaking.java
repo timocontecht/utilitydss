@@ -21,11 +21,15 @@ public class Breaking extends SimProcess
 	    * @param showInTrace flag to indicate if this process shall produce output
 	    *                    for the trace
 	    */
-	public Breaking(Model owner, String name, boolean showInTrace, int Old_pavement)
+	public Breaking(Model owner, String name, boolean showInTrace, int Old_pavement, double Total_Area, 
+			double Section_Area, double remove_pavement)
 	{
 		super(owner, name, showInTrace);
 		myModel = (UtilitySimulation)owner;
 		oldpavement = Old_pavement;
+		total_area = Total_Area;
+		section_area = Section_Area;
+		Remove_Pavement = remove_pavement;
 	}
 	
 	/**
@@ -49,10 +53,9 @@ public class Breaking extends SimProcess
 	    			// Break asphalt per section
 				   myModel.breakers.provide(1);
 				   start = myModel.presentTime();
-				   hold (new TimeSpan((myModel.getBreakingTime() * (10af;lksdfg;kjh/2)), TimeUnit.HOURS)); //multiply by This.lenght_section
-				   //ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Break Section ", myModel.presentTime(), 0) ;
-				   //sendMessage(msg_1);
-				   System.out.println("start time " + start + " finish time " + myModel.presentTime());
+				   hold (new TimeSpan((myModel.getBreakingTime() * (section_area/Remove_Pavement)), TimeUnit.HOURS)); 
+				   ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Break Section ", myModel.presentTime(), 0, 1) ;
+				   sendMessage(msg_1);
 				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
 						   " End: " + myModel.presentTime().toString());
 				   myModel.breakers.takeBack(1);
@@ -67,10 +70,9 @@ public class Breaking extends SimProcess
 	    			// brick pavement removal per section
 				   myModel.crews.provide(1);
 				   start = myModel.presentTime();
-				   hold (new TimeSpan((myModel.getBreakingTime() * (10/2)), TimeUnit.HOURS)); //multiply by This.lenght_section
-				   //ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Remove Stones Section ", myModel.presentTime(), 0);
-				   //sendMessage(msg_2);
-				   System.out.println("start time " + start + " finish time " + myModel.presentTime());
+				   hold (new TimeSpan((myModel.getBreakingTime() * (section_area/Remove_Pavement)), TimeUnit.HOURS)); 
+				   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Remove Stones Section ", myModel.presentTime(), 0, 1);
+				   sendMessage(msg_2);
 				   myModel.crews.takeBack(1);
 				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
 						   " End: " + myModel.presentTime().toString());
@@ -82,15 +84,14 @@ public class Breaking extends SimProcess
  				   	if (this.getIdentNumber() == (1)){
  				   		myModel.breakers.provide(1);
  				   		start = myModel.presentTime();
- 				   		hold (new TimeSpan((myModel.getBreakingTime() * (10/2)), TimeUnit.HOURS));
- 					   //ActivityMessage msg_3 = new ActivityMessage(myModel, this, start, "Break all ", myModel.presentTime(), 0) ;
- 					   //sendMessage(msg_3);
- 				   	System.out.println("start time " + start + " finish time " + myModel.presentTime());
- 					   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
+ 				   		hold (new TimeSpan((myModel.getBreakingTime() * (total_area/Remove_Pavement)), TimeUnit.HOURS));
+ 				   		ActivityMessage msg_3 = new ActivityMessage(myModel, this, start, "Break all ", myModel.presentTime(), 0, 1) ;
+ 				   		sendMessage(msg_3);
+ 				   		sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
  							   " End: " + myModel.presentTime().toString());
- 					   myModel.breakers.takeBack(1);
- 					   myModel.breakers.stopUse();
- 					   System.out.println("resource breakers stopped at simulation time " + myModel.presentTime());
+ 				   		myModel.breakers.takeBack(1);
+ 				   		myModel.breakers.stopUse();
+ 				   		System.out.println("resource breakers stopped at simulation time " + myModel.presentTime());
  				   	}
  				   	
  				   	else{
@@ -108,4 +109,7 @@ public class Breaking extends SimProcess
 	   }}
 	  
 	   private int oldpavement;
+	   private double section_area;
+	   private double total_area;
+	   private double Remove_Pavement;
 }

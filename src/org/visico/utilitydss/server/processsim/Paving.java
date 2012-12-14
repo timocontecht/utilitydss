@@ -21,11 +21,15 @@ public class Paving extends SimProcess
 	    * @param showInTrace flag to indicate if this process shall produce output
 	    *                    for the trace
 	    */
-	public Paving(Model owner, String name, boolean showInTrace, int New_pavement)
+	public Paving(Model owner, String name, boolean showInTrace, int New_pavement, double Total_Area, double Section_Area, 
+			double paving_time)
 	{
 		super(owner, name, showInTrace);
 		myModel = (UtilitySimulation)owner;
 		newPavement = New_pavement;
+		total_area = Total_Area;
+		section_area = Section_Area;
+		Paving_Time = paving_time;
 	}
 	
 	/**
@@ -49,9 +53,9 @@ public class Paving extends SimProcess
 	    			   // asphalt paving
 	    				   myModel.pavecrews.provide(1);
 	    				   start = myModel.presentTime();
-	    				   hold (new TimeSpan((myModel.getPaveTime() * (10/2)), TimeUnit.HOURS));
-	    				   //ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Pave ", myModel.presentTime(), 0) ;
-	    				   //sendMessage(msg_1);
+	    				   hold (new TimeSpan((myModel.getPaveTime() * (section_area/Paving_Time)), TimeUnit.HOURS));
+	    				   ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Pave ", myModel.presentTime(), 0, true) ;
+	    				   sendMessage(msg_1);
 	    				   sendTraceNote("Activity: " + getName() + " Asphalt Paving: " + start.toString() + 
 	    						   " End: " + myModel.presentTime().toString());
 	    				   myModel.pavecrews.takeBack(1);
@@ -68,9 +72,9 @@ public class Paving extends SimProcess
 	    			// brick paving
 					   myModel.stonepavecrews.provide(1);
 					   start = myModel.presentTime();
-					   hold (new TimeSpan((myModel.getPaveTime() * (10/2)), TimeUnit.HOURS));
-					   //ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Stone Pave ", myModel.presentTime(), 0) ;
-					   //sendMessage(msg_2);
+					   hold (new TimeSpan((myModel.getPaveTime() * (section_area/Paving_Time)), TimeUnit.HOURS));
+					   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Stone Pave ", myModel.presentTime(), 0, true) ;
+					   sendMessage(msg_2);
 					   sendTraceNote("Activity: " + getName() + " Stone Paving: " + start.toString() + 
 					   " End: " + myModel.presentTime().toString());
 								   myModel.stonepavecrews.takeBack(1);
@@ -89,9 +93,9 @@ public class Paving extends SimProcess
 				   	if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())){
 				   		myModel.pavecrews.provide(1);
 					   start = myModel.presentTime();
-					   hold (new TimeSpan((myModel.getPaveTime() * (10/2)), TimeUnit.HOURS));
-					   //ActivityMessage msg_3 = new ActivityMessage(myModel, this, start, "Pave all ", myModel.presentTime(), 0) ;
-					   //sendMessage(msg_3);
+					   hold (new TimeSpan((myModel.getPaveTime() * (total_area/Paving_Time)), TimeUnit.HOURS));
+					   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start, "Pave all ", myModel.presentTime(), 0, true) ;
+					   sendMessage(msg_3);
 					   sendTraceNote("Activity: " + getName() + " Asphalt Paving: " + start.toString() + 
 							   " End: " + myModel.presentTime().toString());
 					   myModel.pavecrews.takeBack(1);
@@ -119,4 +123,7 @@ public class Paving extends SimProcess
 	   }}
 	  
 	   private int newPavement;
+	   private double section_area;
+	   private double total_area;
+	   private double Paving_Time;
 }
