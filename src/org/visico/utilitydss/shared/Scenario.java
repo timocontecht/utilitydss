@@ -20,8 +20,8 @@ public class Scenario implements Serializable
 	    * Model parameters: Project parameters (the number of sections, puts and resources, etc)
 	    */
 
-	   private int NUM_SEC = 3;					// number of sections
-	   // MAX 4 FOR NOW as the arrays in UtilitySimulation.java arent longer.
+	   private static int NUM_SEC = 3;					// number of sections
+	   // MAX 4 FOR NOW as the arrays in UtilitySimulation.java aren't longer.
 	   private int NUM_PUT = 0;					// number of puts
 	   private int NUM_BREAKER = 1;				// number of breakers
 	   private int NUM_EXCAVATOR = 1;			// number of excavators
@@ -36,13 +36,8 @@ public class Scenario implements Serializable
 	  
 	   private static boolean secondCrew = true;		// indicates if there is a 2nd crew present to perform housing connections
 	   
-	   //TODO thinks about if we need different scenario's for different sections ( crossing streets might have different pavement types oid.
-	   private static int pavement_removal_process = 0;
-	   private static int main_sewer_process = 0;
-	   private static int connection_process = 0;
-	   private static int pavement_process = 0;
 
-	public int getNUM_SEC() {
+	public static int getNUM_SEC() {
 		return NUM_SEC;
 	}
 
@@ -145,8 +140,6 @@ public class Scenario implements Serializable
 	public static void setSecondCrew(boolean secondCrew) {
 		Scenario.secondCrew = secondCrew;
 	}
-
-	   
 	
 	   
 }

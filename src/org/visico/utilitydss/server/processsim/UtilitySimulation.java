@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.visico.utilitydss.shared.Scenario;
+import org.visico.utilitydss.shared.Section;
 
 import desmoj.core.advancedModellingFeatures.Bin;
 import desmoj.core.dist.ContDistUniform;
@@ -132,7 +133,7 @@ public void setNUM_SEC(int nUM_SEC) {
     */
    public void doInitialSchedules() 
    { 
-	   sections = new ArrayList<ProcessAll>();
+	   sections = new ArrayList<Section>();
 
 	   // initialize the sections 
 	   for (int i=0; i<scenario.getNUM_SEC(); i++)
@@ -141,9 +142,9 @@ public void setNUM_SEC(int nUM_SEC) {
 		   if(put[i]==0)
 		   {
 			   
-			   ProcessAll section = new ProcessAll(
+			   Section section = new Section(
 						this, 					//owner
-						"Section", 				//name
+						"Main Section", 				//name
 						true, 					// ?
 						put[i],					// section or put:  0 is section, 1 is put.  
 						shore[i],				// number of pipes in section
@@ -188,9 +189,9 @@ public void setNUM_SEC(int nUM_SEC) {
 		   {
 			   //SectionProcess section = new SectionProcess(this, "Test", true);
 			   
-			   ProcessAll section = new ProcessAll(
+			   Section section = new Section(
 						this, 					//owner
-						"Put", 					//name
+						"Main Section",				//name
 						true, 					// ?
 						put[i],					// section or put:  0 is section, 1 is put.  
 						shore[i],				// number of pipes in section
@@ -643,7 +644,7 @@ public void setNUM_SEC(int nUM_SEC) {
    
    protected Bin startingCondition;
    
-   ArrayList<ProcessAll> sections;
+   ArrayList<Section> sections;
    ArrayList<ProcessAll> puts;
    
    

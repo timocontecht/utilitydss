@@ -15,6 +15,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.visico.utilitydss.shared.Section;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -124,39 +125,13 @@ public class Receiver implements MessageReceiver
 				// this function collects the ActivityMessage based messages sent from 
 				// the life-cycle of each section and creates a CPM schedule. 
 				ActivityMessage am = (ActivityMessage)m;
-				//Name = null;
-				//if(am.getSection() != null)
-				//{
+
 				Location l = schedule.addNew(am.getSection().getName());
-				//}
-				/*
-				else if (am.getSection1() != null)
-				{
-				Location l = schedule.addNew(am.getSection1().getName());
-				}
-				
-				else if (am.getSection2() != null)
-				{
-				Location l = schedule.addNew(am.getSection2().getName());
-				}
-				
-				else if (am.getSection3() != null)
-				{
-				Location l = schedule.addNew(am.getSection3().getName());
-				}	
-					
-				else if (am.getSection4() != null)
-				{
-				Location l = schedule.addNew(am.getSection4().getName());
-				}
-				
-				*/
 				Calendar end = am.start();
 				end.add(Calendar.DAY_OF_MONTH, (int) am.duration());
 				
 				WorkItem t = new WorkItem(am.work(), am.start().getTimeInMillis(), am.end().getTimeInMillis());
 				l.addWorkItem(t);
-				
 							
 				
 				// add XML entry
@@ -238,7 +213,7 @@ public class Receiver implements MessageReceiver
 	
 	
 	
-	public void createSectionElement(ProcessAll section2)
+	public void createSectionElement(Section section2)
 	{
 		Element section = doc.createElement("task");
 		

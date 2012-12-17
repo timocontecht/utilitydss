@@ -2,12 +2,14 @@ package org.visico.utilitydss.server.processsim;
 
 import java.util.concurrent.TimeUnit;
 
+import org.visico.utilitydss.shared.Section;
+
 import desmoj.core.simulator.Model;
 import desmoj.core.simulator.SimProcess;
 import desmoj.core.simulator.TimeInstant;
 import desmoj.core.simulator.TimeSpan;
 
-public class PutProcessAll extends SimProcess
+public class PutProcessAll extends Section
 {
 	
 	/**
@@ -56,7 +58,7 @@ public class PutProcessAll extends SimProcess
 			) 
 	
 	{
-		super(owner, name, showInTrace);
+		super(owner, name, showInTrace, new_pavement, new_pavement, new_pavement, bed_preparation, new_pavement, new_pavement, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, new_sewer_type, new_sewer_type, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation);
 		myModel = (UtilitySimulation)owner;
 		PUT = put;									// section or put:  0 is section, 1 is put.  
 		Shore = shore;							
@@ -374,7 +376,7 @@ public class PutProcessAll extends SimProcess
 			   myModel.trucks.provide(1);
 			   start_3 = myModel.presentTime();
 			   hold (new TimeSpan((myModel.getExcavatingTime() * (Excavation_volume/excavation) * soil_rm_factor * cables_weight), TimeUnit.HOURS));
-			   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start_3, "Excavate put " + i, myModel.presentTime()) ;
+			   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start_3, "Excavate put " + i, myModel.presentTime(), i) ;
 			   sendMessage(msg_2);
 			   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Excavating Start: " + start_3.toString() + 
 					   " End: " + myModel.presentTime().toString());

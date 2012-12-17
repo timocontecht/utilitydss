@@ -2,12 +2,15 @@ package org.visico.utilitydss.server.processsim;
 
 import java.util.concurrent.TimeUnit;
 
+import org.visico.utilitydss.shared.Scenario;
+import org.visico.utilitydss.shared.Section;
+
 import desmoj.core.simulator.Model;
 import desmoj.core.simulator.SimProcess;
 import desmoj.core.simulator.TimeInstant;
 import desmoj.core.simulator.TimeSpan;
 
-public class ProcessAll extends SimProcess
+public class ProcessAll extends Section
 {
 	
 
@@ -57,7 +60,7 @@ public class ProcessAll extends SimProcess
 			) 
 	
 	{
-		super(owner, name, showInTrace);
+		super(owner, name, showInTrace, new_pavement, new_pavement, new_pavement, bed_preparation, new_pavement, new_pavement, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, new_sewer_type, new_sewer_type, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation);
 		myModel = (UtilitySimulation)owner;
 		PUT = put;									// section or put:  0 is section, 1 is put.  
 		Shore = shore;							
@@ -480,6 +483,7 @@ public class ProcessAll extends SimProcess
 				   myModel.excavators.takeBack(1);
 				   myModel.crews.takeBack(1);
 			   }
+			   
 			   // 7. First backfill + compacting
 			   myModel.crews.provide(1);
 			   start_3 = myModel.presentTime();
@@ -595,7 +599,6 @@ public class ProcessAll extends SimProcess
 			   ActivityMessage msg_10 = new ActivityMessage(myModel, this, startConnection_1, "All Housing connections ", myModel.presentTime(), 4) ;
 			   sendMessage(msg_10); 
 			}
-		
 		   
 		   myModel.backfill();
 		   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
@@ -1054,7 +1057,7 @@ public class ProcessAll extends SimProcess
 	    			
 	    		case 3:
 	    			// Breaking ashpalt pavement all sections at once.
- 				   	if (this.getIdentNumber() == (1)){
+ 				   	if ((this.getIdentNumber() - Scenario.getNUM_SEC() ) == (1)){
  				   		myModel.breakers.provide(1);
  				   		start = myModel.presentTime();
  				   		hold (new TimeSpan((myModel.getBreakingTime() * (Total_Area/remove_pavement)), TimeUnit.HOURS));
@@ -1070,7 +1073,7 @@ public class ProcessAll extends SimProcess
  				   	else{
  				   		// Breaking happens once for all sections
  				   		// so all following sections have no breaking activities
- 				   		System.out.println(this + " No breaking activities, all in first " + myModel.presentTime());
+ 				   		System.out.println(this + " identnr " + this.getIdentNumber() + " No breaking activities, all in first " + myModel.presentTime());
  				   	}
 	    			   
 	    			break;
