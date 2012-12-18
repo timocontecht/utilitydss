@@ -213,7 +213,7 @@ public class Receiver implements MessageReceiver
 	
 	
 	
-	public void createSectionElement(Section section2)
+	public void createSectionElement(ParentProcess section2)
 	{
 		Element section = doc.createElement("task");
 		

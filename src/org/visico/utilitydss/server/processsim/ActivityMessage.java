@@ -21,7 +21,7 @@ public class ActivityMessage extends Message
 {
 	
 	//constructor for activitymsg's for class ProcessAll.java
-	public ActivityMessage(Model model, Section s, TimeInstant st, 
+	public ActivityMessage(Model model, ParentProcess s, TimeInstant st, 
 			String w, TimeInstant e, int d) 
 	{
 		super(model, "Customized Schedule Message", st);
@@ -36,7 +36,7 @@ public class ActivityMessage extends Message
 	}
 	
 		
-	public Section getSection()
+	public ParentProcess getSection()
 	{
 		return sec;
 	}
@@ -69,7 +69,7 @@ public class ActivityMessage extends Message
 	private String work;
 	private TimeInstant starttime;
 	private double duration;
-	private Section sec; 
+	private ParentProcess sec; 
 	private TimeInstant endtime;
 	private int detailLevel;
 }

@@ -7,7 +7,7 @@ import desmoj.core.simulator.SimProcess;
 import desmoj.core.simulator.TimeInstant;
 import desmoj.core.simulator.TimeSpan;
 
-public class Breaking extends SimProcess
+public class Breaking extends ParentProcess
 {
 	private UtilitySimulation myModel;
 	
@@ -24,7 +24,7 @@ public class Breaking extends SimProcess
 	public Breaking(Model owner, String name, boolean showInTrace, int Old_pavement, double Total_Area, 
 			double Section_Area, double remove_pavement)
 	{
-		super(owner, name, showInTrace);
+		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
 		myModel = (UtilitySimulation)owner;
 		oldpavement = Old_pavement;
 		total_area = Total_Area;
@@ -54,7 +54,7 @@ public class Breaking extends SimProcess
 				   myModel.breakers.provide(1);
 				   start = myModel.presentTime();
 				   hold (new TimeSpan((myModel.getBreakingTime() * (section_area/Remove_Pavement)), TimeUnit.HOURS)); 
-				   ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Break Section ", myModel.presentTime(), 0, 1) ;
+				   ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Break Section ", myModel.presentTime(), 0) ;
 				   sendMessage(msg_1);
 				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
 						   " End: " + myModel.presentTime().toString());
@@ -71,7 +71,7 @@ public class Breaking extends SimProcess
 				   myModel.crews.provide(1);
 				   start = myModel.presentTime();
 				   hold (new TimeSpan((myModel.getBreakingTime() * (section_area/Remove_Pavement)), TimeUnit.HOURS)); 
-				   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Remove Stones Section ", myModel.presentTime(), 0, 1);
+				   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Remove Stones Section ", myModel.presentTime(), 0);
 				   sendMessage(msg_2);
 				   myModel.crews.takeBack(1);
 				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
@@ -85,7 +85,7 @@ public class Breaking extends SimProcess
  				   		myModel.breakers.provide(1);
  				   		start = myModel.presentTime();
  				   		hold (new TimeSpan((myModel.getBreakingTime() * (total_area/Remove_Pavement)), TimeUnit.HOURS));
- 				   		ActivityMessage msg_3 = new ActivityMessage(myModel, this, start, "Break all ", myModel.presentTime(), 0, 1) ;
+ 				   		ActivityMessage msg_3 = new ActivityMessage(myModel, this, start, "Break all ", myModel.presentTime(), 0) ;
  				   		sendMessage(msg_3);
  				   		sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
  							   " End: " + myModel.presentTime().toString());

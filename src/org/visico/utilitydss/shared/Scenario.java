@@ -37,7 +37,7 @@ public class Scenario implements Serializable
 	   private static boolean secondCrew = true;		// indicates if there is a 2nd crew present to perform housing connections
 	   
 
-	public static int getNUM_SEC() {
+	public int getNUM_SEC() {
 		return NUM_SEC;
 	}
 

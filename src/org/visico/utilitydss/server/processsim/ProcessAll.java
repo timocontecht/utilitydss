@@ -2,15 +2,12 @@ package org.visico.utilitydss.server.processsim;
 
 import java.util.concurrent.TimeUnit;
 
-import org.visico.utilitydss.shared.Scenario;
-import org.visico.utilitydss.shared.Section;
-
 import desmoj.core.simulator.Model;
 import desmoj.core.simulator.SimProcess;
 import desmoj.core.simulator.TimeInstant;
 import desmoj.core.simulator.TimeSpan;
 
-public class ProcessAll extends Section
+public class ProcessAll extends ParentProcess
 {
 	
 
@@ -128,8 +125,13 @@ public class ProcessAll extends Section
 		Trench_Area = (Pipe_length * Trench_width);						// total surface of the trench
 		Excavation_volume = (Trench_Area * Trench_depth);  				// excavation volume per pipe
 		Total_Area = (myModel.getTotal_length() * Section_width);		// total working area of all sections
-		first_backfill_height = New_diameter * 1.26 * 0.001;			// height of first backfill in m (pipe diameter + 2x average wall thickness)
-		second_backfill_height = Trench_depth - first_backfill_height;	// height of second backfill in m, only if there are connections
+		if(this.NUM_CONNECTIONS != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
+			// height of first backfill in m (pipe diameter + 2x average wall thickness)
+			{first_backfill_height = New_diameter * 1.26 * 0.001;
+			// height of second backfill in m, only if there are connections
+			second_backfill_height = Trench_depth - first_backfill_height;}
+		else // if there are no housing connections backfill is to bottom of surface layer
+		   	{first_backfill_height = Trench_depth;}
 		
 		/**
 	* production values 
@@ -487,16 +489,10 @@ public class ProcessAll extends Section
 			   // 7. First backfill + compacting
 			   myModel.crews.provide(1);
 			   start_3 = myModel.presentTime();
-			   if(this.NUM_CONNECTIONS != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
-				   {hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Trench_Area)/backfill) * soil_pl_factor), TimeUnit.HOURS));
-		   			ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "First Backfill " + i, myModel.presentTime(), 3);
-		   			sendMessage(msg_8);	
-				   }
-			   else									// if there are no housing connections backfill is to bottom of surface layer
-			   {	hold (new TimeSpan((myModel.getBackfillTime() * ((Trench_depth * Trench_Area)/backfill)), TimeUnit.HOURS));
-			   		ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "Backfill " + i, myModel.presentTime(), 3) ;
-			   		sendMessage(msg_8);
-			   }
+			   // if there are housing connections backfill is only to top of main sewer pipe
+			   hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Trench_Area)/backfill) * soil_pl_factor), TimeUnit.HOURS));
+			   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "First Backfill " + i, myModel.presentTime(), 3);
+			   sendMessage(msg_8);
 			   sendTraceNote("Activity: " + getName() + " First Backfill: " + start_3.toString() + 
 					   " End: " + myModel.presentTime().toString());
 			   myModel.crews.takeBack(1);
@@ -513,9 +509,7 @@ public class ProcessAll extends Section
 			   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start_3.toString() + 
 			   				" End: " + myModel.presentTime().toString());
 			   		myModel.excavators.takeBack(1);
-			   		if(myModel.getSecondCrew()){ // if there are second crews:
-			   		}
-			   }
+			   	}
  
 			   // gathers data on total construction time of pipe in main sewer loop, only active if turned on in utilitysimulation.java
 			   ActivityMessage msg = new ActivityMessage(myModel, this, start_2, "Pipe " + i + " construction", myModel.presentTime(), 2) ;
@@ -1057,7 +1051,7 @@ public class ProcessAll extends Section
 	    			
 	    		case 3:
 	    			// Breaking ashpalt pavement all sections at once.
- 				   	if ((this.getIdentNumber() - Scenario.getNUM_SEC() ) == (1)){
+ 				   	if ((this.getIdentNumber() - myModel.getScenario().getNUM_SEC() ) == (1)){	//TODO if entitynumbers are fixed this should be removed, if not fixable this should be applied everywhere.
  				   		myModel.breakers.provide(1);
  				   		start = myModel.presentTime();
  				   		hold (new TimeSpan((myModel.getBreakingTime() * (Total_Area/remove_pavement)), TimeUnit.HOURS));

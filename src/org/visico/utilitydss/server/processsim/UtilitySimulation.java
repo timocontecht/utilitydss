@@ -133,7 +133,7 @@ public void setNUM_SEC(int nUM_SEC) {
     */
    public void doInitialSchedules() 
    { 
-	   sections = new ArrayList<Section>();
+	   sections = new ArrayList<ParentProcess>();
 
 	   // initialize the sections 
 	   for (int i=0; i<scenario.getNUM_SEC(); i++)
@@ -142,7 +142,7 @@ public void setNUM_SEC(int nUM_SEC) {
 		   if(put[i]==0)
 		   {
 			   
-			   Section section = new Section(
+			   ParentProcess section = new ParentProcess(
 						this, 					//owner
 						"Main Section", 				//name
 						true, 					// ?
@@ -189,7 +189,7 @@ public void setNUM_SEC(int nUM_SEC) {
 		   {
 			   //SectionProcess section = new SectionProcess(this, "Test", true);
 			   
-			   Section section = new Section(
+			   ParentProcess section = new ParentProcess(
 						this, 					//owner
 						"Main Section",				//name
 						true, 					// ?
@@ -476,10 +476,10 @@ public void setNUM_SEC(int nUM_SEC) {
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
 
-   private static int[] put = 						{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] put = 						{ 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
    private static int[] shore = 					{ 3, 0, 0, 1, 1, 1, 2, 2, 2, 5 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																						// 2 means Sheet piling (damwand), 3 means supported walls  
-   private static int[] connections = 				{ 2, 1, 1, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
+   private static int[] connections = 				{ 2, 1, 0, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
 
    private static double[] num_put_connections = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
    private static int[] old_pavement = 				{ 3, 3, 3, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement
@@ -644,7 +644,7 @@ public void setNUM_SEC(int nUM_SEC) {
    
    protected Bin startingCondition;
    
-   ArrayList<Section> sections;
+   ArrayList<ParentProcess> sections;
    ArrayList<ProcessAll> puts;
    
    
