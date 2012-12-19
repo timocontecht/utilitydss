@@ -362,7 +362,7 @@ public class SectionProcessAll extends ParentProcess
 		TimeInstant startConnection_3 = myModel.presentTime();		// starting time of connection activity corresponding to detail level 3 as selected in UtilitySimulation.java
 		
 		   // 1. break the section or remove stone pavement
-			removePavement(oldPavement);
+			removePavement(Old_pavement);
 			
    
 		   // gathers data on total duration of main sewer loop (1 task contains all pipes in section), only active if turned on in utilitysimulation.java
@@ -418,12 +418,14 @@ public class SectionProcessAll extends ParentProcess
 			   // only for replacement projects (set variable Replacement in UtilitySimulation.java class to true/false )
 			   if(myModel.getReplacement()) {
 				   	myModel.excavators.provide(1);
-				   	start_3 = myModel.presentTime();
-			   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/pipe_removal) * pipe_rm_factor), TimeUnit.HOURS));
-			   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_3, "Remove Pipe " + i, myModel.presentTime(), 3) ;
-					sendMessage(msg_4);
-			   		sendTraceNote("Activity: " + getName() + " Remove pipe: " + start_3.toString() + 
-			   				" End: " + myModel.presentTime().toString());
+				   	for(int j=1; j<=myModel.getOldSeparated(); j++){
+					   	start_3 = myModel.presentTime();
+				   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/pipe_removal) * pipe_rm_factor), TimeUnit.HOURS));
+				   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_3, "Remove Pipe " + i +"."+ j, myModel.presentTime(), 3) ;
+						sendMessage(msg_4);
+				   		sendTraceNote("Activity: " + getName() + " Remove pipe: " + start_3.toString() + 
+				   				" End: " + myModel.presentTime().toString());
+				   	}
 			   		myModel.excavators.takeBack(1);
 			   }
 	
@@ -451,15 +453,16 @@ public class SectionProcessAll extends ParentProcess
 			   myModel.crews.takeBack(1);
 			   
 			   // 6. install the pipe
-			   // TODO x2 for separated sewers, rest can be same but the ditch and section will be wider.
 			   myModel.crews.provide(1);
 			   myModel.excavators.provide(1);
-			   start_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/pipe_placement) * pipe_pl_factor), TimeUnit.HOURS));
-			   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_3, "Install Pipe " + i, myModel.presentTime(), 3) ;
-			   sendMessage(msg_7);
-			   sendTraceNote("Activity: " + getName() + " Install Pipe: " + start_3.toString() + 
-					   " End: " + myModel.presentTime().toString());
+			   for(int j=1; j<=myModel.getNewSeparated(); j++){
+				   start_3 = myModel.presentTime();
+				   hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/pipe_placement) * pipe_pl_factor), TimeUnit.HOURS));
+				   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_3, "Install Pipe " + i + "."+ j, myModel.presentTime(), 3) ;
+				   sendMessage(msg_7);
+				   sendTraceNote("Activity: " + getName() + " Install Pipe: " + start_3.toString() + 
+						   " End: " + myModel.presentTime().toString());
+			   }
 			   myModel.excavators.takeBack(1);
 			   myModel.crews.takeBack(1);
 			   
@@ -640,7 +643,7 @@ public class SectionProcessAll extends ParentProcess
 		   }
    		   
    		   // 12. pave  
-		   pave(newPavement);
+		   pave(New_pavement);
 		   
 		   
 		   // Allows the next section to start after this if setting is set to 5 in UtilitySimulation.java)
@@ -813,9 +816,8 @@ public class SectionProcessAll extends ParentProcess
 	
 	private double Num_Put_connections;  	// number of connections the put has, only if put
 	private int Old_pavement; 			// type of old pavement
-	private int oldPavement = Old_pavement;
+	//private int oldPavement = Old_pavement;
 	private int New_pavement;  			// type of new pavement
-	private int newPavement = New_pavement;
 	private double Section_length;  	// length of section in m 
 	private double Pipe_length;  		// length of pipes in m
 	private double Section_width;  		// width of section in m

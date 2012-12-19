@@ -141,8 +141,8 @@ public void setNUM_SEC(int nUM_SEC) {
 		   // TODO, currently a very cumbersome way to have a put named put and a section named section, see if it can be shortened.
 		   if(put[i]==0)
 		   {
-			   
-			   ParentProcess section = new ParentProcess(
+			   SectionProcessAll section = new SectionProcessAll(
+			   //ParentProcess section = new ParentProcess(
 						this, 					//owner
 						"Main Section", 				//name
 						true, 					// ?
@@ -187,9 +187,9 @@ public void setNUM_SEC(int nUM_SEC) {
 		   
 		   else
 		   {
-			   //SectionProcess section = new SectionProcess(this, "Test", true);
 			   
-			   ParentProcess section = new ParentProcess(
+			   PutProcessAll section = new PutProcessAll(
+			   //ParentProcess section = new ParentProcess(
 						this, 					//owner
 						"Main Section",				//name
 						true, 					// ?
@@ -446,8 +446,12 @@ public void setNUM_SEC(int nUM_SEC) {
 	   return total_length;
    }
    
-   public double getSeparated() {
-	   return separated;
+   public int getOldSeparated() {
+	   return OldSeparated;
+   }
+   
+   public int getNewSeparated() {
+	   return NewSeparated;
    }
    
     /**
@@ -477,9 +481,9 @@ public void setNUM_SEC(int nUM_SEC) {
     */
 
    private static int[] put = 						{ 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
-   private static int[] shore = 					{ 3, 0, 0, 1, 1, 1, 2, 2, 2, 5 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+   private static int[] shore = 					{ 0, 0, 0, 1, 1, 1, 2, 2, 2, 5 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																						// 2 means Sheet piling (damwand), 3 means supported walls  
-   private static int[] connections = 				{ 2, 1, 0, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
+   private static int[] connections = 				{ 2, 1, 2, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
 
    private static double[] num_put_connections = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
    private static int[] old_pavement = 				{ 3, 3, 3, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement
@@ -560,7 +564,7 @@ public void setNUM_SEC(int nUM_SEC) {
 /**
    * Model parameters: SIMULATION SETTINGS
    */
-   private static int OldPavement = 3;				// indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+   private static int OldPavement = 1;				// indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 													// 3 means asphalt; break all sections at start, other gives error
    private static int Shore = 3;				
    private static boolean Replacement = true;		// indicates if the project is a replacement project
@@ -568,12 +572,14 @@ public void setNUM_SEC(int nUM_SEC) {
    private static boolean newPipeHeavy	= false; 	// indicates if the new pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    													// for puts this is indicated by an array per put as sizes differ.
    private static int prepareSurface = 2;			// indicates if broken rock is placed : 1 = yes, 2 = no
-   private static int newPavement = 3;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
+   private static int newPavement = 11;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
 													// 3 means asphalt; pave all sections at start, other gives error
    private static int sectionWait = 2;				// indicates after which activity the next section starts: 1 = after main loop (only possible if there is a 2nd crew), 
    													// 2 = second backfill, 3 = surface prepared, 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
    private static int inspectionType = 1;			// type of inspection applied: 1 = ????
    private static boolean foundation = true;		// indicates if the project requires foundation beneath the new sewer
+   private static int OldSeparated = 2;				// indicates if old sewer is separated or combined: 1 = combined, 2 = separated
+   private static int NewSeparated = 2;				// indicates if new sewer is separated or combined: 1 = combined, 2 = separated
 
    /**   
    * Model parameters: Simulation output settings
@@ -582,7 +588,6 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = total time per connection, 
    													//3 = per each activity per connection
    private static int activityMsgPut = 3;			// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per put, 4 = ?
-   private final int separated = 1;					// indicates if sewer is combined or separated: 1 = combined, 2 = separated
    /**
     * Process versions
     */
