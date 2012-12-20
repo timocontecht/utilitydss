@@ -9,7 +9,6 @@ import desmoj.core.simulator.TimeSpan;
 
 public class Breaking extends ParentProcess
 {
-	private UtilitySimulation myModel;
 	
 	/**
 	    * Constructor of the section 
@@ -21,15 +20,16 @@ public class Breaking extends ParentProcess
 	    * @param showInTrace flag to indicate if this process shall produce output
 	    *                    for the trace
 	    */
-	public Breaking(Model owner, String name, boolean showInTrace, int Old_pavement, double Total_Area, 
+	public Breaking(Model owner, ParentProcess parent, String name, boolean showInTrace, int Old_pavement, double Total_Area, 
 			double Section_Area, double remove_pavement)
 	{
 		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
 		myModel = (UtilitySimulation)owner;
-		oldpavement = Old_pavement;
+		oldPavement = Old_pavement;
 		total_area = Total_Area;
 		section_area = Section_Area;
 		Remove_Pavement = remove_pavement;
+		Parent = parent;
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public class Breaking extends ParentProcess
 	    */
 	public void lifeCycle() {
 
-		removePavement(oldpavement);
+		removePavement(oldPavement);
 		
 	}
 	
@@ -54,7 +54,7 @@ public class Breaking extends ParentProcess
 				   myModel.breakers.provide(1);
 				   start = myModel.presentTime();
 				   hold (new TimeSpan((myModel.getBreakingTime() * (section_area/Remove_Pavement)), TimeUnit.HOURS)); 
-				   ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Break Section ", myModel.presentTime(), 0) ;
+				   ActivityMessage msg_1 = new ActivityMessage(myModel, Parent, start, "Break Section ", myModel.presentTime(), 0) ;
 				   sendMessage(msg_1);
 				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
 						   " End: " + myModel.presentTime().toString());
@@ -64,6 +64,7 @@ public class Breaking extends ParentProcess
 					   myModel.breakers.stopUse();
 					   System.out.println("resource breakers stopped at simulation time " + myModel.presentTime());
 				   }
+				   Parent.activate();
 				   break;
 	    			
 	    		case 2:
@@ -71,21 +72,22 @@ public class Breaking extends ParentProcess
 				   myModel.crews.provide(1);
 				   start = myModel.presentTime();
 				   hold (new TimeSpan((myModel.getBreakingTime() * (section_area/Remove_Pavement)), TimeUnit.HOURS)); 
-				   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Remove Stones Section ", myModel.presentTime(), 0);
+				   ActivityMessage msg_2 = new ActivityMessage(myModel, Parent, start, "Remove Stones Section ", myModel.presentTime(), 0);
 				   sendMessage(msg_2);
 				   myModel.crews.takeBack(1);
 				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
 						   " End: " + myModel.presentTime().toString());
 				   System.out.println("stones removed at simulation time " + myModel.presentTime());
-	    			break;
+				   Parent.activate();
+				   break;
 	    			
 	    		case 3:
 	    			// Breaking ashpalt pavement all sections at once.
- 				   	if (this.getIdentNumber() == (1)){
+ 				   	if (Parent.getIdentNumber() == (1)){
  				   		myModel.breakers.provide(1);
  				   		start = myModel.presentTime();
  				   		hold (new TimeSpan((myModel.getBreakingTime() * (total_area/Remove_Pavement)), TimeUnit.HOURS));
- 				   		ActivityMessage msg_3 = new ActivityMessage(myModel, this, start, "Break all ", myModel.presentTime(), 0) ;
+ 				   		ActivityMessage msg_3 = new ActivityMessage(myModel, Parent, start, "Break all ", myModel.presentTime(), 0) ;
  				   		sendMessage(msg_3);
  				   		sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
  							   " End: " + myModel.presentTime().toString());
@@ -97,19 +99,22 @@ public class Breaking extends ParentProcess
  				   	else{
  				   		// Breaking happens once for all sections
  				   		// so all following sections have no breaking activities
- 				   		System.out.println(this + " No breaking activities, all in first " + myModel.presentTime());
+ 				   		System.out.println(Parent + " No breaking activities, all in first " + myModel.presentTime());
  				   	}
-	    			   
-	    			break;
+ 				   Parent.activate();   
+ 				   break;
 	    			
 	    		default:
  			    // no pavement removal
-				   		System.out.println("no breaking blabla activities performed " + myModel.presentTime());	   
-	    			break;
+			   		System.out.println("no breaking activities performed " + myModel.presentTime());	   
+			   		Parent.activate();
+			   		break;
 	   }}
 	  
-	   private int oldpavement;
+	   private UtilitySimulation myModel;
+	   private int oldPavement;
 	   private double section_area;
 	   private double total_area;
 	   private double Remove_Pavement;
+	   private ParentProcess Parent;
 }

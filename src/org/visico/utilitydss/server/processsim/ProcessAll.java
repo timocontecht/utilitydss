@@ -57,7 +57,12 @@ public class ProcessAll extends ParentProcess
 			) 
 	
 	{
-		super(owner, name, showInTrace, new_pavement, new_pavement, new_pavement, bed_preparation, new_pavement, new_pavement, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, new_sewer_type, new_sewer_type, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation);
+		super(	owner, name, showInTrace, put, shore, connections, num_put_connections, old_pavement, new_pavement, 
+				section_length, pipe_length, section_width, trench_width, trench_depth, old_sewer_type, new_sewer_type, 
+				old_diameter, new_diameter, asphalt_old, asphalt_new, cables, length_connections, diameter_connections, 
+				foundation_type, soil_removed, soil_new, pipes_old, pipes_new, rock_layer, sand_layer, bed_preparation, 
+				old_put_area, new_put_area);
+		
 		myModel = (UtilitySimulation)owner;
 		PUT = put;									// section or put:  0 is section, 1 is put.  
 		Shore = shore;							
@@ -988,15 +993,20 @@ public class ProcessAll extends ParentProcess
 
 		   
    		   // 12. pave  
-		   /*Paving pavement = new BPavingreaking(
-			myModel, 					//owner
+		   /*		
+		    Paving pavement = new Paving(
+			myModel, 				//owner
+			this,					// parent
 			"Put", 					//name
 			true, 					// ?
-			New_pavement
-			);
+			New_pavement,
+			Total_Area, 
+			Section_Area, 
+			paving_time);
 
 			pavement.activate();
-			this needs to passivate while paving performs it's activities
+			this.passivate();
+			//this needs to passivate while paving performs it's activities
 			*/
 		   pave(New_pavement);
 		  

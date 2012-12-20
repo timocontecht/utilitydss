@@ -144,7 +144,7 @@ public void setNUM_SEC(int nUM_SEC) {
 			   SectionProcessAll section = new SectionProcessAll(
 			   //ParentProcess section = new ParentProcess(
 						this, 					//owner
-						"Main Section", 				//name
+						"Section", 				//name
 						true, 					// ?
 						put[i],					// section or put:  0 is section, 1 is put.  
 						shore[i],				// number of pipes in section
@@ -191,7 +191,7 @@ public void setNUM_SEC(int nUM_SEC) {
 			   PutProcessAll section = new PutProcessAll(
 			   //ParentProcess section = new ParentProcess(
 						this, 					//owner
-						"Main Section",				//name
+						"Put",				//name
 						true, 					// ?
 						put[i],					// section or put:  0 is section, 1 is put.  
 						shore[i],				// number of pipes in section
@@ -381,10 +381,6 @@ public void setNUM_SEC(int nUM_SEC) {
    public boolean getReplacement() {
 	      return Replacement;
 	   }
-   
-   public int getOldPavement() {
-	      return OldPavement;
-	   }
      
    public int getShore() {
 	    return Shore;
@@ -420,10 +416,6 @@ public void setNUM_SEC(int nUM_SEC) {
    
    public boolean getFoundation()	{
 	   return foundation;
-   }
-  
-   public int getNewPavement() {
-	   return newPavement;
    }
       
    public int getSectionWait() {
@@ -480,14 +472,16 @@ public void setNUM_SEC(int nUM_SEC) {
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
 
-   private static int[] put = 						{ 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] put = 						{ 1, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
    private static int[] shore = 					{ 0, 0, 0, 1, 1, 1, 2, 2, 2, 5 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
-																						// 2 means Sheet piling (damwand), 3 means supported walls  
+																							// 2 means Sheet piling (damwand), 3 means supported walls  
    private static int[] connections = 				{ 2, 1, 2, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
 
    private static double[] num_put_connections = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
-   private static int[] old_pavement = 				{ 3, 3, 3, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement
-   private static int[] new_pavement = 				{ 3, 3, 3, 1, 1, 1, 2, 2, 2, 2 };  		// type of new pavement
+   private static int[] old_pavement = 				{ 1, 1, 1, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+																							// 3 means asphalt; break all sections at start, other gives error
+   private static int[] new_pavement = 				{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 2 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
+																							// 3 means asphalt; pave all sections at start, other gives error
    private static double[] section_length = 		{ 2, 4, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
    private static double[] pipe_length = 			{ 2.4, 2.4, 2.4, 2, 1, 1, 2, 2, 2, 2 };  		// length of pipes in
    private static double[] section_width = 			{ 4, 4, 4, 4, 1, 1, 2, 2, 2, 2 };  		// width of section in
@@ -564,16 +558,13 @@ public void setNUM_SEC(int nUM_SEC) {
 /**
    * Model parameters: SIMULATION SETTINGS
    */
-   private static int OldPavement = 1;				// indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
-													// 3 means asphalt; break all sections at start, other gives error
+
    private static int Shore = 3;				
    private static boolean Replacement = true;		// indicates if the project is a replacement project
    private static boolean oldPipeHeavy	= false; 	// indicates if the old pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    private static boolean newPipeHeavy	= false; 	// indicates if the new pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    													// for puts this is indicated by an array per put as sizes differ.
    private static int prepareSurface = 2;			// indicates if broken rock is placed : 1 = yes, 2 = no
-   private static int newPavement = 11;				// indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
-													// 3 means asphalt; pave all sections at start, other gives error
    private static int sectionWait = 2;				// indicates after which activity the next section starts: 1 = after main loop (only possible if there is a 2nd crew), 
    													// 2 = second backfill, 3 = surface prepared, 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
    private static int inspectionType = 1;			// type of inspection applied: 1 = ????

@@ -56,7 +56,12 @@ public class PutProcessAll extends ParentProcess
 			) 
 	
 	{
-		super(owner, name, showInTrace, new_pavement, new_pavement, new_pavement, bed_preparation, new_pavement, new_pavement, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, new_sewer_type, new_sewer_type, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation, bed_preparation);
+		super(owner, name, showInTrace, put, shore, connections, num_put_connections, old_pavement, 
+				new_pavement, section_length, pipe_length, section_width, trench_width, trench_depth, 
+				old_sewer_type, new_sewer_type, old_diameter, new_diameter, asphalt_old, asphalt_new, cables, 
+				length_connections, diameter_connections, foundation_type, soil_removed, soil_new, pipes_old, 
+				pipes_new, rock_layer, sand_layer, old_put_area, new_put_area, bed_preparation);
+			
 		myModel = (UtilitySimulation)owner;
 		PUT = put;									// section or put:  0 is section, 1 is put.  
 		Shore = shore;							
@@ -349,7 +354,6 @@ public class PutProcessAll extends ParentProcess
 		 * Which activity this is can be selected in UtlitySimulation.java
 		 */
 		myModel.startingCondition.retrieve(1);
-	   
 		
 			/**
 			* Lifecycle Put
@@ -359,7 +363,23 @@ public class PutProcessAll extends ParentProcess
 			TimeInstant start_3 = myModel.presentTime();				// starting time of activity corresponding to detail level 3 as selected in UtilitySimulation.java
  
 			// 1. break the section or remove stone pavement
-			removePavement(Old_pavement);
+			///*
+			// start new breaking process
+			Breaking pavementbreaking = new Breaking(
+			myModel, 					//owner
+			this,						// parent
+			"Section", 					//name
+			true, 					// ?
+			Old_pavement,
+			Total_Area, 
+			Section_Area, 
+			remove_pavement);
+
+			pavementbreaking.activate();
+			this.passivate();
+			// this needs to passivate while breaking performs it's activities
+			//*/
+			//removePavement(Old_pavement);
 		   	
 		
 		   // gathers data on total duration of main put loop (1 task contains all activities for all put(s)), only active if turned on in utilitysimulation.java
@@ -598,7 +618,7 @@ public class PutProcessAll extends ParentProcess
 			   sendTraceNote("Activity: " + getName() + " Broken rock: " + start_3.toString() + 
 					   " End: " + myModel.presentTime().toString());
 			   myModel.trucks.takeBack(1);
-			   myModel.prepare();
+			   myModel.prepare(); //TODO double with 11a, need to work on this. also influences paving.
 	   		   if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + 
 	   				myModel.getScenario().getNUM_PUT() )) {
 			    	  myModel.rollers.stopUse();
@@ -612,7 +632,24 @@ public class PutProcessAll extends ParentProcess
 		   }
    		   
    		   // 12. pave  
-		   pave(New_pavement);
+		   ///*
+		   //start new paving process
+		   Paving pavement = new Paving(
+			myModel, 				//owner
+			this,					// parent
+			"Put", 					//name
+			true, 					// ?
+			New_pavement,
+			Total_Area, 
+			Section_Area, 
+			paving_time);
+			
+			pavement.activate();
+			this.passivate();
+			//this needs to passivate while paving performs it's activities
+			//*/
+		   
+		   //pave(New_pavement);
 		   		   
 		   // Allows the next section to start after this if setting is set to 5 in UtilitySimulation.java)
 		   if(myModel.getSectionWait() == 5) 
@@ -620,7 +657,8 @@ public class PutProcessAll extends ParentProcess
 		   myModel.startingCondition.store(1);
 		   }
 		   
-		   System.out.println("Put " + this + " completed");   
+	   System.out.println(this + " completed");
+		      
 		}   	   
 
 	//=====================================================================================================================================================================
@@ -699,7 +737,6 @@ public class PutProcessAll extends ParentProcess
     		case 1:
     			// paving all per section
     			   // asphalt paving
-			   if(myModel.getNewPavement() == 1) {
 				   myModel.pavecrews.provide(1);
 				   start = myModel.presentTime();
 				   hold (new TimeSpan((myModel.getPaveTime() * (Section_Area/paving_time)), TimeUnit.HOURS));
@@ -713,8 +750,8 @@ public class PutProcessAll extends ParentProcess
 			   			myModel.pavecrews.stopUse();
 			   			myModel.getExperiment().stop();
 			   			System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
+			   			System.out.println("Put " + this + " completed");
 			   		}   
-			   }
 			   break;
 
     		case 2:
@@ -734,6 +771,7 @@ public class PutProcessAll extends ParentProcess
 		   			myModel.stonepavecrews.stopUse();
 		   			myModel.getExperiment().stop();
 		   			System.out.println("resource stonepavecrews stopped at simulation time " + myModel.presentTime());
+		   			System.out.println("Put " + this + " completed");
 			   } 
 				break;
     			
@@ -750,7 +788,8 @@ public class PutProcessAll extends ParentProcess
 				   myModel.pavecrews.takeBack(1);
 				   myModel.pavecrews.stopUse();
 				   myModel.getExperiment().stop();
-				   System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());			   		
+				   System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());	
+				   System.out.println("Put " + this + " completed");
 				   }   				   	
 			   	
 		   		else{

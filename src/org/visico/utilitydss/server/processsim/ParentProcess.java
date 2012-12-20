@@ -140,7 +140,7 @@ public class ParentProcess extends SimProcess
 				   {
 					   //SectionProcess section = new SectionProcess(this, "Test", true);
 					   
-					   PutProcessAll subsection = new PutProcessAll(
+					   ProcessAll subsection = new ProcessAll(
 								myModel, 					//owner
 								"Put", 					//name
 								true, 					// ?
