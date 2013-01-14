@@ -19,8 +19,7 @@ public class Scenario implements Serializable
 	/**
 	    * Model parameters: Project parameters (the number of sections, puts and resources, etc)
 	    */
-
-	   private static int NUM_SEC = 3;					// number of sections
+	   private static int NUM_SEC = 3;			// number of sections
 	   // MAX 4 FOR NOW as the arrays in UtilitySimulation.java aren't longer.
 	   private int NUM_PUT = 0;					// number of puts
 	   private int NUM_BREAKER = 1;				// number of breakers

@@ -30,7 +30,6 @@ public class Section
 	private double second_backfill_height; // height of second backfill in m, only if there are connections
 	*/
 
-
 /**
 * Section specific parameters.
 */
@@ -68,7 +67,6 @@ public class Section
 	/**
 	 * Section specific parameters setters & getters
 	 */
-			
 	public int getPUT() {
 		return PUT;
 	}

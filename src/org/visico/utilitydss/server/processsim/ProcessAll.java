@@ -1,3 +1,6 @@
+//THIS CLASS IS NOT USED ANYMORE
+
+
 package org.visico.utilitydss.server.processsim;
 
 import java.util.concurrent.TimeUnit;
@@ -139,10 +142,10 @@ public class ProcessAll extends ParentProcess
 		   	{first_backfill_height = Trench_depth;}
 		
 		/**
-	* production values 
-	* This could be put in a different class later. That class can be initialized from a database in future developments.
-	* all data is from bouwkostenonline.nl unless stated otherwise.
-	**/	
+		* production values 
+		* This could be put in a different class later. That class can be initialized from a database in future developments.
+		* all data is from bouwkostenonline.nl unless stated otherwise.
+		**/	
 		
 		// breaking (m^2 per hour)		
 		if(Old_pavement == 2) {remove_pavement = 100;}			// brick pavement
@@ -182,7 +185,7 @@ public class ProcessAll extends ParentProcess
 			else {shoring = 12; shoring_remove = 12;}
 		}	
 
-	// Removing Pipe (m per hour)
+		// Removing Pipe (m per hour)
 		if(Old_sewer_type == "Concrete"){							
 			if(Old_diameter <= 300) {pipe_removal = 21.5;} 
 			else if(Old_diameter <= 400) {pipe_removal = 19;}
@@ -310,17 +313,17 @@ public class ProcessAll extends ParentProcess
 
 		// Paving preparation (in m^2 per hour)
 									// brick pavement
-			if (Sand_layer < 0.045){sand_preparation = 30;}		
-			else if (Sand_layer < 0.055){sand_preparation = 28;}
-			else if (Sand_layer < 0.065){sand_preparation = 26;}
-			else if (Sand_layer < 0.075){sand_preparation = 24;}
-			else if (Sand_layer > 0.075){sand_preparation = 22;}	
-		
-		
-														// asphalt pavement
-			if (Rock_layer < 0.25){rock_preparation = 65;}		
-			else if (Rock_layer < 0.3){rock_preparation = 57;}
-			else if (Rock_layer >= 0.3){rock_preparation = 50;}
+		if (Sand_layer < 0.045){sand_preparation = 30;}		
+		else if (Sand_layer < 0.055){sand_preparation = 28;}
+		else if (Sand_layer < 0.065){sand_preparation = 26;}
+		else if (Sand_layer < 0.075){sand_preparation = 24;}
+		else if (Sand_layer > 0.075){sand_preparation = 22;}	
+	
+	
+													// asphalt pavement
+		if (Rock_layer < 0.25){rock_preparation = 65;}		
+		else if (Rock_layer < 0.3){rock_preparation = 57;}
+		else if (Rock_layer >= 0.3){rock_preparation = 50;}
 		  
 		 
 		// Paving  (in m^2 per hour)					

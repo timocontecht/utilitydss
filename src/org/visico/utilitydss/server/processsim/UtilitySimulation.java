@@ -143,41 +143,41 @@ public void setNUM_SEC(int nUM_SEC) {
 		   {
 			   SectionProcessAll section = new SectionProcessAll(
 			   //ParentProcess section = new ParentProcess(
-						this, 					//owner
-						"Section", 				//name
-						true, 					// ?
-						put[i],					// section or put:  0 is section, 1 is put.  
-						shore[i],				// number of pipes in section
-						connections[i],		// number of connections in section
-						
-						num_put_connections[i],	// number of connections the put has, only if put
-						old_pavement[i],		// type of old pavement
-						new_pavement[i],		// type of new pavement
-						section_length[i],		// length of section in
-						pipe_length[i],			// length of pipes in
-						section_width[i],		// width of section in
-						trench_width[i],		// width of Trench 
-						trench_depth[i],		// depth of Trench in
-						old_sewer_type[i],		// type of old sewer
-						new_sewer_type[i],		// type of new sewer
-						old_diameter[i],			// diameter of old sewer 
-						new_diameter[i],		// diameter of new sewer
-						asphalt_old[i],			// layer thickness of old asphalt in
-						asphalt_new[i],			// layer thickness of new asphalt in
-						cables[i],				// weight class of cables in the ground
-						length_connections[i],	// average length of connections
-						diameter_connections[i],	// average depth of connections
-						foundation_type[i], 	// type foundation used: 1 = , 2 =
-						soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
-						soil_new[i],  			// where is the new soil placed: 1 = , 2 =
-						pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
-						pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
-						rock_layer,				// height of pavement preparation rock layer in m
-						sand_layer,				// height of pavement preparation sand layer in m
-						old_put_area[i],			// area of the old put
-						new_put_area[i],			// area of the new put
-						Bed_preparation[i]		// height of bed preparation layer 
-						);
+					this, 					//owner
+					"Section", 				//name
+					true, 					// ?
+					put[i],					// section or put:  0 is section, 1 is put.  
+					shore[i],				// number of pipes in section
+					connections[i],		// number of connections in section
+					
+					num_put_connections[i],	// number of connections the put has, only if put
+					old_pavement[i],		// type of old pavement
+					new_pavement[i],		// type of new pavement
+					section_length[i],		// length of section in
+					pipe_length[i],			// length of pipes in
+					section_width[i],		// width of section in
+					trench_width[i],		// width of Trench 
+					trench_depth[i],		// depth of Trench in
+					old_sewer_type[i],		// type of old sewer
+					new_sewer_type[i],		// type of new sewer
+					old_diameter[i],			// diameter of old sewer 
+					new_diameter[i],		// diameter of new sewer
+					asphalt_old[i],			// layer thickness of old asphalt in
+					asphalt_new[i],			// layer thickness of new asphalt in
+					cables[i],				// weight class of cables in the ground
+					length_connections[i],	// average length of connections
+					diameter_connections[i],	// average depth of connections
+					foundation_type[i], 	// type foundation used: 1 = , 2 =
+					soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
+					soil_new[i],  			// where is the new soil placed: 1 = , 2 =
+					pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
+					pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
+					rock_layer,				// height of pavement preparation rock layer in m
+					sand_layer,				// height of pavement preparation sand layer in m
+					old_put_area[i],			// area of the old put
+					new_put_area[i],			// area of the new put
+					Bed_preparation[i]		// height of bed preparation layer 
+				);
 	
 			   section.activate();
 			   sections.add(section);
@@ -190,41 +190,41 @@ public void setNUM_SEC(int nUM_SEC) {
 			   
 			   PutProcessAll section = new PutProcessAll(
 			   //ParentProcess section = new ParentProcess(
-						this, 					//owner
-						"Put",				//name
-						true, 					// ?
-						put[i],					// section or put:  0 is section, 1 is put.  
-						shore[i],				// number of pipes in section
-						connections[i],		// number of connections in section
-						
-						num_put_connections[i],	// number of connections the put has, only if put
-						old_pavement[i],		// type of old pavement
-						new_pavement[i],		// type of new pavement
-						section_length[i],		// length of section in
-						pipe_length[i],			// length of pipes in
-						section_width[i],		// width of section in
-						trench_width[i],		// width of Trench 
-						trench_depth[i],		// depth of Trench in
-						old_sewer_type[i],		// type of old sewer
-						new_sewer_type[i],		// type of new sewer
-						old_diameter[i],			// diameter of old sewer 
-						new_diameter[i],		// diameter of new sewer
-						asphalt_old[i],			// layer thickness of old asphalt in
-						asphalt_new[i],			// layer thickness of new asphalt in
-						cables[i],				// weight class of cables in the ground
-						length_connections[i],	// average length of connections
-						diameter_connections[i],	// average depth of connections
-						foundation_type[i], 	// type foundation used: 1 = , 2 =
-						soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
-						soil_new[i],  			// where is the new soil placed: 1 = , 2 =
-						pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
-						pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
-						rock_layer,				// height of pavement preparation rock layer in m
-						sand_layer,				// height of pavement preparation sand layer in m
-						old_put_area[i],			// area of the old put
-						new_put_area[i],			// area of the new put
-						Bed_preparation[i]		// height of bed preparation layer 
-						);
+					this, 					//owner
+					"Put",				//name
+					true, 					// ?
+					put[i],					// section or put:  0 is section, 1 is put.  
+					shore[i],				// number of pipes in section
+					connections[i],		// number of connections in section
+					
+					num_put_connections[i],	// number of connections the put has, only if put
+					old_pavement[i],		// type of old pavement
+					new_pavement[i],		// type of new pavement
+					section_length[i],		// length of section in
+					pipe_length[i],			// length of pipes in
+					section_width[i],		// width of section in
+					trench_width[i],		// width of Trench 
+					trench_depth[i],		// depth of Trench in
+					old_sewer_type[i],		// type of old sewer
+					new_sewer_type[i],		// type of new sewer
+					old_diameter[i],			// diameter of old sewer 
+					new_diameter[i],		// diameter of new sewer
+					asphalt_old[i],			// layer thickness of old asphalt in
+					asphalt_new[i],			// layer thickness of new asphalt in
+					cables[i],				// weight class of cables in the ground
+					length_connections[i],	// average length of connections
+					diameter_connections[i],	// average depth of connections
+					foundation_type[i], 	// type foundation used: 1 = , 2 =
+					soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
+					soil_new[i],  			// where is the new soil placed: 1 = , 2 =
+					pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
+					pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
+					rock_layer,				// height of pavement preparation rock layer in m
+					sand_layer,				// height of pavement preparation sand layer in m
+					old_put_area[i],			// area of the old put
+					new_put_area[i],			// area of the new put
+					Bed_preparation[i]		// height of bed preparation layer 
+				);
 	 
 			   section.activate();
 			   sections.add(section);
@@ -445,6 +445,9 @@ public void setNUM_SEC(int nUM_SEC) {
    public int getNewSeparated() {
 	   return NewSeparated;
    }
+   public double getConnectionWait() {
+	   return ConnectionWait;
+   }
    
     /**
     * Returns a sample of the random stream used to determine
@@ -460,8 +463,7 @@ public void setNUM_SEC(int nUM_SEC) {
    {
 	   
    }
-   
-   
+     
    Scenario scenario = new Scenario();
   
    
@@ -472,18 +474,17 @@ public void setNUM_SEC(int nUM_SEC) {
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
 
-   private static int[] put = 						{ 1, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] put = 						{ 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
    private static int[] shore = 					{ 0, 0, 0, 1, 1, 1, 2, 2, 2, 5 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																							// 2 means Sheet piling (damwand), 3 means supported walls  
    private static int[] connections = 				{ 2, 1, 2, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
-
    private static double[] num_put_connections = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
-   private static int[] old_pavement = 				{ 1, 1, 1, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+   private static int[] old_pavement = 				{ 3, 3, 3, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 																							// 3 means asphalt; break all sections at start, other gives error
-   private static int[] new_pavement = 				{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 2 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
+   private static int[] new_pavement = 				{ 3, 3, 3, 1, 1, 1, 2, 2, 2, 2 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
 																							// 3 means asphalt; pave all sections at start, other gives error
    private static double[] section_length = 		{ 2, 4, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
-   private static double[] pipe_length = 			{ 2.4, 2.4, 2.4, 2, 1, 1, 2, 2, 2, 2 };  		// length of pipes in
+   private static double[] pipe_length = 			{ 2.4, 2.4, 2.4, 2, 1, 1, 2, 2, 2, 2 }; // length of pipes in
    private static double[] section_width = 			{ 4, 4, 4, 4, 1, 1, 2, 2, 2, 2 };  		// width of section in
    private static double[] trench_width = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of Trench in  					///////////// bigger with puts?
    private static double[] trench_depth = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// depth of Trench in
@@ -491,7 +492,7 @@ public void setNUM_SEC(int nUM_SEC) {
    private static String[] new_sewer_type = 		{ "Concrete", "Concrete", "Concrete", "Concrete"}; 		// type of new sewer	Concrete, Gres, Plastic
    private static double[] old_diameter = 			{ 300, 300, 300, 300, 300, 300, 2, 2, 2, 2 };  		// diameter of old sewer 
    private static double[] new_diameter = 			{ 300, 300, 300, 300, 300, 300, 2, 2, 2, 2 };  		// diameter of new sewer
-   private static double[] asphalt_old = 			{ 40, 40, 40, 40, 1, 1, 2, 2, 2, 2 };  		// layer thickness of old asphalt in
+   private static double[] asphalt_old = 			{ 50, 40, 40, 40, 1, 1, 2, 2, 2, 2 };  		// layer thickness of old asphalt in
    private static double[] asphalt_new = 			{ 40, 40, 40, 40, 1, 1, 2, 2, 2, 2 };  		// layer thickness of new asphalt in
    private static double[] cables =		 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// weight class of cables in the ground
    private static double[] length_connections =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average length of connections
@@ -571,7 +572,8 @@ public void setNUM_SEC(int nUM_SEC) {
    private static boolean foundation = true;		// indicates if the project requires foundation beneath the new sewer
    private static int OldSeparated = 2;				// indicates if old sewer is separated or combined: 1 = combined, 2 = separated
    private static int NewSeparated = 2;				// indicates if new sewer is separated or combined: 1 = combined, 2 = separated
-
+   private static double ConnectionWait = 100;			// determines how far along the main sewer should be before the 2nd crew starts with connections
+   
    /**   
    * Model parameters: Simulation output settings
    */

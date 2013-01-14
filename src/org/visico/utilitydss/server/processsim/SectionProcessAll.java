@@ -64,7 +64,7 @@ public class SectionProcessAll extends ParentProcess
 		myModel = (UtilitySimulation)owner;
 		PUT = put;									// section or put:  0 is section, 1 is put.  
 		Shore = shore;							
-		NUM_CONNECTIONS = connections;
+		Num_connections = connections;
 		
 		Num_Put_connections = num_put_connections; 	// number of connections the put has, only if put
 		Old_pavement = old_pavement; 				// type of old pavement
@@ -128,7 +128,8 @@ public class SectionProcessAll extends ParentProcess
 		Trench_Area = (Pipe_length * Trench_width);						// total surface of the trench
 		Excavation_volume = (Trench_Area * Trench_depth);  				// excavation volume per pipe
 		Total_Area = (myModel.getTotal_length() * Section_width);		// total working area of all sections
-		if(this.NUM_CONNECTIONS != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
+		
+		if(this.Num_connections != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
 			// height of first backfill in m (pipe diameter + 2x average wall thickness)
 			{first_backfill_height = New_diameter * 1.26 * 0.001;
 			// height of second backfill in m, only if there are connections
@@ -138,10 +139,10 @@ public class SectionProcessAll extends ParentProcess
 	
 		
 		/**
-	* production values 
-	* This could be put in a different class later. That class can be initialized from a database in future developments.
-	* all data is from bouwkostenonline.nl unless stated otherwise.
-	**/	
+		* production values 
+		* This could be put in a different class later. That class can be initialized from a database in future developments.
+		* all data is from bouwkostenonline.nl unless stated otherwise.
+		**/	
 		
 		// breaking (m^2 per hour)		
 		if(Old_pavement == 2) {remove_pavement = 100;}			// brick pavement
@@ -334,7 +335,6 @@ public class SectionProcessAll extends ParentProcess
 
 		
 		
-		
 //=====================================================================================================================================================================
 //=====================================================================================================================================================================
 		
@@ -358,7 +358,8 @@ public class SectionProcessAll extends ParentProcess
 			/**
 			 * Lifecycle Sewer section
 			 */
-
+		
+		//time instants for the different activitymsg's
 		TimeInstant start_1 = myModel.presentTime();				// starting time of activity corresponding to detail level 1 as selected in UtilitySimulation.java
 		TimeInstant start_2 = myModel.presentTime();				// starting time of activity corresponding to detail level 2 as selected in UtilitySimulation.java
 		TimeInstant start_3 = myModel.presentTime();				// starting time of activity corresponding to detail level 3 as selected in UtilitySimulation.java
@@ -366,481 +367,321 @@ public class SectionProcessAll extends ParentProcess
 		TimeInstant startConnection_2 = myModel.presentTime();		// starting time of connection activity corresponding to detail level 2 as selected in UtilitySimulation.java
 		TimeInstant startConnection_3 = myModel.presentTime();		// starting time of connection activity corresponding to detail level 3 as selected in UtilitySimulation.java
 		
-		   // 1. break the section or remove stone pavement
-		///*
+		// 1. break the section or remove stone pavement
 		//start new breaking process
 		Breaking pavementbreaking = new Breaking(
-		myModel, 					//owner
-		this,						// parent
-		"Section", 					//name
-		true, 					// ?
-		Old_pavement,
-		Total_Area, 
-		Section_Area, 
-		remove_pavement);
-
+		myModel, this, "Breaking Section ", true, Old_pavement, Total_Area, Section_Area, remove_pavement);
 		pavementbreaking.activate();
-		this.passivate();
-		// this needs to passivate while breaking performs it's activities
-		//*/
-		
-		//removePavement(Old_pavement);
-			
+		this.passivate();			// this needs to passivate while breaking performs it's activities
    
-		   // gathers data on total duration of main sewer loop (1 task contains all pipes in section), only active if turned on in utilitysimulation.java
-		   start_1 = myModel.presentTime();
+	   // gathers data on total duration of main sewer loop (1 task contains all pipes in section), only active if turned on in utilitysimulation.java
+	   start_1 = myModel.presentTime();
+	   
+	   // for loop iterating trough main loop (iterates trough all pipes in this section)
+	   for (int i=1; i<=this.NUM_Pipe; i++)
+	   {
 		   
+		   // gathers start time of every pipe in main loop, only active if turned on in utilitysimulation.java
+		   start_2 = myModel.presentTime();
 		   
-		   // for loop iterating trough main loop (iterates trough all pipes in this section)
-		   for (int i=1; i<=this.NUM_Pipe; i++)
-		   {
-			   // gathers start time of every pipe in main loop, only active if turned on in utilitysimulation.java
-			   start_2 = myModel.presentTime();
-			   
-			   
-			   // 2. excavate the section
+		   /* DOES NOT WORK YET
+		   //	TODO set flag to allow work on connections to start after a certain amount of sewer has been completed. 
+		   // 	what if connections overtake pipes?   
+		   // XX. start housing connections by 2nd crew if main sewer is completed far enough
+		   //start housing connections process
+		   if(this.Num_connections>0 && (myModel.getSectionWait() == 1)){
+			   if ((i)*Pipe_length>myModel.getConnectionWait()) // what if there are a lot of short sections? 
+				   //then 2nd crew should start
+				   //after a certain section
+			   {
+				   housing_connections housing_connection = new housing_connections(
+			   		myModel, 				//owner
+					this,					// parent
+					"housing connections ",	//name
+					true, 					// ?
+					Num_connections,
+					connection_duration_hwa,
+					second_backfill_height,
+					Trench_Area,
+					backfill,
+					soil_pl_factor);
+					housing_connection.activate();
+			   }
+		   }
+		   */
+		   
+		   // 2. excavate the section
+		   myModel.excavators.provide(1);
+		   myModel.trucks.provide(1);
+		   start_3 = myModel.presentTime();
+		   hold (new TimeSpan((myModel.getExcavatingTime() * (Excavation_volume/excavation) * soil_rm_factor * cables_weight), TimeUnit.HOURS));
+		   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start_3, "Excavate pipe " + i, myModel.presentTime(), 3) ;
+		   sendMessage(msg_2);
+		   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Excavating Start: " + start_3.toString() + 
+				   " End: " + myModel.presentTime().toString());
+		   myModel.excavators.takeBack(1);
+		   myModel.trucks.takeBack(1);
+		   
+		   // Closing sewer
+		   // One time activity in first section or put in first iteration of pipe
+		   if(this.getIdentNumber() == 1 && i == 1){
+			   	myModel.crews.provide(1);
+			   	start_3 = myModel.presentTime();
+			   	hold (new TimeSpan((myModel.getClosingTime() * closing_sewer), TimeUnit.HOURS));
+			   	ActivityMessage msg_2a = new ActivityMessage(myModel, this, start_3, "Closing sewer " + i, myModel.presentTime(), 3) ;
+		   		sendMessage(msg_2a);
+			   	sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Closing sewer: " + start_3.toString() + 
+				   " End: " + myModel.presentTime().toString());
+			   	myModel.crews.takeBack(1);
+		   }
+		   
+		   // 3. shore the section
+		   // only for projects that require shoring (set variable Shore to right value in simulation class)
+		   if(this.Shore  != 0) {
 			   myModel.excavators.provide(1);
-			   myModel.trucks.provide(1);
 			   start_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getExcavatingTime() * (Excavation_volume/excavation) * soil_rm_factor * cables_weight), TimeUnit.HOURS));
-			   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start_3, "Excavate pipe " + i, myModel.presentTime(), 3) ;
-			   sendMessage(msg_2);
-			   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Excavating Start: " + start_3.toString() + 
+			   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length/shoring)), TimeUnit.HOURS)); 
+			   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start_3, "Shore " + i, myModel.presentTime(), 3) ;
+			   sendMessage(msg_3);
+			   sendTraceNote("Activity: " + getName() + " Shoring: " + start_3.toString() + 
 					   " End: " + myModel.presentTime().toString());
 			   myModel.excavators.takeBack(1);
-			   myModel.trucks.takeBack(1);
-			   
-			   // Closing sewer
-			   // One time activity in first section or put in first iteration of pipe
-			   if(this.getIdentNumber() == 1 && i == 1){
-				   	myModel.crews.provide(1);
+		   }
+		   			   
+		   // 4. remove the pipe
+		   // only for replacement projects (set variable Replacement in UtilitySimulation.java class to true/false )
+		   if(myModel.getReplacement()) {
+			   	myModel.excavators.provide(1);
+			   	for(int j=1; j<=myModel.getOldSeparated(); j++){
 				   	start_3 = myModel.presentTime();
-				   	hold (new TimeSpan((myModel.getClosingTime() * closing_sewer), TimeUnit.HOURS));
-				   	ActivityMessage msg_2a = new ActivityMessage(myModel, this, start_3, "Closing sewer " + i, myModel.presentTime(), 3) ;
-			   		sendMessage(msg_2a);
-				   	sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Closing sewer: " + start_3.toString() + 
-					   " End: " + myModel.presentTime().toString());
-				   	myModel.crews.takeBack(1);
-			   }
-			   
-			   // 3. shore the section
-			   // only for projects that require shoring (set variable Shore to right value in simulation class)
-			   if(this.Shore  != 0) {
-				   myModel.excavators.provide(1);
-				   start_3 = myModel.presentTime();
-				   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length/shoring)), TimeUnit.HOURS)); 
-				   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start_3, "Shore " + i, myModel.presentTime(), 3) ;
-				   sendMessage(msg_3);
-				   sendTraceNote("Activity: " + getName() + " Shoring: " + start_3.toString() + 
-						   " End: " + myModel.presentTime().toString());
-				   myModel.excavators.takeBack(1);
-			   }
-			   			   
-			   // 4. remove the pipe
-			   // only for replacement projects (set variable Replacement in UtilitySimulation.java class to true/false )
-			   if(myModel.getReplacement()) {
-				   	myModel.excavators.provide(1);
-				   	for(int j=1; j<=myModel.getOldSeparated(); j++){
-					   	start_3 = myModel.presentTime();
-				   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/pipe_removal) * pipe_rm_factor), TimeUnit.HOURS));
-				   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_3, "Remove Pipe " + i +"."+ j, myModel.presentTime(), 3) ;
-						sendMessage(msg_4);
-				   		sendTraceNote("Activity: " + getName() + " Remove pipe: " + start_3.toString() + 
-				   				" End: " + myModel.presentTime().toString());
-				   	}
-			   		myModel.excavators.takeBack(1);
-			   }
-	
-			   // 5a Foundation
-			   if(myModel.getFoundation()) {
-				   	myModel.excavators.provide(1);
-				   	start_3 = myModel.presentTime();
-			   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/foundation_duration)), TimeUnit.HOURS));
-			   		ActivityMessage msg_5 = new ActivityMessage(myModel, this, start_3, "Foundation " + i, myModel.presentTime(), 3) ;
-					sendMessage(msg_5);
-			   		sendTraceNote("Activity: " + getName() + " Foundation: " + start_3.toString() + 
+			   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/pipe_removal) * pipe_rm_factor), TimeUnit.HOURS));
+			   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_3, "Remove Pipe " + i +"."+ j, myModel.presentTime(), 3) ;
+					sendMessage(msg_4);
+			   		sendTraceNote("Activity: " + getName() + " Remove pipe: " + start_3.toString() + 
 			   				" End: " + myModel.presentTime().toString());
-			   		myModel.excavators.takeBack(1);
-			   }
-			   
-			   // 5b prepare the bed
-			   // TODO bed preparations not always necessary? is already possible by keeping the activity 0 but then it stil shows in output.
-			   myModel.crews.provide(1);
-			   start_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Trench_Area * Bed_preparation)/preparation)), TimeUnit.HOURS)); 
-			   ActivityMessage msg_6 = new ActivityMessage(myModel, this, start_3, "Prepare Bed " + i, myModel.presentTime(), 3) ;
-			   sendMessage(msg_6);
-			   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start_3.toString() + 
-					   " End: " + myModel.presentTime().toString());
-			   myModel.crews.takeBack(1);
-			   
-			   // 6. install the pipe
-			   myModel.crews.provide(1);
-			   myModel.excavators.provide(1);
-			   for(int j=1; j<=myModel.getNewSeparated(); j++){
-				   start_3 = myModel.presentTime();
-				   hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/pipe_placement) * pipe_pl_factor), TimeUnit.HOURS));
-				   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_3, "Install Pipe " + i + "."+ j, myModel.presentTime(), 3) ;
-				   sendMessage(msg_7);
-				   sendTraceNote("Activity: " + getName() + " Install Pipe: " + start_3.toString() + 
-						   " End: " + myModel.presentTime().toString());
-			   }
-			   myModel.excavators.takeBack(1);
-			   myModel.crews.takeBack(1);
-			   
-			   // 7. First backfill + compacting
-			   myModel.crews.provide(1);
-			   start_3 = myModel.presentTime();
-			   // if there are housing connections backfill is only to top of main sewer pipe
-			   hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Trench_Area)/backfill) * soil_pl_factor), TimeUnit.HOURS));
-			   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "First Backfill " + i, myModel.presentTime(), 3);
-			   sendMessage(msg_8);
-			   sendTraceNote("Activity: " + getName() + " First Backfill: " + start_3.toString() + 
-					   " End: " + myModel.presentTime().toString());
-			   myModel.crews.takeBack(1);
+			   	}
+		   		myModel.excavators.takeBack(1);
+		   }
 
-			   
-	 		   // 8. remove shoring
-			   // only for projects that require shoring (set variable Shore to right value in simulation class)
-			   if(this.Shore  != 0)
-			   {	myModel.excavators.provide(1);
-			   		start_3 = myModel.presentTime();
-			   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length/shoring_remove)), TimeUnit.HOURS)); 
-			   		ActivityMessage msg_9 = new ActivityMessage(myModel, this, start_3, "Remove Shoring " + i, myModel.presentTime(), 3) ;
-			   		sendMessage(msg_9);
-			   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start_3.toString() + 
-			   				" End: " + myModel.presentTime().toString());
+		   // 5a Foundation
+		   if(myModel.getFoundation()) {
+			   	myModel.excavators.provide(1);
+			   	start_3 = myModel.presentTime();
+		   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/foundation_duration)), TimeUnit.HOURS));
+		   		ActivityMessage msg_5 = new ActivityMessage(myModel, this, start_3, "Foundation " + i, myModel.presentTime(), 3) ;
+				sendMessage(msg_5);
+		   		sendTraceNote("Activity: " + getName() + " Foundation: " + start_3.toString() + 
+		   				" End: " + myModel.presentTime().toString());
+		   		myModel.excavators.takeBack(1);
+		   }
+		   
+		   // 5b prepare the bed
+		   // TODO bed preparations not always necessary? is already possible by keeping the activity 0 but then it stil shows in output.
+		   myModel.crews.provide(1);
+		   start_3 = myModel.presentTime();
+		   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Trench_Area * Bed_preparation)/preparation)), TimeUnit.HOURS)); 
+		   ActivityMessage msg_6 = new ActivityMessage(myModel, this, start_3, "Prepare Bed " + i, myModel.presentTime(), 3) ;
+		   sendMessage(msg_6);
+		   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start_3.toString() + 
+				   " End: " + myModel.presentTime().toString());
+		   myModel.crews.takeBack(1);
+		   
+		   // 6. install the pipe
+		   myModel.crews.provide(1);
+		   myModel.excavators.provide(1);
+		   for(int j=1; j<=myModel.getNewSeparated(); j++){
+			   start_3 = myModel.presentTime();
+			   hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/pipe_placement) * pipe_pl_factor), TimeUnit.HOURS));
+			   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_3, "Install Pipe " + i + "."+ j, myModel.presentTime(), 3) ;
+			   sendMessage(msg_7);
+			   sendTraceNote("Activity: " + getName() + " Install Pipe: " + start_3.toString() + 
+					   " End: " + myModel.presentTime().toString());
+		   }
+		   myModel.excavators.takeBack(1);
+		   myModel.crews.takeBack(1);
+		   
+		   // 7. First backfill + compacting
+		   myModel.crews.provide(1);
+		   start_3 = myModel.presentTime();
+		   // if there are housing connections backfill is only to top of main sewer pipe
+		   hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Trench_Area)/backfill) * soil_pl_factor), TimeUnit.HOURS));
+		   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "First Backfill " + i, myModel.presentTime(), 3);
+		   sendMessage(msg_8);
+		   sendTraceNote("Activity: " + getName() + " First Backfill: " + start_3.toString() + 
+				   " End: " + myModel.presentTime().toString());
+		   myModel.crews.takeBack(1);
+		   
+ 		   // 8. remove shoring
+		   // only for projects that require shoring (set variable Shore to right value in simulation class)
+		   if(this.Shore  != 0)
+		   {	myModel.excavators.provide(1);
+		   		start_3 = myModel.presentTime();
+		   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length/shoring_remove)), TimeUnit.HOURS)); 
+		   		ActivityMessage msg_9 = new ActivityMessage(myModel, this, start_3, "Remove Shoring " + i, myModel.presentTime(), 3) ;
+		   		sendMessage(msg_9);
+		   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start_3.toString() + 
+		   				" End: " + myModel.presentTime().toString());
 			   		myModel.excavators.takeBack(1);
 			   }
  
 			   // gathers data on total construction time of pipe in main sewer loop, only active if turned on in utilitysimulation.java
-			   ActivityMessage msg = new ActivityMessage(myModel, this, start_2, "Pipe " + i + " construction", myModel.presentTime(), 2) ;
-			   sendMessage(msg);  
-			   
-			   //	TODO set flag to allow work on connections to start after a certain amount of sewer has been completed. 
-			   // 	what if connections overtake pipes?
-			   //	if(i * pipe_length >= starting_distance){
-			   //   process_connections.initialize // or something like that
-			   //}
-			
-		   // End of pipe iteration lifecycle
-		   }
-		   
-		   // Stops main sewer crew if there are second crews for connections and they completed all their work.   
-		   myModel.pipes_done();
-		   if(myModel.getSecondCrew()) // if there are second crews:
-		   {	
-			   if (UtilitySimulation.getPipeCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT()))
-			   {	myModel.crews.stopUse();
-		   			myModel.excavators.stopUse();
-		   			System.out.println("resource crews stopped at simulation time " + myModel.presentTime() + " 2nd crew finishes housing connections");
-		   			System.out.println("resource excavators stopped at simulation time " + myModel.presentTime());
-	   			}
-		   }
-			   
-			   
-		   // gathers data on total duration of main sewer loop (1 task contains all pipes in section), only active if turned on in utilitysimulation.java
-		   ActivityMessage msg = new ActivityMessage(myModel, this, start_1, "main sewer loop", myModel.presentTime(), 1) ;
-		   sendMessage(msg);
-		   
-		   // Allows the next section to start after this if setting is set to 1 in UtilitySimulation.java)
-		   if(myModel.getSectionWait() == 1) 
-	   		{
-		   	myModel.startingCondition.store(1);
-	   		}
-		   		   
-		   // 9. install the connections, only if there are connections.
-		   if(this.NUM_CONNECTIONS != 0)
-		   {
-			   startConnection_1 = myModel.presentTime();
-			   for (int j=1; j<=this.NUM_CONNECTIONS; j++) {
-				   if(myModel.getSecondCrew()) {
-					   myModel.secondcrews.provide(1);}
-				   else {myModel.crews.provide(1);}
-				   startConnection_2 = myModel.presentTime();
-				   startConnection_3 = myModel.presentTime();
-				   hold (new TimeSpan((myModel.getHousingConnectionTime() * connection_duration_hwa), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
-				   ActivityMessage msg_10 = new ActivityMessage(myModel, this, startConnection_3, "Housing pipe " + j, myModel.presentTime(), 6) ;
-				   sendMessage(msg_10);
-				   sendTraceNote("Activity: " + getName() + " Install housing connection: " + startConnection_3.toString() + 
-						   " End: " + myModel.presentTime().toString());
-				   if(myModel.getSecondCrew()){
-					   myModel.secondcrews.takeBack(1);}
-				   else {myModel.crews.takeBack(1);}
-			   
-		   
-				   // 10. (second) backfill + compacting
-				   if(myModel.getSecondCrew()) {
-					   	myModel.secondcrews.provide(1);}
-				   else {myModel.crews.provide(1);}
-				   myModel.trucks.provide(1);
-				   startConnection_3 = myModel.presentTime();
-				   hold (new TimeSpan((myModel.getBackfillTime() * ((second_backfill_height * Trench_Area)/backfill) * soil_pl_factor), TimeUnit.HOURS));
-				   ActivityMessage msg_11 = new ActivityMessage(myModel, this, startConnection_3, "Second Backfill " + j, myModel.presentTime(), 6);
-				   sendMessage(msg_11);
-				   sendTraceNote("Activity: " + getName() + " Backfill: " + startConnection_3.toString() + 
-						   " End: " + myModel.presentTime().toString());
-				   if(myModel.getSecondCrew()) {
-					   	myModel.secondcrews.takeBack(1);}
-				   else {myModel.crews.takeBack(1);}
-				   myModel.trucks.takeBack(1);
-				   
-				   ActivityMessage msg_12 = new ActivityMessage(myModel, this, startConnection_2, "Housing connection " + j, myModel.presentTime(), 5);
-				   sendMessage(msg_12);
-			   }
-			   ActivityMessage msg_10 = new ActivityMessage(myModel, this, startConnection_1, "All Housing connections ", myModel.presentTime(), 4) ;
-			   sendMessage(msg_10);
-			}
+		   ActivityMessage msg = new ActivityMessage(myModel, this, start_2, "Pipe " + i + " construction", myModel.presentTime(), 2) ;
+		   sendMessage(msg);  
 		
+	   // End of pipe iteration lifecycle
+	   }
+	   
+	   // Stops main sewer crew if there are second crews for connections and main crews completed all their work.   
+	   myModel.pipes_done();
+	   if(myModel.getSecondCrew()) // if there are second crews:
+	   {	
+		   if (UtilitySimulation.getPipeCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT()))
+		   {	myModel.crews.stopUse();
+	   			myModel.excavators.stopUse();
+	   			System.out.println("resource crews stopped at simulation time " + myModel.presentTime() + " 2nd crew finishes housing connections");
+	   			System.out.println("resource excavators stopped at simulation time " + myModel.presentTime());
+   			}
+	   }   
 		   
-		   myModel.backfill();
-		   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
-			   myModel.trucks.stopUse();
-			   myModel.crews.stopUse();
+	   // gathers data on total duration of main sewer loop (1 task contains all pipes in section), only active if turned on in utilitysimulation.java
+	   ActivityMessage msg = new ActivityMessage(myModel, this, start_1, "main sewer loop", myModel.presentTime(), 1) ;
+	   sendMessage(msg);
+	   
+	   // Allows the next section to start after this if setting is set to 1 in UtilitySimulation.java)
+	   if(myModel.getSectionWait() == 1) 
+   		{
+	   		myModel.startingCondition.store(1);
+   		}
+	   
+	   // 9. install the connections, only if there are connections.
+	   if(this.Num_connections != 0)
+	   {		
+		   startConnection_1 = myModel.presentTime();
+		   for (int j=1; j<=(this.Num_connections - connections_done); j++) {
+			   if(myModel.getSecondCrew()) {
+				   myModel.secondcrews.provide(1);}
+			   else {myModel.crews.provide(1);}
+			   startConnection_2 = myModel.presentTime();
+			   startConnection_3 = myModel.presentTime();
+			   hold (new TimeSpan((myModel.getHousingConnectionTime() * connection_duration_hwa), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
+			   ActivityMessage msg_10 = new ActivityMessage(myModel, this, startConnection_3, "Housing pipe " + j, myModel.presentTime(), 6) ;
+			   sendMessage(msg_10);
+			   sendTraceNote("Activity: " + getName() + " Install housing connection: " + startConnection_3.toString() + 
+					   " End: " + myModel.presentTime().toString());
 			   if(myModel.getSecondCrew()){
-				   myModel.secondcrews.stopUse();
-				   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
-			   }
-			   else {
-				   myModel.crews.stopUse();
-				   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());
-			   }
-			   System.out.println("resource trucks stopped at simulation time " + myModel.presentTime());
-			   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
-		   }
+				   myModel.secondcrews.takeBack(1);}
+			   else {myModel.crews.takeBack(1);}
 		   
+	   
+			   // 10. (second) backfill + compacting
+			   if(myModel.getSecondCrew()) {
+				   	myModel.secondcrews.provide(1);}
+			   else {myModel.crews.provide(1);}
+			   myModel.trucks.provide(1);
+			   startConnection_3 = myModel.presentTime();
+			   hold (new TimeSpan((myModel.getBackfillTime() * ((second_backfill_height * Trench_Area)/backfill) * soil_pl_factor), TimeUnit.HOURS));
+			   ActivityMessage msg_11 = new ActivityMessage(myModel, this, startConnection_3, "Second Backfill " + j, myModel.presentTime(), 6);
+			   sendMessage(msg_11);
+			   sendTraceNote("Activity: " + getName() + " Backfill: " + startConnection_3.toString() + 
+					   " End: " + myModel.presentTime().toString());
+			   if(myModel.getSecondCrew()) {
+				   	myModel.secondcrews.takeBack(1);}
+			   else {myModel.crews.takeBack(1);}
+			   myModel.trucks.takeBack(1);
+			   
+			   ActivityMessage msg_12 = new ActivityMessage(myModel, this, startConnection_2, "Housing connection " + j, myModel.presentTime(), 5);
+			   sendMessage(msg_12);
+		   }
+		   ActivityMessage msg_10 = new ActivityMessage(myModel, this, startConnection_1, "All Housing connections ", myModel.presentTime(), 4) ;
+		   sendMessage(msg_10);
+		}
+	
+	   
+	   myModel.backfill();
+	   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
+		   myModel.trucks.stopUse();
+		   myModel.crews.stopUse();
+		   if(myModel.getSecondCrew()){
+			   myModel.secondcrews.stopUse();
+			   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
+		   }
+		   else {
+			   myModel.crews.stopUse();
+			   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());
+		   }
+		   System.out.println("resource trucks stopped at simulation time " + myModel.presentTime());
+		   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
+	   }
+	   
 
-		   // Allows the next section to start after this if setting is set to 2 in UtilitySimulation.java)
-		   if(myModel.getSectionWait() == 2) 
-		   {
+	   // Allows the next section to start after this if setting is set to 2 in UtilitySimulation.java)
+	   if(myModel.getSectionWait() == 2) 
+	   {
 		   myModel.startingCondition.store(1);
-		   }
-		   
-		   // TODO It could also be that only a broken-stone road is constructed and paving alone is performed later
-		   
-		   // 11a. roll/prepare surface - sand TODO work further on 11a & b.
-		   myModel.rollers.provide(1);
-		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * (Section_Area/paving_preparation)), TimeUnit.HOURS)); // TODO thisnk lfjasldfjffklfklasd;flj
-		   ActivityMessage msg_12 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
-		   sendMessage(msg_12);
-		   sendTraceNote("Activity: " + getName() + " Compact: " + start_3.toString() + 
-				   " End: " + myModel.presentTime().toString());
+	   }
+	   
+	   // TODO It could also be that only a broken-stone road is constructed and paving alone is performed later
+	   
+	   // 11a. roll/prepare surface - sand TODO work further on 11a & b.
+	   myModel.rollers.provide(1);
+	   start_3 = myModel.presentTime();
+	   hold (new TimeSpan((myModel.getSurfacePrepareTime() * (Section_Area/paving_preparation)), TimeUnit.HOURS)); // TODO thisnk lfjasldfjffklfklasd;flj
+	   ActivityMessage msg_12 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
+	   sendMessage(msg_12);
+	   sendTraceNote("Activity: " + getName() + " Compact: " + start_3.toString() + 
+			   " End: " + myModel.presentTime().toString());
 
-		   myModel.rollers.takeBack(1);
+	   myModel.rollers.takeBack(1);
+	   myModel.prepare();
+	   if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
+		   myModel.rollers.stopUse();
+		   System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
+	   }
+	  
+	   // Allows the next section to start after this if setting is set to 3 in UtilitySimulation.java)
+	   if(myModel.getSectionWait() == 3) 
+	   {
+		   myModel.startingCondition.store(1);
+	   }
+	   
+	   // 11b. roll/prepare surface - broken rock
+	   // TODO finish & investigate if this is a choice or always the same
+	   if(myModel.getPrepareSurface() == 1)
+		   {myModel.trucks.provide(1);
+		   start_3 = myModel.presentTime();
+		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((Section_length * Rock_layer )/paving_preparation)), TimeUnit.HOURS));  //TODO thisnk lfjasldfjffklfklasd;flj
+		   ActivityMessage msg_13 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
+		   sendMessage(msg_13);
+		   sendTraceNote("Activity: " + getName() + " Broken rock: " + start_3.toString() + 
+				   " End: " + myModel.presentTime().toString());
+		   myModel.trucks.takeBack(1);
 		   myModel.prepare();
    		   if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
-			   myModel.rollers.stopUse();
-			   System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
-		   }
-		  
-		   // Allows the next section to start after this if setting is set to 3 in UtilitySimulation.java)
-		   if(myModel.getSectionWait() == 3) 
+		    	  myModel.rollers.stopUse();
+		       System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
+   		   		}
+		   // Allows the next section to start after this if setting is set to 4 in UtilitySimulation.java)
+		   if(myModel.getSectionWait() == 4) 
 		   {
-		   myModel.startingCondition.store(1);
-		   }
-		   
-		   // 11b. roll/prepare surface - broken rock
-   		   // TODO finish & investigate if this is a choice or always the same
-		   if(myModel.getPrepareSurface() == 1)
-			   {myModel.trucks.provide(1);
-			   start_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((Section_length * Rock_layer )/paving_preparation)), TimeUnit.HOURS));  //TODO thisnk lfjasldfjffklfklasd;flj
-			   ActivityMessage msg_13 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
-			   sendMessage(msg_13);
-			   sendTraceNote("Activity: " + getName() + " Broken rock: " + start_3.toString() + 
-					   " End: " + myModel.presentTime().toString());
-			   myModel.trucks.takeBack(1);
-			   myModel.prepare();
-	   		   if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
-			    	  myModel.rollers.stopUse();
-			       System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
-	   		   		}
-			   // Allows the next section to start after this if setting is set to 4 in UtilitySimulation.java)
-			   if(myModel.getSectionWait() == 4) 
-			   {
 			   myModel.startingCondition.store(1);
-
-			   }
 		   }
-   		   
-   		   // 12. pave  
-		   ///*
-		   //start new paving process
-		    Paving pavement = new Paving(
-			myModel, 				//owner
-			this,					// parent
-			"Put", 					//name
-			true, 					// ?
-			New_pavement,
-			Total_Area, 
-			Section_Area, 
-			paving_time);
-
-			pavement.activate();
-			this.passivate();
-			//this needs to passivate while paving performs it's activities
-			//*/
-		   
-		   //pave(New_pavement);
-		   
-		   // Allows the next section to start after this if setting is set to 5 in UtilitySimulation.java)
-		   if(myModel.getSectionWait() == 5) 
-		   {
+	   }
+	   
+	   // 12. pave 
+	   //start new paving process
+	    Paving pavement = new Paving(
+	    		myModel, this, "Paving Put ", true, New_pavement, Total_Area, Section_Area, paving_time);
+		pavement.activate();
+		this.passivate();		//this needs to passivate while paving performs it's activities
+	   
+	   // Allows the next section to start after this if setting is set to 5 in UtilitySimulation.java)
+	   if(myModel.getSectionWait() == 5) 
+	   {
 		   myModel.startingCondition.store(1);
-		   }
-		   System.out.println(this + " completed");
+	   }
+	   System.out.println(this + " completed");
 	}
 		   
-//=====================================================================================================================================================================
-//=====================================================================================================================================================================
-	   
-			// make this a seperate class?
-		   void removePavement(int oldPavement)
-		   {
-			   TimeInstant start = myModel.presentTime();
-			   
-			   switch(oldPavement){
-			   		case 1:
-		    			// asphalt pavement removal per section
-		    			// Break asphalt per section
-    				   myModel.breakers.provide(1);
-    				   start = myModel.presentTime();
-    				   hold (new TimeSpan((myModel.getBreakingTime() * (Section_Area/remove_pavement)), TimeUnit.HOURS));
-    				   ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Break Section ", myModel.presentTime(), 0) ;
-    				   sendMessage(msg_1);
-    				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
-    						   " End: " + myModel.presentTime().toString());
-    				   myModel.breakers.takeBack(1);
-    				   myModel.breaking();
-    				   if (UtilitySimulation.getBreakCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())){
-    					   myModel.breakers.stopUse();
-    					   System.out.println("resource breakers stopped at simulation time " + myModel.presentTime());
-    				   }
-    				   break;
-		    			
-		    		case 2:
-		    			// brick pavement removal per section
-    				   myModel.crews.provide(1);
-    				   start = myModel.presentTime();
-    				   hold (new TimeSpan((myModel.getBreakingTime() * (Section_Area/remove_pavement)), TimeUnit.HOURS));
-    				   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Remove Stones Section ", myModel.presentTime(), 0);
-    				   sendMessage(msg_2);
-    				   myModel.crews.takeBack(1);
-    				   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
-    						   " End: " + myModel.presentTime().toString());
-    				   System.out.println("stones removed at simulation time " + myModel.presentTime());
-    				   break;
-		    			
-		    		case 3:
-		    			// Breaking ashpalt pavement all sections at once.
-    				   	if (this.getIdentNumber() == (1)){
-    				   		myModel.breakers.provide(1);
-    				   		start = myModel.presentTime();
-    				   		hold (new TimeSpan((myModel.getBreakingTime() * (Total_Area/remove_pavement)), TimeUnit.HOURS));
-    					   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start, "Break all ", myModel.presentTime(), 0) ;
-    					   sendMessage(msg_3);
-    					   sendTraceNote("Activity: " + getName() + " Breaking Start: " + start.toString() + 
-    							   " End: " + myModel.presentTime().toString());
-    					   myModel.breakers.takeBack(1);
-    					   myModel.breakers.stopUse();
-    					   System.out.println("resource breakers stopped at simulation time " + myModel.presentTime());
-    				   	}
-    				   	
-    				   	else{
-    				   		// Breaking happens once for all sections
-    				   		// so all following sections have no breaking activities
-    				   		System.out.println(this + " No breaking activities, all in first " + myModel.presentTime());
-    				   	}   
-		    			break;
-		    			
-		    		default:
-	    			    // no pavement removal
-			   			System.out.println("no breaking activities performed " + myModel.presentTime());	   
-		    			break;
-		   }}
-
-		   void pave(int newPavement)
-		   {
-			TimeInstant start = myModel.presentTime();   
-		   
-		    	switch (newPavement){
-		    		case 1:
-		    			// paving all per section
-	    				   myModel.pavecrews.provide(1);
-	    				   start = myModel.presentTime();
-	    				   hold (new TimeSpan((myModel.getPaveTime() * (Section_Area/paving_time)), TimeUnit.HOURS));
-	    				   ActivityMessage msg_1 = new ActivityMessage(myModel, this, start, "Pave ", myModel.presentTime(), 0) ;
-	    				   sendMessage(msg_1);
-	    				   sendTraceNote("Activity: " + getName() + " Asphalt Paving: " + start.toString() + 
-	    						   " End: " + myModel.presentTime().toString());
-	    				   myModel.pavecrews.takeBack(1);
-	    				   myModel.pave();
-	    				   if (UtilitySimulation.getPaveCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
-	    			   			myModel.pavecrews.stopUse();
-	    			   			myModel.getExperiment().stop();
-	    			   			System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
-	    			   			System.out.println("Put " + this + " completed");
-	    			   		} 
-		    			break;
-
-		    		case 2:
-		    			// brick pavement per section
-		    			// brick paving
-						   myModel.stonepavecrews.provide(1);
-						   start = myModel.presentTime();
-						   hold (new TimeSpan((myModel.getPaveTime() * (Section_Area/paving_time)), TimeUnit.HOURS));
-						   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start, "Stone Pave ", myModel.presentTime(), 0) ;
-						   sendMessage(msg_2);
-						   sendTraceNote("Activity: " + getName() + " Stone Paving: " + start.toString() + 
-								   " End: " + myModel.presentTime().toString());
-						   myModel.stonepavecrews.takeBack(1);
-						   myModel.stonepave();
-						   
-						   if (UtilitySimulation.getStonePaveCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
-					   			myModel.stonepavecrews.stopUse();
-					   			myModel.getExperiment().stop();
-					   			System.out.println("resource stonepavecrews stopped at simulation time " + myModel.presentTime());
-					   			System.out.println("Put " + this + " completed");
-						   }  
-						     
-						break;
-		    			
-		    		case 3:
-		    			// asphalt pavement all sections at once
-    				   	if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())){
-    				   		myModel.pavecrews.provide(1);
-						   start = myModel.presentTime();
-						   hold (new TimeSpan((myModel.getPaveTime() * (Total_Area/paving_time)), TimeUnit.HOURS));
-						   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start, "Pave all ", myModel.presentTime(), 0) ;
-						   sendMessage(msg_3);
-						   sendTraceNote("Activity: " + getName() + " Asphalt Paving: " + start.toString() + 
-								   " End: " + myModel.presentTime().toString());
-						   myModel.pavecrews.takeBack(1);
-						   myModel.pavecrews.stopUse();
-						   myModel.getExperiment().stop();
-						   System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
-						   System.out.println("Put " + this + " completed");
-						   }   				   	
-    				   	
-    			   		else{
-    				   		// After last section paving of entire work starts.
-    				   		// so all preceding sections have no paving activities
-    				   		System.out.println(this + " No paving activities, all in last " +  myModel.presentTime());
-    				   	}
-		    			   
-		    			break;
-		    			
-		    		default:
-		    			// no paveing activities
-	    			    // no paving activities
-    				   	if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())){
-    				   		myModel.getExperiment().stop();
-    				   		System.out.println("no paving activities performed " + myModel.presentTime());
-    				   	}	   
-		    			break;
-		   }}
-
 	
 //=====================================================================================================================================================================
 //=====================================================================================================================================================================
@@ -851,7 +692,7 @@ public class SectionProcessAll extends ParentProcess
 	private UtilitySimulation myModel;
 	private int PUT; 
 	private int Shore;					// Indicates if shoring is used and if so what type is used.
-	private int NUM_CONNECTIONS;
+	private int Num_connections;
 	
 	private double Num_Put_connections;  	// number of connections the put has, only if put
 	private int Old_pavement; 			// type of old pavement
@@ -888,6 +729,7 @@ public class SectionProcessAll extends ParentProcess
 	/**
 	* local section parameters
 	**/	
+	int connections_done = 0;				// number of connections done by 2nd crew already while main crew is still working on main sewer
 	private int remove_pavement;			// production quantity of pavement removal in m^2 per hour
 	private int excavation;					// production quantity of excavation in m^3 per hour
 	private double pipe_removal;			// production quantity of pipe removal in m per hour
