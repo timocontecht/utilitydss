@@ -34,7 +34,7 @@ public class Scenario implements Serializable
 	   private int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
 	  
 	   private static boolean secondCrew = true;		// indicates if there is a 2nd crew present to perform housing connections
-	   
+	   private static int thirdCrew = 0;					// indicates if there is a 3rd crew  to perform 2nd backfill (0=no 1=yes)
 
 	public int getNUM_SEC() {
 		return NUM_SEC;
@@ -134,6 +134,10 @@ public class Scenario implements Serializable
 
 	public static boolean isSecondCrew() {
 		return secondCrew;
+	}
+	
+	public static int getThirdCrew() {
+		return thirdCrew;
 	}
 
 	public static void setSecondCrew(boolean secondCrew) {

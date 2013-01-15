@@ -122,7 +122,8 @@ public class SectionProcessAll extends ParentProcess
 		 */
 		NUM_Pipe = (int) Math.ceil(Section_length / Pipe_length); 		// calculation of the required number of pipes
 		Section_area = (Section_length * Section_width);				// total surface of the section
-		Trench_area = (Pipe_length * Trench_width);						// total surface of the trench
+		Pipe_area =	(Pipe_length * Trench_width);						// total surface of area around one pipe
+		Trench_area = (Pipe_length * NUM_Pipe * Trench_width);			// total surface of the trench
 		Excavation_volume = (Trench_area * Trench_depth);  				// excavation volume per pipe
 		Total_area = (myModel.getTotal_length() * Section_width);		// total working area of all sections
 		
@@ -194,10 +195,11 @@ public class SectionProcessAll extends ParentProcess
 				Num_Connections,
 				DurationDB.getConnection_duration_hwa(),
 				second_backfill_height,
+				Pipe_area, 
 				Trench_area,
 				DurationDB.getBackfill(),
 				DurationDB.getSoil_pl_factor());
-			   
+		   }   
 			   	
 			   	//TODO this activation should be placed at several points where activation of connection work is possible in reality.
 			    // ie after certian amount of distance main sewer is laid, after certain time (how?),
@@ -206,7 +208,7 @@ public class SectionProcessAll extends ParentProcess
 			   	// or if(something else){
 				// housing_connection.activate();
 		   		// }
-		   }
+		   
 		   
 //=====================================================================================================================================================================
 //=====================================================================================================================================================================
@@ -324,7 +326,7 @@ public class SectionProcessAll extends ParentProcess
 		   // TODO bed preparations not always necessary? is already possible by keeping the activity 0 but then it stil shows in output.
 		   myModel.crews.provide(1);
 		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Trench_area * Bed_preparation)/DurationDB.getPreparation())), TimeUnit.HOURS)); 
+		   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Pipe_area * Bed_preparation)/DurationDB.getPreparation())), TimeUnit.HOURS)); 
 		   ActivityMessage msg_6 = new ActivityMessage(myModel, this, start_3, "Prepare Bed " + i, myModel.presentTime(), 3) ;
 		   sendMessage(msg_6);
 		   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start_3.toString() + 
@@ -349,7 +351,7 @@ public class SectionProcessAll extends ParentProcess
 		   myModel.crews.provide(1);
 		   start_3 = myModel.presentTime();
 		   // if there are housing connections backfill is only to top of main sewer pipe
-		   hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Trench_area)/DurationDB.getBackfill()) * DurationDB.getSoil_pl_factor()), TimeUnit.HOURS));
+		   hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Pipe_area)/DurationDB.getBackfill()) * DurationDB.getSoil_pl_factor()), TimeUnit.HOURS));
 		   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "First Backfill " + i, myModel.presentTime(), 3);
 		   sendMessage(msg_8);
 		   sendTraceNote("Activity: " + getName() + " First Backfill: " + start_3.toString() + 
@@ -399,6 +401,7 @@ public class SectionProcessAll extends ParentProcess
    		}
 	   
 	   // 9. install the connections, only if there are connections.
+	   //TODO what if 3d crane fills up trench, then 2nd crew only does connections and leaves trench open.
 	   if(this.Num_Connections != 0)
 	   {		
 		   startConnection_1 = myModel.presentTime();
@@ -424,7 +427,7 @@ public class SectionProcessAll extends ParentProcess
 			   else {myModel.crews.provide(1);}
 			   myModel.trucks.provide(1);
 			   startConnection_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getBackfillTime() * ((second_backfill_height * Trench_area)/DurationDB.getBackfill()) * DurationDB.getSoil_pl_factor()), TimeUnit.HOURS));
+			   hold (new TimeSpan((myModel.getBackfillTime() * ((second_backfill_height * Pipe_area)/DurationDB.getBackfill()) * DurationDB.getSoil_pl_factor()), TimeUnit.HOURS));
 			   ActivityMessage msg_11 = new ActivityMessage(myModel, this, startConnection_3, "Second Backfill " + j, myModel.presentTime(), 6);
 			   sendMessage(msg_11);
 			   sendTraceNote("Activity: " + getName() + " Backfill: " + startConnection_3.toString() + 
@@ -437,9 +440,9 @@ public class SectionProcessAll extends ParentProcess
 			   ActivityMessage msg_12 = new ActivityMessage(myModel, this, startConnection_2, "Housing connection " + j, myModel.presentTime(), 5);
 			   sendMessage(msg_12);
 		   }
-		   ActivityMessage msg_10 = new ActivityMessage(myModel, this, startConnection_1, "All Housing connections ", myModel.presentTime(), 4) ;
-		   sendMessage(msg_10);
-		}
+		   ActivityMessage msg_13 = new ActivityMessage(myModel, this, startConnection_1, "All Housing connections ", myModel.presentTime(), 4) ;
+		   sendMessage(msg_13);
+	   }
 	
 	   
 	   myModel.backfill();
@@ -490,7 +493,7 @@ public class SectionProcessAll extends ParentProcess
 	   }
 	   
 	   // 11b. roll/prepare surface - broken rock
-	   // TODO finish & investigate if this is a choice or always the same
+	   // TODO finish & investigate if this is a choice or always the same + who does this?
 	   if(myModel.getPrepareSurface() == 1)
 		   {myModel.trucks.provide(1);
 		   start_3 = myModel.presentTime();
@@ -578,6 +581,7 @@ public class SectionProcessAll extends ParentProcess
 	int connections_done = 0;				// number of connections done by 2nd crew already while main crew is still working on main sewer
 	private int NUM_Pipe; 					// calculation of the required number of pipes
 	private double Section_area;			// total surface of the section
+	private double Pipe_area;				// total area around one pipe
 	private double Trench_area;				// total surface of the trench
 	private double Excavation_volume;  		// excavation volume per pipe
 	private double Total_area;				// total working area of all sections

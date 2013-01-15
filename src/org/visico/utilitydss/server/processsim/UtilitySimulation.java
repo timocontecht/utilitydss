@@ -395,6 +395,10 @@ public void setNUM_SEC(int nUM_SEC) {
     	return Scenario.isSecondCrew();
 		}
    
+   public int getThirdCrew() {
+	   return Scenario.getThirdCrew();
+   		}
+   
    public Scenario getScenario() {
 	   	return scenario;
    		}

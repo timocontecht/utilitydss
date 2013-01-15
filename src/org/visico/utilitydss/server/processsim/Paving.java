@@ -40,6 +40,7 @@ public class Paving extends ParentProcess
 	public void lifeCycle() {
 
 		pave(newPavement);
+		Parent.activate();
 		
 	}
 	
@@ -66,7 +67,6 @@ public class Paving extends ParentProcess
 			   			System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
 			   			System.out.println(Parent + " completed");
 			   		}
-    			Parent.activate();
     			break;
 
     		case 2:
@@ -88,7 +88,6 @@ public class Paving extends ParentProcess
 		   			System.out.println("resource stonepavecrews stopped at simulation time " + myModel.presentTime());
 		   			System.out.println(Parent + " completed");
 				}  
-				Parent.activate();     
 				break;
     			
     		case 3:
@@ -113,8 +112,7 @@ public class Paving extends ParentProcess
 			   		// so all preceding sections have no paving activities
 			   		System.out.println(Parent + " No paving activities, all in last " +  myModel.presentTime());
 			   	}
-			   	Parent.activate();   
-    			break;
+			   	break;
     			
     		default:
 	    		// no paving activities
@@ -123,8 +121,7 @@ public class Paving extends ParentProcess
 			   		System.out.println("no paving activities performed " + myModel.presentTime());
 			   		System.out.println(Parent + " completed");
 			   	}	
-			   	Parent.activate();
-    			break;
+			   	break;
 	   }}
 	  
 	private UtilitySimulation myModel;

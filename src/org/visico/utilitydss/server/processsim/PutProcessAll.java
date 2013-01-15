@@ -136,33 +136,34 @@ public class PutProcessAll extends ParentProcess
 		/**
 		 * Initiation of a duration database containing the activity durations for this section
 		 */
+		
 		DurationDatabase DurationDB = new DurationDatabase(
 	   		myModel,				//owner
-			this, 				//name
-			Shore,				// number of pipes in section
-			Old_pavement,		// type of old pavement
-			New_pavement,		// type of new pavement
-			Trench_width,		// width of Trench 
-			Trench_depth,		// depth of Trench in
-			Old_sewer_type,		// type of old sewer
-			New_sewer_type,		// type of new sewer
+			this, 					//name
+			Shore,					// number of pipes in section
+			Old_pavement,			// type of old pavement
+			New_pavement,			// type of new pavement
+			Trench_width,			// width of Trench 
+			Trench_depth,			// depth of Trench in
+			Old_sewer_type,			// type of old sewer
+			New_sewer_type,			// type of new sewer
 			Old_diameter,			// diameter of old sewer 
-			New_diameter,		// diameter of new sewer
+			New_diameter,			// diameter of new sewer
 			Asphalt_old,			// layer thickness of old asphalt in
 			Asphalt_new,			// layer thickness of new asphalt in
-			Cables,				// weight class of cables in the ground
-			Length_connections,	// average length of connections
+			Cables,					// weight class of cables in the ground
+			Length_connections,		// average length of connections
 			Diameter_connections,	// average depth of connections
-			Foundation_type, 	// type foundation used: 1 = , 2 =
-			Soil_removed,  		// where is the removed soil placed: 1 = , 2 =
-			Soil_new,  			// where is the new soil placed: 1 = , 2 =
-			Pipes_old,  			// where are the removed pipes placed: 1 = , 2 =
+			Foundation_type, 		// type foundation used: 1 = , 2 =
+			Soil_removed,  			// where is the removed soil placed: 1 = , 2 =
+			Soil_new,  				// where is the new soil placed: 1 = , 2 =
+			Pipes_old, 				// where are the removed pipes placed: 1 = , 2 =
 			Pipes_new,  			// where are the new pipes placed: 1 = , 2 =
 			Rock_layer,				// height of pavement preparation rock layer in m
 			Sand_layer,				// height of pavement preparation sand layer in m
 			Old_put_area,			// area of the old put
 			New_put_area,			// area of the new put
-			Bed_preparation		// height of bed preparation layer 
+			Bed_preparation			// height of bed preparation layer 
 			);		
 		
 //=====================================================================================================================================================================
@@ -430,8 +431,8 @@ public class PutProcessAll extends ParentProcess
 	   {	myModel.trucks.provide(1);
 		   start_3 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((Section_area * Rock_layer )/DurationDB.getPaving_preparation())), TimeUnit.HOURS)); 
-		   ActivityMessage msg_13 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
-		   sendMessage(msg_13);
+		   ActivityMessage msg_14 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
+		   sendMessage(msg_14);
 		   sendTraceNote("Activity: " + getName() + " Broken rock: " + start_3.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.trucks.takeBack(1);

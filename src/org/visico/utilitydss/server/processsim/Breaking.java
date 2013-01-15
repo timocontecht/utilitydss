@@ -39,6 +39,7 @@ public class Breaking extends ParentProcess
 	public void lifeCycle() {
 
 		removePavement(oldPavement);
+		Parent.activate();
 		
 	}
 	
@@ -63,7 +64,6 @@ public class Breaking extends ParentProcess
 				   myModel.breakers.stopUse();
 				   System.out.println("resource breakers stopped at simulation time " + myModel.presentTime());
 			   }
-			   Parent.activate();
 			   break;
     			
     		case 2:
@@ -77,7 +77,6 @@ public class Breaking extends ParentProcess
 			   sendTraceNote("Activity: " + Parent + " Breaking Start: " + start.toString() + 
 					   " End: " + myModel.presentTime().toString());
 			   System.out.println("stones removed at simulation time " + myModel.presentTime());
-			   Parent.activate();
 			   break;
     			
     		case 3:
@@ -100,13 +99,11 @@ public class Breaking extends ParentProcess
 			   		// so all following sections have no breaking activities
 			   		System.out.println(Parent + " No breaking activities, all in first " + myModel.presentTime());
 			   	}
-			   Parent.activate();   
 			   break;
     			
     		default:
 		    // no pavement removal
 		   		System.out.println("no breaking activities performed " + myModel.presentTime());	   
-		   		Parent.activate();
 		   		break;
 	   }}
 	  
