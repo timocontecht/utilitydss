@@ -138,7 +138,6 @@ public void setNUM_SEC(int nUM_SEC) {
 	   // initialize the sections 
 	   for (int i=0; i<scenario.getNUM_SEC(); i++)
 	   {
-		   // TODO, currently a very cumbersome way to have a put named put and a section named section, see if it can be shortened.
 		   if(put[i]==0)
 		   {
 			   SectionProcessAll section = new SectionProcessAll(
@@ -149,7 +148,6 @@ public void setNUM_SEC(int nUM_SEC) {
 					put[i],					// section or put:  0 is section, 1 is put.  
 					shore[i],				// number of pipes in section
 					connections[i],			// number of connections in section
-					
 					num_put_connections[i],	// number of connections the put has, only if put
 					old_pavement[i],		// type of old pavement
 					new_pavement[i],		// type of new pavement
@@ -160,22 +158,22 @@ public void setNUM_SEC(int nUM_SEC) {
 					trench_depth[i],		// depth of Trench in
 					old_sewer_type[i],		// type of old sewer
 					new_sewer_type[i],		// type of new sewer
-					old_diameter[i],			// diameter of old sewer 
+					old_diameter[i],		// diameter of old sewer 
 					new_diameter[i],		// diameter of new sewer
 					asphalt_old[i],			// layer thickness of old asphalt in
 					asphalt_new[i],			// layer thickness of new asphalt in
 					cables[i],				// weight class of cables in the ground
 					length_connections[i],	// average length of connections
-					diameter_connections[i],	// average depth of connections
+					diameter_connections[i],// average depth of connections
 					foundation_type[i], 	// type foundation used: 1 = , 2 =
 					soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
 					soil_new[i],  			// where is the new soil placed: 1 = , 2 =
 					pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
 					pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
-					rock_layer,				// height of pavement preparation rock layer in m
-					sand_layer,				// height of pavement preparation sand layer in m
-					old_put_area[i],			// area of the old put
-					new_put_area[i],			// area of the new put
+					rock_layer[i],			// height of pavement preparation rock layer in m
+					sand_layer[i],			// height of pavement preparation sand layer in m
+					old_put_area[i],		// area of the old put
+					new_put_area[i],		// area of the new put
 					Bed_preparation[i]		// height of bed preparation layer 
 				);
 	
@@ -191,12 +189,11 @@ public void setNUM_SEC(int nUM_SEC) {
 			   PutProcessAll section = new PutProcessAll(
 			   //ParentProcess section = new ParentProcess(
 					this, 					//owner
-					"Put",				//name
+					"Put",					//name
 					true, 					// ?
 					put[i],					// section or put:  0 is section, 1 is put.  
 					shore[i],				// number of pipes in section
-					connections[i],		// number of connections in section
-					
+					connections[i],			// number of connections in section
 					num_put_connections[i],	// number of connections the put has, only if put
 					old_pavement[i],		// type of old pavement
 					new_pavement[i],		// type of new pavement
@@ -207,22 +204,22 @@ public void setNUM_SEC(int nUM_SEC) {
 					trench_depth[i],		// depth of Trench in
 					old_sewer_type[i],		// type of old sewer
 					new_sewer_type[i],		// type of new sewer
-					old_diameter[i],			// diameter of old sewer 
+					old_diameter[i],		// diameter of old sewer 
 					new_diameter[i],		// diameter of new sewer
 					asphalt_old[i],			// layer thickness of old asphalt in
 					asphalt_new[i],			// layer thickness of new asphalt in
 					cables[i],				// weight class of cables in the ground
 					length_connections[i],	// average length of connections
-					diameter_connections[i],	// average depth of connections
+					diameter_connections[i],// average depth of connections
 					foundation_type[i], 	// type foundation used: 1 = , 2 =
 					soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
 					soil_new[i],  			// where is the new soil placed: 1 = , 2 =
 					pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
 					pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
-					rock_layer,				// height of pavement preparation rock layer in m
-					sand_layer,				// height of pavement preparation sand layer in m
-					old_put_area[i],			// area of the old put
-					new_put_area[i],			// area of the new put
+					rock_layer[i],			// height of pavement preparation rock layer in m
+					sand_layer[i],			// height of pavement preparation sand layer in m
+					old_put_area[i],		// area of the old put
+					new_put_area[i],		// area of the new put
 					Bed_preparation[i]		// height of bed preparation layer 
 				);
 	 
@@ -483,7 +480,7 @@ public void setNUM_SEC(int nUM_SEC) {
 																							// 3 means asphalt; break all sections at start, other gives error
    private static int[] new_pavement = 				{ 3, 3, 3, 1, 1, 1, 2, 2, 2, 2 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
 																							// 3 means asphalt; pave all sections at start, other gives error
-   private static double[] section_length = 		{ 10, 4, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
+   private static double[] section_length = 		{ 2, 4, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
    private static double[] pipe_length = 			{ 2.4, 2.4, 2.4, 2, 1, 1, 2, 2, 2, 2 }; // length of pipes in
    private static double[] section_width = 			{ 4, 4, 4, 4, 1, 1, 2, 2, 2, 2 };  		// width of section in
    private static double[] trench_width = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of Trench in  					///////////// bigger with puts?
@@ -505,8 +502,8 @@ public void setNUM_SEC(int nUM_SEC) {
    private static double[] pipes_new = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
    private static double[] old_put_area =			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// Area of the old put
    private static double[] new_put_area =			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// Area of the new put
-   private static double rock_layer = 0.3;			//{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation rock layer in m 
-   private static double sand_layer = 0.04;			//{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
+   private static double[] rock_layer = 			{ 0.3, 0.3, 0.3, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation rock layer in m 
+   private static double[] sand_layer = 			{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
    private static double[] Bed_preparation =		{ 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.
 
  

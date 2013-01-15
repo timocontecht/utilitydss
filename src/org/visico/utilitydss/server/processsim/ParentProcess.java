@@ -58,7 +58,7 @@ public class ParentProcess extends SimProcess
 
 	@Override
 	public void lifeCycle() {
-		// TODO Auto-generated method stub
+	
 
 	}
 	public int connections_done;

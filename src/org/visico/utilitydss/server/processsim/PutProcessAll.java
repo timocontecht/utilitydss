@@ -137,42 +137,37 @@ public class PutProcessAll extends ParentProcess
 		 * Initiation of a duration database containing the activity durations for this section
 		 */
 		DurationDatabase DurationDB = new DurationDatabase(
-				   //ParentProcess section = new ParentProcess(
-						myModel,				//owner
-						this, 				//name
-						Shore,				// number of pipes in section
-						Num_Connections,			// number of connections in section
-						Old_pavement,		// type of old pavement
-						New_pavement,		// type of new pavement
-						Section_length,		// length of section in
-						Pipe_length,			// length of pipes in
-						Section_width,		// width of section in
-						Trench_width,		// width of Trench 
-						Trench_depth,		// depth of Trench in
-						Old_sewer_type,		// type of old sewer
-						New_sewer_type,		// type of new sewer
-						Old_diameter,			// diameter of old sewer 
-						New_diameter,		// diameter of new sewer
-						Asphalt_old,			// layer thickness of old asphalt in
-						Asphalt_new,			// layer thickness of new asphalt in
-						Cables,				// weight class of cables in the ground
-						Length_connections,	// average length of connections
-						Diameter_connections,	// average depth of connections
-						Foundation_type, 	// type foundation used: 1 = , 2 =
-						Soil_removed,  		// where is the removed soil placed: 1 = , 2 =
-						Soil_new,  			// where is the new soil placed: 1 = , 2 =
-						Pipes_old,  			// where are the removed pipes placed: 1 = , 2 =
-						Pipes_new,  			// where are the new pipes placed: 1 = , 2 =
-						Rock_layer,				// height of pavement preparation rock layer in m
-						Sand_layer,				// height of pavement preparation sand layer in m
-						Old_put_area,			// area of the old put
-						New_put_area,			// area of the new put
-						Bed_preparation		// height of bed preparation layer 
-						);		
+	   		myModel,				//owner
+			this, 				//name
+			Shore,				// number of pipes in section
+			Old_pavement,		// type of old pavement
+			New_pavement,		// type of new pavement
+			Trench_width,		// width of Trench 
+			Trench_depth,		// depth of Trench in
+			Old_sewer_type,		// type of old sewer
+			New_sewer_type,		// type of new sewer
+			Old_diameter,			// diameter of old sewer 
+			New_diameter,		// diameter of new sewer
+			Asphalt_old,			// layer thickness of old asphalt in
+			Asphalt_new,			// layer thickness of new asphalt in
+			Cables,				// weight class of cables in the ground
+			Length_connections,	// average length of connections
+			Diameter_connections,	// average depth of connections
+			Foundation_type, 	// type foundation used: 1 = , 2 =
+			Soil_removed,  		// where is the removed soil placed: 1 = , 2 =
+			Soil_new,  			// where is the new soil placed: 1 = , 2 =
+			Pipes_old,  			// where are the removed pipes placed: 1 = , 2 =
+			Pipes_new,  			// where are the new pipes placed: 1 = , 2 =
+			Rock_layer,				// height of pavement preparation rock layer in m
+			Sand_layer,				// height of pavement preparation sand layer in m
+			Old_put_area,			// area of the old put
+			New_put_area,			// area of the new put
+			Bed_preparation		// height of bed preparation layer 
+			);		
 		
 //=====================================================================================================================================================================
 //=====================================================================================================================================================================
-							/** Actual life cycle **/
+		/** Actual life cycle **/
 		
 		/**
 	    * FIXME difficult to model work on multiple sections at once --> drawback inherent to hard-coding the model?
@@ -181,8 +176,7 @@ public class PutProcessAll extends ParentProcess
 	    * possibility is to work with flags that allow start of these activities after several pipes have been laid
 	    */
 
-		// think about when housing connections can start (maybe before entire main loop is finished) --> how to program?)
-		
+
 		/**
 		 * Section needs to retrieve 1 of this resource in order to start
 		 * This allows control to make the section wait to start the lifecycle until the user wants this.
@@ -191,22 +185,21 @@ public class PutProcessAll extends ParentProcess
 		 */
 		myModel.startingCondition.retrieve(1);
 		
-		/**
-		* Lifecycle Put
-		**/	
-		
 		//time instants for the different activitymsg's
 		TimeInstant start_1 = myModel.presentTime();				// starting time of activity corresponding to detail level 1 as selected in UtilitySimulation.java
 		TimeInstant start_2 = myModel.presentTime();				// starting time of activity corresponding to detail level 2 as selected in UtilitySimulation.java
 		TimeInstant start_3 = myModel.presentTime();				// starting time of activity corresponding to detail level 3 as selected in UtilitySimulation.java
  
 		// 1. break the section or remove stone pavement
-		// start new breaking process
+		/**
+		 * start new breaking process
+		 */
 		Breaking pavementbreaking = new Breaking(
-				myModel, this, "Breaking Section ", true, Old_pavement, Total_area, Section_area, DurationDB.getRemove_pavement());
+				myModel, this, "Breaking Put ", true, Old_pavement, Total_area, Section_area, DurationDB.getRemove_pavement());
 		pavementbreaking.activate();
 		this.passivate();		// this needs to passivate while breaking performs it's activities
 	
+		
 	   // gathers data on total duration of main put loop (1 task contains all activities for all put(s)), only active if turned on in utilitysimulation.java
 	    start_1 = myModel.presentTime();
 	   	   
@@ -456,7 +449,9 @@ public class PutProcessAll extends ParentProcess
 	   }
 	   
 	   // 12. pave  
-	   //start new paving process
+		/**
+		 * start new paving process
+		 */
 	   Paving pavement = new Paving(
 			   myModel, this, "Paving Put ", true, New_pavement, Total_area, Section_area, DurationDB.getPaving_time());		
 	   pavement.activate();
@@ -470,7 +465,7 @@ public class PutProcessAll extends ParentProcess
 		   
 	   System.out.println(this + " completed");
 		      
-		}   	   
+	}   	   
 	
 //=====================================================================================================================================================================
 //=====================================================================================================================================================================
@@ -482,33 +477,33 @@ public class PutProcessAll extends ParentProcess
 	private int Shore;					// Indicates if shoring is used and if so what type is used.
 	private int Num_Connections;;
 	
-	private double Num_Put_connections;  	// number of connections the put has, only if put
+	private double Num_Put_connections; // number of connections the put has, only if put
 	private int Old_pavement; 			// type of old pavement
 	private int New_pavement;  			// type of new pavement
 	private double Section_length;  	// length of section in m 
-	private double Pipe_length;  	// length of pipes in m
+	private double Pipe_length;  		// length of pipes in m
 	private double Section_width;  		// width of section in m
 	private double Trench_width;  		// width of Trench  in m
 	private double Trench_depth;  		// depth of Trench in m
 	private String Old_sewer_type; 		// type of old sewer
 	private String New_sewer_type; 		// type of new sewer
-	private double Old_diameter;  			// diameter of old sewer 
-	private double New_diameter;  			// diameter of new sewer
+	private double Old_diameter;  		// diameter of old sewer 
+	private double New_diameter;  		// diameter of new sewer
 	private double Old_put_area;		// Area of the old put						
 	private double New_put_area;		// Area of the new put						
-	private double Asphalt_old;  			// layer thickness of old asphalt in mm
-	private double Asphalt_new;  			// layer thickness of new asphalt in mm 
+	private double Asphalt_old;  		// layer thickness of old asphalt in mm
+	private double Asphalt_new;  		// layer thickness of new asphalt in mm 
 	private double Cables;  			// weight class of cables in the ground
 	private double Length_connections;  // average length of connections in m
 	private double Diameter_connections;// average depth of connections in m
-	private double Foundation_type;  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
-	private double Soil_removed;  			// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	private double Soil_new;  				// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	private double Foundation_type;  	// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
+	private double Soil_removed;  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	private double Soil_new;  			// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Pipes_old;  			// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Pipes_new;  			// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Rock_layer;			// height of pavement preparation rock layer in m
 	private double Sand_layer;			// height of pavement preparation sand layer in m
-	private double Bed_preparation;			// TODO add to utilitysimulation.java production quantity of bed preparation in m^2 per hour
+	private double Bed_preparation;		// TODO add to utilitysimulation.java production quantity of bed preparation in m^2 per hour
 	
 	/**
 	 * Test for reading the data from an arraylist in UtilitySimulation corresponding to this section

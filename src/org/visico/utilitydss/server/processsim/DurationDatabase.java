@@ -18,12 +18,8 @@ public class DurationDatabase
 	public DurationDatabase(Model owner,
 			ParentProcess parent,
 			int shore,
-			double connections,
 			int old_pavement,
 			int new_pavement,
-			double section_length,
-			double pipe_length,
-			double section_width,
 			double trench_width,
 			double trench_depth,
 			String old_sewer_type,
@@ -51,12 +47,8 @@ public class DurationDatabase
 		myModel = (UtilitySimulation)owner;			// owner of the model
 		Parent = parent;							// Parent of the instance of DurationDB
 		Shore = shore;								// Indicates if shoring is used and if so what type is used.
-		Num_Connections = connections;
 		Old_pavement = old_pavement; 				// type of old pavement
 		New_pavement = new_pavement;  				// type of new pavement
-		Section_length = section_length;  			// length of section in
-		Pipe_length = pipe_length;  				// length of pipes in
-		Section_width = section_width;  			// width of section in
 		Trench_width = trench_width;  				// width of Trench v
 		Trench_depth = trench_depth;  				// depth of Trench in
 		Old_sewer_type = old_sewer_type; 			// type of old sewer
@@ -242,7 +234,7 @@ public class DurationDatabase
 		placing_kolk = 1; 						//hours per unit
 		pipe_pipe_connection = 0.05;			//hours per unit
 		connection_duration_hwa = ((Length_connections / connection_pipe_duration) + placing_kolk + pipe_pipe_connection);
-		connection_duration_vw = ((Length_connections / connection_pipe_duration) + pipe_pipe_connection); //TODO check if housing then no put/kolk? TODO implement
+		connection_duration_vw = ((Length_connections / connection_pipe_duration) + pipe_pipe_connection); //TODO check if housing then no put/kolk? 
 		
 		// TODO Inspection (in m per hour)
 		inspection = 75;
@@ -281,33 +273,29 @@ public class DurationDatabase
 	
 
 	/**
-	 * General section parameters, set in UttilitySimulation.java
+	 * General section parameters, set in UttilitySimulation.java, recieved from the parent section
 	 */
 	private UtilitySimulation myModel; 	// owner of the model
 	private ParentProcess Parent;		// Parent of the instance of DurationDB
 	private double Shore; 				// Indicates if shoring is used and if so what type is used.
-	private double Num_Connections;		// number of connections in the section
-	private double Old_pavement; 			// type of old pavement
-	private double New_pavement;  			// type of new pavement
-	private double Section_length;  	// length of section in m 
-	private double Pipe_length;  	// length of pipes in m
-	private double Section_width;  		// width of section in m
+	private double Old_pavement; 		// type of old pavement
+	private double New_pavement;  		// type of new pavement
 	private double Trench_width;  		// width of Trench  in m
 	private double Trench_depth;  		// depth of Trench in m
 	private String Old_sewer_type; 		// type of old sewer
 	private String New_sewer_type; 		// type of new sewer
-	private double Old_diameter;  			// diameter of old sewer 
-	private double New_diameter;  			// diameter of new sewer
+	private double Old_diameter;  		// diameter of old sewer 
+	private double New_diameter;  		// diameter of new sewer
 	private double Old_put_area;		// Area of the old put						-can be differentiated further in put heights-
 	private double New_put_area;		// Area of the new put						-can be differentiated further in put heights-
-	private double Asphalt_old;  			// layer thickness of old asphalt in mm
-	private double Asphalt_new;  			// layer thickness of new asphalt in mm 
+	private double Asphalt_old;  		// layer thickness of old asphalt in mm
+	private double Asphalt_new;  		// layer thickness of new asphalt in mm 
 	private double Cables;  			// weight class of cables in the ground
 	private double Length_connections;  // average length of connections in m
 	private double Diameter_connections;// average depth of connections in m
-	private double Foundation_type;  		// type foundation used: 1 = , 2 =
-	private double Soil_removed;  			// TODO where is the removed soil placed: 1 = , 2 =
-	private double Soil_new;  				// TODO where is the new soil placed: 1 = , 2 =
+	private double Foundation_type;  	// type foundation used: 1 = , 2 =
+	private double Soil_removed;  		// TODO where is the removed soil placed: 1 = , 2 =
+	private double Soil_new;  			// TODO where is the new soil placed: 1 = , 2 =
 	private double Pipes_old;  			// TODO where are the removed pipes placed: 1 = , 2 =
 	private double Pipes_new;  			// TODO where are the new pipes placed: 1 = , 2 =
 	private double Rock_layer;			// height of pavement preparation rock layer in m
@@ -315,10 +303,8 @@ public class DurationDatabase
 		
 	/**
 	 * Parameter initiation
-	 * Initiation of all parameters used for the activity durations.
+	 * Initiation of local parameters
 	 */
-	
-
 	private int remove_pavement;			// production quantity of pavement removal in m^2 per hour
 	private int excavation;					// production quantity of excavation in m^3 per hour
 	private double pipe_removal;			// production quantity of pipe removal in m per hour
@@ -348,6 +334,9 @@ public class DurationDatabase
 	private double pipe_rm_factor;			// delay factor for when soil needs to be put in depot or deported off the site directly
 	private double pipe_pl_factor;			// delay factor for when soil needs to taken out of depot or transported to the site
 	
+	/**
+	 * Getters allowing sections to request the durations of activity's
+	 */
 	
 	   public double getRemove_pavement() {
 		      return remove_pavement;
@@ -418,6 +407,4 @@ public class DurationDatabase
 	   public double getPipe_pl_factor() {
 		      return pipe_pl_factor;
 		   }
-	
-	
 }

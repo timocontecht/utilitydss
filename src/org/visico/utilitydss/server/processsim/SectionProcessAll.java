@@ -134,58 +134,92 @@ public class SectionProcessAll extends ParentProcess
 		else // if there are no housing connections backfill is to bottom of surface layer
 		   	{first_backfill_height = Trench_depth;}
 	
+		
 		/**
 		 * Initiation of a duration database containing the activity durations for this section
 		 */
 		DurationDatabase DurationDB = new DurationDatabase(
-				   //ParentProcess section = new ParentProcess(
-						myModel,				//owner
-						this, 				//name
-						Shore,				// number of pipes in section
-						Num_Connections,			// number of connections in section
-						Old_pavement,		// type of old pavement
-						New_pavement,		// type of new pavement
-						Section_length,		// length of section in
-						Pipe_length,			// length of pipes in
-						Section_width,		// width of section in
-						Trench_width,		// width of Trench 
-						Trench_depth,		// depth of Trench in
-						Old_sewer_type,		// type of old sewer
-						New_sewer_type,		// type of new sewer
-						Old_diameter,			// diameter of old sewer 
-						New_diameter,		// diameter of new sewer
-						Asphalt_old,			// layer thickness of old asphalt in
-						Asphalt_new,			// layer thickness of new asphalt in
-						Cables,				// weight class of cables in the ground
-						Length_connections,	// average length of connections
-						Diameter_connections,	// average depth of connections
-						Foundation_type, 	// type foundation used: 1 = , 2 =
-						Soil_removed,  		// where is the removed soil placed: 1 = , 2 =
-						Soil_new,  			// where is the new soil placed: 1 = , 2 =
-						Pipes_old,  			// where are the removed pipes placed: 1 = , 2 =
-						Pipes_new,  			// where are the new pipes placed: 1 = , 2 =
-						Rock_layer,				// height of pavement preparation rock layer in m
-						Sand_layer,				// height of pavement preparation sand layer in m
-						Old_put_area,			// area of the old put
-						New_put_area,			// area of the new put
-						Bed_preparation		// height of bed preparation layer 
-				);
+			myModel,				//owner
+			this, 					//name
+			Shore,					// number of pipes in section
+			Old_pavement,			// type of old pavement
+			New_pavement,			// type of new pavement
+			Trench_width,			// width of Trench 
+			Trench_depth,			// depth of Trench in
+			Old_sewer_type,			// type of old sewer
+			New_sewer_type,			// type of new sewer
+			Old_diameter,			// diameter of old sewer 
+			New_diameter,			// diameter of new sewer
+			Asphalt_old,			// layer thickness of old asphalt in
+			Asphalt_new,			// layer thickness of new asphalt in
+			Cables,					// weight class of cables in the ground
+			Length_connections,		// average length of connections
+			Diameter_connections,	// average depth of connections
+			Foundation_type, 		// type foundation used: 1 = , 2 =
+			Soil_removed,  			// where is the removed soil placed: 1 = , 2 =
+			Soil_new,  				// where is the new soil placed: 1 = , 2 =
+			Pipes_old,  			// where are the removed pipes placed: 1 = , 2 =
+			Pipes_new,  			// where are the new pipes placed: 1 = , 2 =
+			Rock_layer,				// height of pavement preparation rock layer in m
+			Sand_layer,				// height of pavement preparation sand layer in m
+			Old_put_area,			// area of the old put
+			New_put_area,			// area of the new put
+			Bed_preparation			// height of bed preparation layer 
+			);
 		
-		
+		/**
+		 * Initiation of the connections process. This process can be performed by the same crew as the main sewer after the main 
+		 * sewer is completed or simultaneously by another crew after a certain amount of work is done on the main sewer.
+		 * 
+		 */
+		   // 2ND CREW STARTS WORK ON CONNECTIONS WHILE MAIN CREW STILL WORKS ON MAIN SEWER
+		   // DOES NOT WORK YET
+		   //	TODO set flag to allow work on connections to start after a certain amount of sewer has been completed. 
+		   // 	what if connections overtake pipes?   
+		   //   what if connections don't start after certain number of pipes in this section but after a few sections are done?
+		   //   what if 3 crews?
+		  
+		   //start housing connections process
+		   if(this.Num_Connections>0 && (myModel.getSectionWait() == 1))
+			    
+				   // what if there are a lot of short sections? 
+				   //then 2nd crew should start
+				   //after a certain section
+		   {
+			   	Connections housing_connection = new Connections(
+		   		myModel, 				// owner
+				this,					// parent
+				"housing connections ",	// name
+				true, 					// show in trace
+				Num_Connections,
+				DurationDB.getConnection_duration_hwa(),
+				second_backfill_height,
+				Trench_area,
+				DurationDB.getBackfill(),
+				DurationDB.getSoil_pl_factor());
+			   
+			   	
+			   	//TODO this activation should be placed at several points where activation of connection work is possible in reality.
+			    // ie after certian amount of distance main sewer is laid, after certain time (how?),
+			   	// after certain number of sections (how?), after main sewer of this section is complete
+			   	// if ((i)*Pipe_length>myModel.getConnectionWait()){
+			   	// or if(something else){
+				// housing_connection.activate();
+		   		// }
+		   }
+		   
 //=====================================================================================================================================================================
 //=====================================================================================================================================================================
-					/** Actual life cycle **/
+		/** Actual life cycle **/
 		
 		
 		/**
 	    * FIXME difficult to model work on multiple sections at once --> drawback inherent to hard-coding the model?
 	    * Examples: work on connections can start before entire main sewer of section is laid
-	    * 			brick paving can start before entire section is closes as this is a slow process anyway
+	    * brick paving can start before entire section is closes as this is a slow process anyway
 	    * possibility is to work with flags that allow start of these activities after several pipes have been laid
 	    */
 
-		// think about when housing connections can start (maybe before entire main loop is finished) --> how to program?)
-		
 		/**
 		 * Section needs to retrieve 1 of this resource in order to start
 		 * This allows control to make the section wait to start the lifecycle until the user wants this.
@@ -193,10 +227,6 @@ public class SectionProcessAll extends ParentProcess
 		 * Which activity this is can be selected in UtlitySimulation.java
 		 */
 		myModel.startingCondition.retrieve(1);
-		
-			/**
-			 * Lifecycle Sewer section
-			 */
 		
 		//time instants for the different activitymsg's
 		TimeInstant start_1 = myModel.presentTime();				// starting time of activity corresponding to detail level 1 as selected in UtilitySimulation.java
@@ -207,7 +237,9 @@ public class SectionProcessAll extends ParentProcess
 		TimeInstant startConnection_3 = myModel.presentTime();		// starting time of connection activity corresponding to detail level 3 as selected in UtilitySimulation.java
 		
 		// 1. break the section or remove stone pavement
-		//start new breaking process
+		/**
+		 * start new breaking process
+		 */
 		Breaking pavementbreaking = new Breaking(
 		myModel, this, "Breaking Section ", true, Old_pavement, Total_area, Section_area, DurationDB.getRemove_pavement());
 		pavementbreaking.activate();
@@ -222,33 +254,6 @@ public class SectionProcessAll extends ParentProcess
 		   
 		   // gathers start time of every pipe in main loop, only active if turned on in utilitysimulation.java
 		   start_2 = myModel.presentTime();
-		   
-		   /* 2ND CREW STARTS WORK ON CONNECTIONS WHILE MAIN CREW STILL WORKS ON MAIN SEWER
-		    * DOES NOT WORK YET
-		   //	TODO set flag to allow work on connections to start after a certain amount of sewer has been completed. 
-		   // 	what if connections overtake pipes?   
-		   // XX. start housing connections by 2nd crew if main sewer is completed far enough
-		   //start housing connections process
-		   if(this.Num_connections>0 && (myModel.getSectionWait() == 1)){
-			   if ((i)*Pipe_length>myModel.getConnectionWait()) // what if there are a lot of short sections? 
-				   //then 2nd crew should start
-				   //after a certain section
-			   {
-				   housing_connections housing_connection = new housing_connections(
-			   		myModel, 				//owner
-					this,					// parent
-					"housing connections ",	//name
-					true, 					// ?
-					Num_connections,
-					connection_duration_hwa,
-					second_backfill_height,
-					Trench_Area,
-					backfill,
-					soil_pl_factor);
-					housing_connection.activate();
-			   }
-		   }
-		   */
 		   
 		   // 2. excavate the section
 		   myModel.excavators.provide(1);
@@ -364,7 +369,7 @@ public class SectionProcessAll extends ParentProcess
 			   	myModel.excavators.takeBack(1);
 			   }
  
-			   // gathers data on total construction time of pipe in main sewer loop, only active if turned on in utilitysimulation.java
+		   // gathers data on total construction time of pipe in main sewer loop, only active if turned on in utilitysimulation.java
 		   ActivityMessage msg = new ActivityMessage(myModel, this, start_2, "Pipe " + i + " construction", myModel.presentTime(), 2) ;
 		   sendMessage(msg);  
 		
@@ -465,7 +470,7 @@ public class SectionProcessAll extends ParentProcess
 	   // 11a. roll/prepare surface - sand TODO work further on 11a & b.
 	   myModel.rollers.provide(1);
 	   start_3 = myModel.presentTime();
-	   hold (new TimeSpan((myModel.getSurfacePrepareTime() * (Section_area/DurationDB.getPaving_preparation())), TimeUnit.HOURS)); // TODO thisnk lfjasldfjffklfklasd;flj
+	   hold (new TimeSpan((myModel.getSurfacePrepareTime() * (Section_area/DurationDB.getPaving_preparation())), TimeUnit.HOURS));
 	   ActivityMessage msg_12 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
 	   sendMessage(msg_12);
 	   sendTraceNote("Activity: " + getName() + " Compact: " + start_3.toString() + 
@@ -489,7 +494,7 @@ public class SectionProcessAll extends ParentProcess
 	   if(myModel.getPrepareSurface() == 1)
 		   {myModel.trucks.provide(1);
 		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((Section_length * Rock_layer )/DurationDB.getPaving_preparation())), TimeUnit.HOURS));  //TODO thisnk lfjasldfjffklfklasd;flj
+		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((Section_length * Rock_layer )/DurationDB.getPaving_preparation())), TimeUnit.HOURS));
 		   ActivityMessage msg_13 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
 		   sendMessage(msg_13);
 		   sendTraceNote("Activity: " + getName() + " Broken rock: " + start_3.toString() + 
@@ -508,9 +513,11 @@ public class SectionProcessAll extends ParentProcess
 	   }
 	   
 	   // 12. pave 
-	   //start new paving process
+	   /**
+		 * start new paving process
+		 */
 	    Paving pavement = new Paving(
-	    		myModel, this, "Paving Put ", true, New_pavement, Total_area, Section_area, DurationDB.getPaving_time());
+	    		myModel, this, "Paving Section ", true, New_pavement, Total_area, Section_area, DurationDB.getPaving_time());
 		pavement.activate();
 		this.passivate();		//this needs to passivate while paving performs it's activities
 	   
@@ -542,23 +549,24 @@ public class SectionProcessAll extends ParentProcess
 	private double Trench_depth;  		// depth of Trench in m
 	private String Old_sewer_type; 		// type of old sewer
 	private String New_sewer_type; 		// type of new sewer
-	private double Old_diameter;  			// diameter of old sewer 
-	private double New_diameter;  			// diameter of new sewer
+	private double Old_diameter;  		// diameter of old sewer 
+	private double New_diameter;  		// diameter of new sewer
 	private double Old_put_area;		// Area of the old put						
 	private double New_put_area;		// Area of the new put						
-	private double Asphalt_old;  			// layer thickness of old asphalt in mm
-	private double Asphalt_new;  			// layer thickness of new asphalt in mm 
+	private double Asphalt_old;  		// layer thickness of old asphalt in mm
+	private double Asphalt_new;  		// layer thickness of new asphalt in mm 
 	private double Cables;  			// weight class of cables in the ground
 	private double Length_connections;  // average length of connections in m
 	private double Diameter_connections;// average depth of connections in m
-	private double Foundation_type;  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
-	private double Soil_removed;  			// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	private double Soil_new;  				// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	private double Foundation_type;  	// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
+	private double Soil_removed;  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	private double Soil_new;  			// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Pipes_old;  			// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Pipes_new;  			// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Rock_layer;			// height of pavement preparation rock layer in m
 	private double Sand_layer;			// height of pavement preparation sand layer in m
-	private double Bed_preparation;			// TODO add to utilitysimulation.java production quantity of bed preparation in m^2 per hour
+	private double Bed_preparation;		// height of bed preparation sand layer in m
+	
 	/**
 	 * Test for reading the data from an arraylist in UtilitySimulation corresponding to this section
 	 */
