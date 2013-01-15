@@ -63,10 +63,8 @@ public class PutProcessAll extends ParentProcess
 				pipes_new, rock_layer, sand_layer, old_put_area, new_put_area, bed_preparation);
 			
 		myModel = (UtilitySimulation)owner;
-		PUT = put;									// section or put:  0 is section, 1 is put.  
 		Shore = shore;							
-		NUM_CONNECTIONS = connections;
-		
+		Num_Connections = connections;
 		Num_Put_connections = num_put_connections; 	// number of connections the put has, only if put
 		Old_pavement = old_pavement; 				// type of old pavement
 		New_pavement = new_pavement;  				// type of new pavement
@@ -82,7 +80,6 @@ public class PutProcessAll extends ParentProcess
 		Asphalt_old = asphalt_old;  				// layer thickness of old asphalt in
 		Asphalt_new = asphalt_new;  				// layer thickness of new asphalt in // 
 		Cables = cables;  							// weight class of cables in the ground
-		Length_connections = length_connections;  	// average length of connections
 		Diameter_connections = diameter_connections;// average depth of connections
 		Foundation_type = foundation_type; 			// type foundation used: 1 = , 2 =
 		Soil_removed = 	soil_removed;  				// where is the removed soil placed: 1 = , 2 =
@@ -125,217 +122,57 @@ public class PutProcessAll extends ParentProcess
 		 * Calculation of section specific parameters
 		 */
 		NUM_Pipe = (int) Math.ceil(Section_length / Pipe_length); 		// calculation of the required number of pipes
-		Section_Area = (Section_length * Section_width);				// total surface of the section
-		Trench_Area = (Pipe_length * Trench_width);						// total surface of the trench
-		Excavation_volume = (Trench_Area * Trench_depth);  				// excavation volume per pipe
-		Total_Area = (myModel.getTotal_length() * Section_width);		// total working area of all sections
+		Section_area = (Section_length * Section_width);				// total surface of the section
+		Trench_area = (Pipe_length * Trench_width);						// total surface of the trench
+		Excavation_volume = (Trench_area * Trench_depth);  				// excavation volume per pipe
+		Total_area = (myModel.getTotal_length() * Section_width);		// total working area of all sections
 		
-		if(this.NUM_CONNECTIONS != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
+		if(this.Num_Connections != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
 			// height of first backfill in m (pipe diameter + 2x average wall thickness)
-			{first_backfill_height = New_diameter * 1.26 * 0.001;
-			// height of second backfill in m, only if there are connections
-			second_backfill_height = Trench_depth - first_backfill_height;}
+			{first_backfill_height = New_diameter * 1.26 * 0.001;}
 		else // if there are no housing connections backfill is to bottom of surface layer
 		   	{first_backfill_height = Trench_depth;}
 		
 		/**
-		* production values 
-		* This could be put in a different class later. That class can be initialized from a database in future developments.
-		* all data is from bouwkostenonline.nl unless stated otherwise.
-		**/	
+		 * Initiation of a duration database containing the activity durations for this section
+		 */
+		DurationDatabase DurationDB = new DurationDatabase(
+				   //ParentProcess section = new ParentProcess(
+						myModel,				//owner
+						this, 				//name
+						Shore,				// number of pipes in section
+						Num_Connections,			// number of connections in section
+						Old_pavement,		// type of old pavement
+						New_pavement,		// type of new pavement
+						Section_length,		// length of section in
+						Pipe_length,			// length of pipes in
+						Section_width,		// width of section in
+						Trench_width,		// width of Trench 
+						Trench_depth,		// depth of Trench in
+						Old_sewer_type,		// type of old sewer
+						New_sewer_type,		// type of new sewer
+						Old_diameter,			// diameter of old sewer 
+						New_diameter,		// diameter of new sewer
+						Asphalt_old,			// layer thickness of old asphalt in
+						Asphalt_new,			// layer thickness of new asphalt in
+						Cables,				// weight class of cables in the ground
+						Length_connections,	// average length of connections
+						Diameter_connections,	// average depth of connections
+						Foundation_type, 	// type foundation used: 1 = , 2 =
+						Soil_removed,  		// where is the removed soil placed: 1 = , 2 =
+						Soil_new,  			// where is the new soil placed: 1 = , 2 =
+						Pipes_old,  			// where are the removed pipes placed: 1 = , 2 =
+						Pipes_new,  			// where are the new pipes placed: 1 = , 2 =
+						Rock_layer,				// height of pavement preparation rock layer in m
+						Sand_layer,				// height of pavement preparation sand layer in m
+						Old_put_area,			// area of the old put
+						New_put_area,			// area of the new put
+						Bed_preparation		// height of bed preparation layer 
+						);		
 		
-		// breaking (m^2 per hour)		
-		if(Old_pavement == 2) {remove_pavement = 100;}			// brick pavement
-		else if (Asphalt_old < 45){remove_pavement = 169;}		// asphalt 40 mm
-		else if (Asphalt_old < 55){remove_pavement = 153;}
-		else if (Asphalt_old < 65){remove_pavement = 134;}
-		else if (Asphalt_old < 75){remove_pavement = 116;}
-		else if (Asphalt_old >= 75){remove_pavement = 99;}
-		
-		// Cables & plumbing (weightclass)
-		if(Cables == 0){cables_weight = 1.0;}
-		else if(Cables == 1){cables_weight = 1.1;}
-		else if (Cables == 2){cables_weight = 1.2;}
-		else if (Cables == 3){cables_weight = 1.3;}
-		else if (Cables == 4){cables_weight = 1.4;}
-		else if (Cables == 5){cables_weight = 1.5;}
-		 
-		// Closing down sewer (duration in hours)
-		closing_sewer = 0.25; 
-
-		// Excavating (m^3 per hour)
-		if(myModel.getReplacement() == false ) { excavation = 24;}
-		else {excavation = 20;}
-		
-		if(Soil_removed == 1) {soil_rm_factor = 1.1;}						// not validated, factor is a guess
-		else {soil_rm_factor = 1;}
-		
-		// Shoring (in meter per hours) 									!!! data from gwwkosten.n !!!
-																			// no data found for removal, therefore placement is used
-		if(this.Shore == 1){shoring = 0.1; shoring_remove = 0.1;}			// sliding cask
-		
-		else if(this.Shore  == 2){shoring = 0.25; shoring_remove = 0.25;}	// sheet piling (damwand)
-		
-		else if(this.Shore  == 3){											// supported wall (gestutte wanden)
-			if(Trench_depth <1.50) {shoring = 26; shoring_remove = 26;}
-			else if(Trench_depth <1.50) {shoring = 18; shoring_remove = 18;}
-			else {shoring = 12; shoring_remove = 12;}
-		}	
-
-	// Removing Pipe (m per hour)
-		if(Old_sewer_type == "Concrete"){							
-			if(Old_diameter <= 300) {pipe_removal = 21.5;} 
-			else if(Old_diameter <= 400) {pipe_removal = 19;}
-			else if(Old_diameter <= 500) {pipe_removal = 17;}
-			else if(Old_diameter <= 600) {pipe_removal = 15;}
-			else if(Old_diameter <= 700) {pipe_removal = 13;}
-			else if(Old_diameter <= 800) {pipe_removal = 11;}
-			else if(Old_diameter <= 900) {pipe_removal = 10;}
-			else if(Old_diameter <= 1000) {pipe_removal = 8;}
-			else if(Old_diameter <= 1250) {pipe_removal = 6;}
-			else if(Old_diameter <= 1500) {pipe_removal = 4;}
-		}
-		
-		else if(Old_sewer_type == "Gres"){						
-			if(Old_diameter == 250) {pipe_removal = 24;} 
-			else if(Old_diameter == 110) {pipe_removal = 20;} 
-			else if(Old_diameter == 125) {pipe_removal = 20;}
-			else if(Old_diameter == 160) {pipe_removal = 25;}
-			else if(Old_diameter == 200) {pipe_removal = 40;}
-			else if(Old_diameter == 250) {pipe_removal = 40;}
-			else if(Old_diameter == 315) {pipe_removal = 30;}
-		}
-		
-		else if(Old_sewer_type == "Plastic"){						
-			pipe_removal = 20; 
-		}
-		
-		if(Pipes_old == 1) {pipe_rm_factor = 1.1;}					// not validated, factor is a guess
-		else {pipe_rm_factor = 1;}
-		
-		 // Removing Put in units per hour							!!! data from gwwkosten.nl, average put height used (2 m high) !!!
-		 // Only Pre-fab put, brick and mortar puts are not taken into account	
-	 		if(Old_put_area < 1) {put_removal = (4.75);}
-			else if(Old_put_area == 1) {put_removal = (3.85);}
-			else if(Old_put_area > 2) {put_removal = (1.9);}
-			else {put_removal = 3;}									// area between 1 and 2 meter
-
-			 
-		// Preparing Bed (m^3 per hour)
-		if(Trench_width <= 1){
-			if(Bed_preparation <= 0.1){preparation = 7;}
-			if(Bed_preparation <= 0.2){preparation = 8;}
-			if(Bed_preparation > 0.2){preparation = 9;}
-		}
-		
-		else{
-			if(Bed_preparation == 0.1){preparation = 9;}
-			if(Bed_preparation == 0.2){preparation = 10;}
-			if(Bed_preparation == 0.3){preparation = 11;}
-		}
-		 
-		// Foundation (Production in hour per pipelength)
-		if(Foundation_type == 0){foundation_duration = 0;}				// geen fundering	 
-		else if(Foundation_type == 1){foundation_duration = 30;}		// verstevigd zand	
-		else if(Foundation_type == 2){foundation_duration = 10;}		// bodemplaat
-		else if(Foundation_type == 3){foundation_duration = 1;}			// geheide palen
-
-		// Placing pipe (m per hour)
-		if(New_sewer_type == "Concrete"){							
-			if(New_diameter == 300) {pipe_placement = 8;} 
-			else if(New_diameter == 400) {pipe_placement = 7;}
-			else if(New_diameter == 500) {pipe_placement = 6.5;}
-			else if(New_diameter == 600) {pipe_placement = 6;}
-			else if(New_diameter == 700) {pipe_placement = 5.5;}
-			else if(New_diameter == 800) {pipe_placement = 5;}
-			else if(New_diameter == 900) {pipe_placement = 4.5;}
-			else if(New_diameter == 1000) {pipe_placement = 4;}
-			else if(New_diameter == 1250) {pipe_placement = 4;}
-			else if(New_diameter == 1500) {pipe_placement = 3;}
-		}
-		
-		else if(New_sewer_type == "Gres"){						
-	 		if(New_diameter == 110) {pipe_placement = 15;} 
-			else if(New_diameter == 125) {pipe_placement = 15;}
-			else if(New_diameter == 160) {pipe_placement = 15;}
-			else if(New_diameter == 200) {pipe_placement = 15;}
-			else if(New_diameter == 250) {pipe_placement = 10;}
-			else if(New_diameter == 315) {pipe_placement = 10;}
-		}
-		
-		else if(New_sewer_type == "Plastic"){						
-			if(New_diameter == 200) {pipe_placement = 7;} 
-			else if(New_diameter == 250) {pipe_placement = 7;}
-			else if(New_diameter == 300) {pipe_placement = 6.5;}
-			else if(New_diameter == 400) {pipe_placement = 6;}
-			else if(New_diameter == 500) {pipe_placement = 5;}
-			else if(New_diameter == 600) {pipe_placement = 5;}
-		}
-		
-		if(Pipes_new == 1) {pipe_pl_factor = 1.1;}						// not validated, factor is a guess
-		else {pipe_pl_factor = 1;}
-		
-		// Placing put (duration in hours)								// Pre-fab put, brick and mortar puts are not taken into account								
-	 		if(New_put_area < 1) {put_placement = 1/0.63;}
-			else if(New_put_area == 1) {put_placement = 1/0.6;}
-			else if(New_put_area > 2) {put_placement = 1/0.42;}
-			else {put_placement = 1/0.5;}								// area between 1 and 2
-		//}
-		
-		// Connection put (in hours per unit) (used average pipe diameter)					
-		connection_put_duration = 2; 
-		// I really doubt this number is accurate	
-		 
-		// Backfilling (m^3 per hour) // 
-		/*
-		if(Trench_width <= 1 ) {backfill = 30;}
-		else if(Trench_depth <= 1.5 ) {backfill = 30;}
-		else {backfill = 25;}
-		*/
-		backfill = 10;
-		if(Soil_new == 1) {soil_pl_factor = 1.1;}
-		else {soil_pl_factor = 1;}
-		 		
-		// Housing/Rainwater connection (in hours per unit) // TODO find actual production		
-		// TODO what if no kolk but housing connections?
-		if(Diameter_connections <= 200 ) {connection_pipe_duration = 15;}			// duration per meter
-		else if(Diameter_connections > 200 ) {connection_pipe_duration = 10;}
-		Placing_kolk = 1; 						//hours per unit
-		Pipe_pipe_connection = 0.05;			//hours per unit
-		connection_duration_hwa = ((Length_connections / connection_pipe_duration) + Placing_kolk + Pipe_pipe_connection);
-		connection_duration_vw = ((Length_connections / connection_pipe_duration) + Pipe_pipe_connection); //TODO check if housing then no put/kolk? TODO implement
-		
-		// TODO Inspection (in m per hour)
-		inspection = 75;
-
-		// Paving preparation (in m^2 per hour)
-		if(New_pavement == 2){								// brick pavement
-			if (Sand_layer < 0.045){paving_preparation = 30;}		
-			else if (Sand_layer < 0.055){paving_preparation = 28;}
-			else if (Sand_layer < 0.065){paving_preparation = 26;}
-			else if (Sand_layer < 0.075){paving_preparation = 24;}
-			else if (Sand_layer > 0.075){paving_preparation = 22;}	
-		}
-		
-		else {												// asphalt pavement
-			if (Rock_layer < 0.25){paving_preparation = 65;}		
-			else if (Rock_layer < 0.3){paving_preparation = 57;}
-			else if (Rock_layer >= 0.3){paving_preparation = 50;}
-		}  
-		 
-		// Paving  (in m^2 per hour)					
-		if(New_pavement == 2){paving_time = 22.5;} 				// brick pavement
-		else if (Asphalt_new < 45){paving_time = 20;}			// asphalt 
-		else if (Asphalt_new < 55){paving_time = 20;}			
-		else if (Asphalt_new < 65){paving_time = 20;}
-		else if (Asphalt_new < 75){paving_time = 20;}
-		else if (Asphalt_new >= 75){paving_time = 20;}
-		else {paving_time = 25;}
-		// Safety
-
-				
 //=====================================================================================================================================================================
 //=====================================================================================================================================================================
+							/** Actual life cycle **/
 		
 		/**
 	    * FIXME difficult to model work on multiple sections at once --> drawback inherent to hard-coding the model?
@@ -366,7 +203,7 @@ public class PutProcessAll extends ParentProcess
 		// 1. break the section or remove stone pavement
 		// start new breaking process
 		Breaking pavementbreaking = new Breaking(
-				myModel, this, "Breaking Section ", true, Old_pavement, Total_Area, Section_Area, remove_pavement);
+				myModel, this, "Breaking Section ", true, Old_pavement, Total_area, Section_area, DurationDB.getRemove_pavement());
 		pavementbreaking.activate();
 		this.passivate();		// this needs to passivate while breaking performs it's activities
 	
@@ -381,7 +218,7 @@ public class PutProcessAll extends ParentProcess
 	   myModel.excavators.provide(1);
 	   myModel.trucks.provide(1);
 	   start_3 = myModel.presentTime();
-	   hold (new TimeSpan((myModel.getExcavatingTime() * (Excavation_volume/excavation) * soil_rm_factor * cables_weight), TimeUnit.HOURS));
+	   hold (new TimeSpan((myModel.getExcavatingTime() * (Excavation_volume/DurationDB.getExcavation()) * DurationDB.getPipe_rm_factor() * DurationDB.getCables_weight()), TimeUnit.HOURS));
 	   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start_3, "Excavate put ", myModel.presentTime(), 9) ;
 	   sendMessage(msg_2);
 	   sendTraceNote("Activity: " + getName() + " Pipe: " + " Excavating Start: " + start_3.toString() + 
@@ -394,7 +231,7 @@ public class PutProcessAll extends ParentProcess
 	   if(this.getIdentNumber() == 1){
 		   	myModel.crews.provide(1);
 		   	start_3 = myModel.presentTime();
-		   	hold (new TimeSpan((myModel.getClosingTime() * closing_sewer), TimeUnit.HOURS));
+		   	hold (new TimeSpan((myModel.getClosingTime() * DurationDB.getClosing_sewer()), TimeUnit.HOURS));
 		   	ActivityMessage msg_2a = new ActivityMessage(myModel, this, start_3, "Closing sewer ", myModel.presentTime(), 9) ;
 	   		sendMessage(msg_2a);
 		   	sendTraceNote("Activity: " + getName() + " Pipe: " + " Closing sewer: " + start_3.toString() + 
@@ -407,7 +244,7 @@ public class PutProcessAll extends ParentProcess
 	   if(this.Shore  != 0) {
 		   myModel.excavators.provide(1);
 		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length/shoring)), TimeUnit.HOURS)); 
+		   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length/DurationDB.getShoring())), TimeUnit.HOURS)); 
 		   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start_3, "Shore ", myModel.presentTime(), 9) ;
 		   sendMessage(msg_3);
 		   sendTraceNote("Activity: " + getName() + " Shoring: " + start_3.toString() + 
@@ -421,7 +258,7 @@ public class PutProcessAll extends ParentProcess
 		    myModel.excavators.provide(1);
 		    for(int j=1; j<=myModel.getOldSeparated(); j++){
 			   	start_3 = myModel.presentTime();
-			   	hold (new TimeSpan((myModel.getPutRemoveTime() * (1/put_removal) * pipe_rm_factor), TimeUnit.HOURS));
+			   	hold (new TimeSpan((myModel.getPutRemoveTime() * (1/DurationDB.getPut_removal()) * DurationDB.getPipe_rm_factor()), TimeUnit.HOURS));
 		   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_3, "Remove Put " + j, myModel.presentTime(), 9) ;
 				sendMessage(msg_4);
 		   		sendTraceNote("Activity: " + getName() + " Put removal: " + start_3.toString() + 
@@ -434,7 +271,7 @@ public class PutProcessAll extends ParentProcess
 	   if(myModel.getFoundation()) {
 		   	myModel.excavators.provide(1);
 		   	start_3 = myModel.presentTime();
-	   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/foundation_duration)), TimeUnit.HOURS));
+	   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/DurationDB.getFoundation_duration())), TimeUnit.HOURS));
 	   		ActivityMessage msg_5 = new ActivityMessage(myModel, this, start_3, "Foundation ", myModel.presentTime(), 9) ;
 			sendMessage(msg_5);
 	   		sendTraceNote("Activity: " + getName() + " Foundation: " + start_3.toString() + 
@@ -445,7 +282,7 @@ public class PutProcessAll extends ParentProcess
 	   // 5b prepare the bed
 	   myModel.crews.provide(1);
 	   start_3 = myModel.presentTime();
-	   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Trench_Area * Bed_preparation)/preparation)), TimeUnit.HOURS));
+	   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Trench_area * Bed_preparation)/DurationDB.getPreparation())), TimeUnit.HOURS));
 	   ActivityMessage msg_6 = new ActivityMessage(myModel, this, start_3, "Prepare Bed ", myModel.presentTime(), 9) ;
 	   sendMessage(msg_6);
 	   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start_3.toString() + 
@@ -457,7 +294,7 @@ public class PutProcessAll extends ParentProcess
 	   myModel.excavators.provide(1);
 	   for(int j=1; j<=myModel.getNewSeparated(); j++){
 		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getPutPlacingTime() * put_placement * pipe_pl_factor), TimeUnit.HOURS));    			
+		   hold (new TimeSpan((myModel.getPutPlacingTime() * DurationDB.getPut_placement() * DurationDB.getPipe_pl_factor()), TimeUnit.HOURS));    			
 		   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_3, "Install Put " + j, myModel.presentTime(), 9) ;
 		   sendMessage(msg_7);
 		   sendTraceNote("Activity: " + getName() + " Install Put: " + start_3.toString() + 
@@ -470,7 +307,7 @@ public class PutProcessAll extends ParentProcess
 	   for (int j=1; j<=this.Num_Put_connections; j++) { 
 		   myModel.crews.provide(1);
 		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getPutConnectionTime() * connection_put_duration), TimeUnit.HOURS));
+		   hold (new TimeSpan((myModel.getPutConnectionTime() * DurationDB.getConnection_put_duration()), TimeUnit.HOURS));
 		   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "Put connection " + j, myModel.presentTime(), 9) ;
 		   sendMessage(msg_8);
 		   sendTraceNote("Activity: " + getName() + " Connect pipes to put: " + start_3.toString() + 
@@ -482,7 +319,7 @@ public class PutProcessAll extends ParentProcess
 	   myModel.crews.provide(1);
 	   start_3 = myModel.presentTime();
 	   // if there are housing connections backfill is only to top of main sewer pipe
-	   hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Trench_Area)/backfill) * soil_pl_factor), TimeUnit.HOURS));
+	   hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Trench_area)/DurationDB.getBackfill()) * DurationDB.getSoil_pl_factor()), TimeUnit.HOURS));
 	   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "First Backfill ", myModel.presentTime(), 3);
 	   sendMessage(msg_8);
 	   sendTraceNote("Activity: " + getName() + " First Backfill: " + start_3.toString() + 
@@ -494,7 +331,7 @@ public class PutProcessAll extends ParentProcess
 	   if(this.Shore != 0)
 	   {	myModel.excavators.provide(1);
 	   		start_3 = myModel.presentTime();
-	   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length/shoring_remove)), TimeUnit.HOURS));  
+	   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length/DurationDB.getShoring_remove())), TimeUnit.HOURS));  
 	   		ActivityMessage msg_10 = new ActivityMessage(myModel, this, start_3, "Remove Shoring ", myModel.presentTime(), 9) ;
 	   		sendMessage(msg_10);
 	   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start_3.toString() + 
@@ -532,13 +369,13 @@ public class PutProcessAll extends ParentProcess
    		}
 	   
 	   // 10. backfill + compacting
-	   if(this.NUM_CONNECTIONS != 0){
+	   if(this.Num_Connections != 0){
 		   if(myModel.getSecondCrew()) {
 			   	myModel.secondcrews.provide(1);}
 		   else {myModel.crews.provide(1);}
 		   myModel.trucks.provide(1);
 		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getBackfillTime() * (Excavation_volume/backfill) * soil_pl_factor), TimeUnit.HOURS));
+		   hold (new TimeSpan((myModel.getBackfillTime() * (Excavation_volume/DurationDB.getBackfill()) * DurationDB.getSoil_pl_factor()), TimeUnit.HOURS));
 		   ActivityMessage msg_11 = new ActivityMessage(myModel, this, start_3, "Second Backfill ", myModel.presentTime(), 0) ;
 		   sendMessage(msg_11);
 		   sendTraceNote("Activity: " + getName() + " Backfill: " + start_3.toString() + 
@@ -576,7 +413,7 @@ public class PutProcessAll extends ParentProcess
 	   // 11a. roll/prepare surface - sand
 	   myModel.rollers.provide(1);
 	   start_3 = myModel.presentTime();
-	   hold (new TimeSpan((myModel.getSurfacePrepareTime() * (Section_Area/paving_preparation)), TimeUnit.HOURS));
+	   hold (new TimeSpan((myModel.getSurfacePrepareTime() * (Section_area/DurationDB.getPaving_preparation())), TimeUnit.HOURS));
 	   ActivityMessage msg_12 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
 	   sendMessage(msg_12);
 	   sendTraceNote("Activity: " + getName() + " Compact: " + start_3.toString() + 
@@ -599,7 +436,7 @@ public class PutProcessAll extends ParentProcess
 	   if(myModel.getPrepareSurface() == 1)
 	   {	myModel.trucks.provide(1);
 		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((Section_Area * Rock_layer )/paving_preparation)), TimeUnit.HOURS)); 
+		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((Section_area * Rock_layer )/DurationDB.getPaving_preparation())), TimeUnit.HOURS)); 
 		   ActivityMessage msg_13 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
 		   sendMessage(msg_13);
 		   sendTraceNote("Activity: " + getName() + " Broken rock: " + start_3.toString() + 
@@ -621,7 +458,7 @@ public class PutProcessAll extends ParentProcess
 	   // 12. pave  
 	   //start new paving process
 	   Paving pavement = new Paving(
-			   myModel, this, "Paving Put ", true, New_pavement, Total_Area, Section_Area, paving_time);		
+			   myModel, this, "Paving Put ", true, New_pavement, Total_area, Section_area, DurationDB.getPaving_time());		
 	   pavement.activate();
 	   this.passivate();		//this needs to passivate while paving performs it's activities
 	   		   
@@ -642,9 +479,8 @@ public class PutProcessAll extends ParentProcess
 	 * General section parameters, set in UttilitySimulation.java
 	 */
 	private UtilitySimulation myModel;
-	private int PUT; 
 	private int Shore;					// Indicates if shoring is used and if so what type is used.
-	private int NUM_CONNECTIONS;
+	private int Num_Connections;;
 	
 	private double Num_Put_connections;  	// number of connections the put has, only if put
 	private int Old_pavement; 			// type of old pavement
@@ -672,6 +508,8 @@ public class PutProcessAll extends ParentProcess
 	private double Pipes_new;  			// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Rock_layer;			// height of pavement preparation rock layer in m
 	private double Sand_layer;			// height of pavement preparation sand layer in m
+	private double Bed_preparation;			// TODO add to utilitysimulation.java production quantity of bed preparation in m^2 per hour
+	
 	/**
 	 * Test for reading the data from an arraylist in UtilitySimulation corresponding to this section
 	 */
@@ -680,41 +518,13 @@ public class PutProcessAll extends ParentProcess
 	/**
 	* local section parameters
 	**/	
-	private int remove_pavement;			// production quantity of pavement removal in m^2 per hour
-	private int excavation;					// production quantity of excavation in m^3 per hour
-	private double pipe_removal;			// production quantity of pipe removal in m per hour
-	private double put_removal; 			// production quantity of pipe removal in hour per unit
-	private double shoring;					// production quantity of shoring in m per hour
-	private double shoring_remove;			// production quantity of shoring removal in m per hour
-	private double preparation;				// production quantity of pavement removal in m^3 per hour
-	private double pipe_placement;			// production quantity of pipe placement in m per hour
-	private double put_placement;			// production quantity of put placement in hours per unit
-	private double connection_duration_hwa;	// total production duration of a rain water connection in units per hour
-	private double connection_duration_vw;	// total production duration of a housing connection in units per hour  //TODO implement
-	private double connection_pipe_duration;// production duration of a housing or rain water pipe in meter per hour
-	private double Pipe_pipe_connection;	// production duration of a housing connection pipe to main sewer pipe in units per hour
-	private double Placing_kolk;			// TODO production quantity of a rainwater put in units per hour
-	private double cables_weight;			// TODO weightclass of cables and plumbing in the ground as a factor
-	private double foundation_duration;		// TODO production quantity of foundation in m per hour
-	private double connection_put_duration;	// production duration of a connection to a put in units per hour
-	private double backfill;				// production quantity of backfill in m^3 per hour
-	private int inspection;					// TODO add to code, easier after restructuring as inspection can happen at various times
-											// production quantity of inspection in m per hour
-	private double Bed_preparation;			// TODO add to utilitysimulation.java production quantity of bed preparation in m^2 per hour
-	private int paving_preparation;			// production quantity of sand or rock layer in m^3 per hour
-	private double paving_time;				// duration of paving time in hours per m^2			
-	private double closing_sewer; 			// TODO duration of closing down sewer in hours
-	private double soil_rm_factor;			// delay factor for when soil needs to be put in depot or deported off the site
-	private double soil_pl_factor;			// delay factor for when soil needs to taken out of depot or transported to the site
-	private double pipe_rm_factor;			// delay factor for when soil needs to be put in depot or deported off the site directly
-	private double pipe_pl_factor;			// delay factor for when soil needs to taken out of depot or transported to the site
-	
+	int connections_done = 0;				// number of connections done by 2nd crew already while main crew is still working on main sewer
 	private int NUM_Pipe; 					// calculation of the required number of pipes
-	private double Section_Area;			// total surface of the section
-	private double Trench_Area;				// total surface of the trench
+	private double Section_area;			// total surface of the section
+	private double Trench_area;				// total surface of the trench
 	private double Excavation_volume;  		// excavation volume per pipe
-	private double Total_Area;				// total working area of all sections
+	private double Total_area;				// total working area of all sections
 	private double first_backfill_height;	// height of first backfill in m (pipe diameter + 2x average wall thinkness)
-	private double second_backfill_height;	// height of second backfill in m, only if there are connections
+	private double second_backfill_height;	// height of first backfill in m (pipe diameter + 2x average wall thinkness)
 	
 }

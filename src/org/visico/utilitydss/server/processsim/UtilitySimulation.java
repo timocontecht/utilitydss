@@ -148,7 +148,7 @@ public void setNUM_SEC(int nUM_SEC) {
 					true, 					// ?
 					put[i],					// section or put:  0 is section, 1 is put.  
 					shore[i],				// number of pipes in section
-					connections[i],		// number of connections in section
+					connections[i],			// number of connections in section
 					
 					num_put_connections[i],	// number of connections the put has, only if put
 					old_pavement[i],		// type of old pavement
@@ -483,7 +483,7 @@ public void setNUM_SEC(int nUM_SEC) {
 																							// 3 means asphalt; break all sections at start, other gives error
    private static int[] new_pavement = 				{ 3, 3, 3, 1, 1, 1, 2, 2, 2, 2 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
 																							// 3 means asphalt; pave all sections at start, other gives error
-   private static double[] section_length = 		{ 2, 4, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
+   private static double[] section_length = 		{ 10, 4, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
    private static double[] pipe_length = 			{ 2.4, 2.4, 2.4, 2, 1, 1, 2, 2, 2, 2 }; // length of pipes in
    private static double[] section_width = 			{ 4, 4, 4, 4, 1, 1, 2, 2, 2, 2 };  		// width of section in
    private static double[] trench_width = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of Trench in  					///////////// bigger with puts?

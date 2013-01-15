@@ -62,5 +62,4 @@ public class ParentProcess extends SimProcess
 
 	}
 	public int connections_done;
-
 }
