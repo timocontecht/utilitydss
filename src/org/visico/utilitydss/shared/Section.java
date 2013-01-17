@@ -61,7 +61,8 @@ public class Section
 	private double Pipes_new;  			// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Rock_layer;			// height of pavement preparation rock layer in m
 	private double Sand_layer;			// height of pavement preparation sand layer in m
-	private double Bed_preparation;
+	private double Bed_preparation;		// height of bed preparation layer
+	private int[] Pipe_connections;    // indicates if a pipe has a connection.
 
 	
 	/**
@@ -240,6 +241,12 @@ public class Section
 	}
 	public void setBed_preparation(double bed_preparation) {
 		Bed_preparation = bed_preparation;
+	}
+	public int[] getPipe_connections() {
+		return Pipe_connections;
+	}
+	public void setPipe_connections(int[] pipe_connections) {
+		Pipe_connections = pipe_connections;
 	}
 }
 

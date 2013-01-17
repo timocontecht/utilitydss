@@ -140,6 +140,7 @@ public void setNUM_SEC(int nUM_SEC) {
 	   {
 		   if(put[i]==0)
 		   {
+					   
 			   SectionProcessAll section = new SectionProcessAll(
 			   //ParentProcess section = new ParentProcess(
 					this, 					//owner
@@ -147,7 +148,7 @@ public void setNUM_SEC(int nUM_SEC) {
 					true, 					// ?
 					put[i],					// section or put:  0 is section, 1 is put.  
 					shore[i],				// number of pipes in section
-					connections[i],			// number of connections in section
+					connections = pipe_connections[i].length,
 					num_put_connections[i],	// number of connections the put has, only if put
 					old_pavement[i],		// type of old pavement
 					new_pavement[i],		// type of new pavement
@@ -174,7 +175,8 @@ public void setNUM_SEC(int nUM_SEC) {
 					sand_layer[i],			// height of pavement preparation sand layer in m
 					old_put_area[i],		// area of the old put
 					new_put_area[i],		// area of the new put
-					Bed_preparation[i]		// height of bed preparation layer 
+					bed_preparation[i],		// height of bed preparation layer
+					pipe_connections[i]		// indicates if a pipe has a connection.
 				);
 	
 			   section.activate();
@@ -193,7 +195,7 @@ public void setNUM_SEC(int nUM_SEC) {
 					true, 					// ?
 					put[i],					// section or put:  0 is section, 1 is put.  
 					shore[i],				// number of pipes in section
-					connections[i],			// number of connections in section
+					connections = pipe_connections[i].length,
 					num_put_connections[i],	// number of connections the put has, only if put
 					old_pavement[i],		// type of old pavement
 					new_pavement[i],		// type of new pavement
@@ -220,7 +222,7 @@ public void setNUM_SEC(int nUM_SEC) {
 					sand_layer[i],			// height of pavement preparation sand layer in m
 					old_put_area[i],		// area of the old put
 					new_put_area[i],		// area of the new put
-					Bed_preparation[i]		// height of bed preparation layer 
+					bed_preparation[i]		// height of bed preparation layer 
 				);
 	 
 			   section.activate();
@@ -300,6 +302,7 @@ public void setNUM_SEC(int nUM_SEC) {
 	      cranes = new PartTimeRes(this, "Resource cranes", scenario.getNUM_CRANE(), true, true);
 	      crews = new PartTimeRes(this, "Resource crews", scenario.getNUM_CREW(), true, true);
 	      secondcrews = new PartTimeRes(this, "Resource 2ndcrews", scenario.getNUM_2NDCREW(), true, true);
+	      thirdcrews = new PartTimeRes(this, "Resource 3rdcrews", Scenario.getNUM_3RDCREW(), true, true);
 	      rollers = new PartTimeRes(this, "Resource rollers", scenario.getNUM_ROLLER(), true, true);
 	      trucks = new PartTimeRes(this, "Resource trucks", scenario.getNUM_TRUCK(), true, true);
 	      pavecrews = new PartTimeRes(this, "Resource pavecrews", scenario.getNUM_PAVECREWS(), true, true);
@@ -378,10 +381,6 @@ public void setNUM_SEC(int nUM_SEC) {
    public boolean getReplacement() {
 	      return Replacement;
 	   }
-     
-   public int getShore() {
-	    return Shore;
-		}
    
    public boolean getOldPipeHeavy() {
 	    return oldPipeHeavy;
@@ -394,10 +393,6 @@ public void setNUM_SEC(int nUM_SEC) {
    public boolean getSecondCrew() {
     	return Scenario.isSecondCrew();
 		}
-   
-   public int getThirdCrew() {
-	   return Scenario.getThirdCrew();
-   		}
    
    public Scenario getScenario() {
 	   	return scenario;
@@ -475,16 +470,16 @@ public void setNUM_SEC(int nUM_SEC) {
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
 
-   private static int[] put = 						{ 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] put = 						{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
    private static int[] shore = 					{ 0, 0, 0, 1, 1, 1, 2, 2, 2, 5 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																							// 2 means Sheet piling (damwand), 3 means supported walls  
-   private static int[] connections = 				{ 2, 1, 2, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
+  // private static int[] connections = 			{ 2, 1, 2, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
    private static double[] num_put_connections = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
    private static int[] old_pavement = 				{ 3, 3, 3, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 																							// 3 means asphalt; break all sections at start, other gives error
    private static int[] new_pavement = 				{ 3, 3, 3, 1, 1, 1, 2, 2, 2, 2 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
 																							// 3 means asphalt; pave all sections at start, other gives error
-   private static double[] section_length = 		{ 2, 4, 2, 2, 1, 1, 2, 2, 2, 2 };  		// length of section in
+   private static double[] section_length = 		{ 3, 3, 2, 1, 1, 1, 2, 2, 2, 2 };  		// length of section in
    private static double[] pipe_length = 			{ 2.4, 2.4, 2.4, 2, 1, 1, 2, 2, 2, 2 }; // length of pipes in
    private static double[] section_width = 			{ 4, 4, 4, 4, 1, 1, 2, 2, 2, 2 };  		// width of section in
    private static double[] trench_width = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of Trench in  					///////////// bigger with puts?
@@ -508,13 +503,23 @@ public void setNUM_SEC(int nUM_SEC) {
    private static double[] new_put_area =			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// Area of the new put
    private static double[] rock_layer = 			{ 0.3, 0.3, 0.3, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation rock layer in m 
    private static double[] sand_layer = 			{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
-   private static double[] Bed_preparation =		{ 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.
+   private static double[] bed_preparation =		{ 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.
 
- 
+   //TODO each pipe should have a flag if it has a connection or not, this indicates a geometry.
+   // make connections independent connections.
+   
+   private static int[] section1_connections =		{ 1, 2};							// indicates if a pipe in section 1 has a connection.
+   private static int[] section2_connections =		{ 1, };							// indicates if a pipe in section 2 has a connection.
+   private static int[] section3_connections =		{ };							// indicates if a pipe in section 2 has a connection.
+   private static int[][] pipe_connections = 		{ section1_connections, section2_connections, section3_connections, };
+   
    private static double total_length;			// total length of all sections, calculated by summing up the length of all sections.
    
    /**  COMMENTED OUT as the arrays above are used for testing purposes. 
-    * This is preparation for use with GUI
+    * This is preparation for use with GUI, the arraylists can be filled from there
+    * 
+    * Array lists are necessary as they are flexible in length allowing as much sections to be defined as necessary for the project.
+    * 
     * Model parameters: Project parameters per section in dynamic arraylists
     * Characteristics of each section/put, stored in arrays
     */
@@ -560,28 +565,26 @@ public void setNUM_SEC(int nUM_SEC) {
 /**
    * Model parameters: SIMULATION SETTINGS
    */
-
-   private static int Shore = 3;				
+	
    private static boolean Replacement = true;		// indicates if the project is a replacement project
    private static boolean oldPipeHeavy	= false; 	// indicates if the old pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    private static boolean newPipeHeavy	= false; 	// indicates if the new pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    													// for puts this is indicated by an array per put as sizes differ.
    private static int prepareSurface = 2;			// indicates if broken rock is placed : 1 = yes, 2 = no
-   private static int sectionWait = 2;				// indicates after which activity the next section starts: 1 = after main loop (only possible if there is a 2nd crew), 
+   private static int sectionWait = 1;				// indicates after which activity the next section starts: 1 = after main loop (only possible if there is a 2nd crew), 
    													// 2 = second backfill, 3 = surface prepared, 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
    private static int inspectionType = 1;			// type of inspection applied: 1 = ????
    private static boolean foundation = true;		// indicates if the project requires foundation beneath the new sewer
    private static int OldSeparated = 2;				// indicates if old sewer is separated or combined: 1 = combined, 2 = separated
    private static int NewSeparated = 2;				// indicates if new sewer is separated or combined: 1 = combined, 2 = separated
-   private static double ConnectionWait = 100;			// determines how far along the main sewer should be before the 2nd crew starts with connections
+   private static double ConnectionWait = 100;		// determines how far along the main sewer should be before the 2nd crew starts with connections
    
    /**   
    * Model parameters: Simulation output settings
    */
-   private static int activityMsg = 3;				// indicates what data is collected in main loop: 1 = one activity for all pipes, 2 = per pipe, 3 =  per activity per pipe, 4 = ?
-   private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = overall activity connections, 2 = total time per connection, 
-   													//3 = per each activity per connection
-   private static int activityMsgPut = 3;			// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per put, 4 = ?
+   private static int activityMsg = 3;				// indicates what data is collected in main loop: 1 = one activity for all pipes, 2 = per pipe, 3 =  per activity per pipe
+   private static int activityMsgConnection = 2;	// indicates what data is collected in connection loop: 1 =  = total time per connection, 2 = per each activity per connection
+   private static int activityMsgPut = 3;			// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per put
    /**
     * Process versions
     */
@@ -636,6 +639,7 @@ public void setNUM_SEC(int nUM_SEC) {
    protected PartTimeRes cranes;
    protected PartTimeRes crews;
    protected PartTimeRes secondcrews;
+   protected PartTimeRes thirdcrews;
    protected PartTimeRes rollers;
    protected PartTimeRes trucks;
    protected PartTimeRes pavecrews;
@@ -705,6 +709,6 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int preparecounter = 0;
    private static int pavecounter = 0;
    private static int stonepavecounter = 0;
-
+   private static int connections;
 }
 

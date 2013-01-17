@@ -12,10 +12,10 @@ import desmoj.core.simulator.Model;
  * The circumstances are stored in project and section specific parameters
  */
 
-public class DurationDatabase 
+public class ProductionDatabase 
 {
 	
-	public DurationDatabase(Model owner,
+	public ProductionDatabase(Model owner,
 			ParentProcess parent,
 			int shore,
 			int old_pavement,

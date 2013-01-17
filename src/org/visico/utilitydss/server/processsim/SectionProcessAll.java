@@ -1,10 +1,12 @@
 package org.visico.utilitydss.server.processsim;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import desmoj.core.simulator.Model;
 import desmoj.core.simulator.TimeInstant;
 import desmoj.core.simulator.TimeSpan;
+import desmoj.core.advancedModellingFeatures.Bin;
 
 public class SectionProcessAll extends ParentProcess
 {
@@ -51,7 +53,8 @@ public class SectionProcessAll extends ParentProcess
 			double sand_layer,
 			double old_put_area,
 			double new_put_area,
-			double bed_preparation
+			double bed_preparation,
+			int pipe_connections[]
 			) 
 	
 	{
@@ -63,7 +66,7 @@ public class SectionProcessAll extends ParentProcess
 			
 		myModel = (UtilitySimulation)owner;
 		Shore = shore;							
-		Num_Connections = connections;
+		Num_Connections = connections;				// indicates the number of connections in this section
 		Old_pavement = old_pavement; 				// type of old pavement
 		New_pavement = new_pavement;  				// type of new pavement
 		Section_length = section_length;  			// length of section in
@@ -89,6 +92,7 @@ public class SectionProcessAll extends ParentProcess
 		Sand_layer = sand_layer;					// height of sand layer	
 		Old_put_area = old_put_area;				// area of the old put
 		New_put_area = new_put_area;				// area of the new put
+		Pipe_connections = pipe_connections;		// indicates if a pipe has a connection.
 		}
 	
 	/**
@@ -117,6 +121,8 @@ public class SectionProcessAll extends ParentProcess
 
 	public void lifeCycle() 
 	{
+		System.out.println("nothing to report" + Num_Connections);
+		
 		/**
 		 * Calculation of section specific parameters
 		 */
@@ -129,17 +135,17 @@ public class SectionProcessAll extends ParentProcess
 		
 		if(this.Num_Connections != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
 			// height of first backfill in m (pipe diameter + 2x average wall thickness)
-			{first_backfill_height = New_diameter * 1.26 * 0.001;
+			{First_backfill_height = New_diameter * 1.26 * 0.001;
 			// height of second backfill in m, only if there are connections
-			second_backfill_height = Trench_depth - first_backfill_height;}
+			Second_backfill_height = Trench_depth - First_backfill_height;}
 		else // if there are no housing connections backfill is to bottom of surface layer
-		   	{first_backfill_height = Trench_depth;}
-	
+		   	{First_backfill_height = Trench_depth;}
+
 		
 		/**
 		 * Initiation of a duration database containing the activity durations for this section
 		 */
-		DurationDatabase DurationDB = new DurationDatabase(
+		ProductionDatabase ProductionDB = new ProductionDatabase(
 			myModel,				//owner
 			this, 					//name
 			Shore,					// number of pipes in section
@@ -168,48 +174,7 @@ public class SectionProcessAll extends ParentProcess
 			Bed_preparation			// height of bed preparation layer 
 			);
 		
-		/**
-		 * Initiation of the connections process. This process can be performed by the same crew as the main sewer after the main 
-		 * sewer is completed or simultaneously by another crew after a certain amount of work is done on the main sewer.
-		 * 
-		 */
-		   // 2ND CREW STARTS WORK ON CONNECTIONS WHILE MAIN CREW STILL WORKS ON MAIN SEWER
-		   // DOES NOT WORK YET
-		   //	TODO set flag to allow work on connections to start after a certain amount of sewer has been completed. 
-		   // 	what if connections overtake pipes?   
-		   //   what if connections don't start after certain number of pipes in this section but after a few sections are done?
-		   //   what if 3 crews?
-		  
-		   //start housing connections process
-		   if(this.Num_Connections>0 && (myModel.getSectionWait() == 1))
-			    
-				   // what if there are a lot of short sections? 
-				   //then 2nd crew should start
-				   //after a certain section
-		   {
-			   	Connections housing_connection = new Connections(
-		   		myModel, 				// owner
-				this,					// parent
-				"housing connections ",	// name
-				true, 					// show in trace
-				Num_Connections,
-				DurationDB.getConnection_duration_hwa(),
-				second_backfill_height,
-				Pipe_area, 
-				Trench_area,
-				DurationDB.getBackfill(),
-				DurationDB.getSoil_pl_factor());
-		   }   
-			   	
-			   	//TODO this activation should be placed at several points where activation of connection work is possible in reality.
-			    // ie after certian amount of distance main sewer is laid, after certain time (how?),
-			   	// after certain number of sections (how?), after main sewer of this section is complete
-			   	// if ((i)*Pipe_length>myModel.getConnectionWait()){
-			   	// or if(something else){
-				// housing_connection.activate();
-		   		// }
-		   
-		   
+				   
 //=====================================================================================================================================================================
 //=====================================================================================================================================================================
 		/** Actual life cycle **/
@@ -234,16 +199,13 @@ public class SectionProcessAll extends ParentProcess
 		TimeInstant start_1 = myModel.presentTime();				// starting time of activity corresponding to detail level 1 as selected in UtilitySimulation.java
 		TimeInstant start_2 = myModel.presentTime();				// starting time of activity corresponding to detail level 2 as selected in UtilitySimulation.java
 		TimeInstant start_3 = myModel.presentTime();				// starting time of activity corresponding to detail level 3 as selected in UtilitySimulation.java
-		TimeInstant startConnection_1 = myModel.presentTime();		// starting time of connection activity corresponding to detail level 1 as selected in UtilitySimulation.java
-		TimeInstant startConnection_2 = myModel.presentTime();		// starting time of connection activity corresponding to detail level 2 as selected in UtilitySimulation.java
-		TimeInstant startConnection_3 = myModel.presentTime();		// starting time of connection activity corresponding to detail level 3 as selected in UtilitySimulation.java
 		
 		// 1. break the section or remove stone pavement
 		/**
 		 * start new breaking process
 		 */
 		Breaking pavementbreaking = new Breaking(
-		myModel, this, "Breaking Section ", true, Old_pavement, Total_area, Section_area, DurationDB.getRemove_pavement());
+		myModel, this, "Breaking Section ", true, Old_pavement, Total_area, Section_area, ProductionDB.getRemove_pavement());
 		pavementbreaking.activate();
 		this.passivate();			// this needs to passivate while breaking performs it's activities
    
@@ -253,7 +215,6 @@ public class SectionProcessAll extends ParentProcess
 	   // for loop iterating trough main loop (iterates trough all pipes in this section)
 	   for (int i=1; i<=this.NUM_Pipe; i++)
 	   {
-		   
 		   // gathers start time of every pipe in main loop, only active if turned on in utilitysimulation.java
 		   start_2 = myModel.presentTime();
 		   
@@ -261,7 +222,7 @@ public class SectionProcessAll extends ParentProcess
 		   myModel.excavators.provide(1);
 		   myModel.trucks.provide(1);
 		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getExcavatingTime() * (Excavation_volume/DurationDB.getExcavation()) * DurationDB.getSoil_rm_factor() * DurationDB.getCables_weight()), TimeUnit.HOURS));
+		   hold (new TimeSpan((myModel.getExcavatingTime() * (Excavation_volume/ProductionDB.getExcavation()) * ProductionDB.getSoil_rm_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));
 		   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start_3, "Excavate pipe " + i, myModel.presentTime(), 3) ;
 		   sendMessage(msg_2);
 		   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Excavating Start: " + start_3.toString() + 
@@ -274,7 +235,7 @@ public class SectionProcessAll extends ParentProcess
 		   if(this.getIdentNumber() == 1 && i == 1){
 			   	myModel.crews.provide(1);
 			   	start_3 = myModel.presentTime();
-			   	hold (new TimeSpan((myModel.getClosingTime() * DurationDB.getClosing_sewer()), TimeUnit.HOURS));
+			   	hold (new TimeSpan((myModel.getClosingTime() * ProductionDB.getClosing_sewer()), TimeUnit.HOURS));
 			   	ActivityMessage msg_2a = new ActivityMessage(myModel, this, start_3, "Closing sewer " + i, myModel.presentTime(), 3) ;
 		   		sendMessage(msg_2a);
 			   	sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Closing sewer: " + start_3.toString() + 
@@ -287,7 +248,7 @@ public class SectionProcessAll extends ParentProcess
 		   if(this.Shore  != 0) {
 			   myModel.excavators.provide(1);
 			   start_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length/DurationDB.getShoring())), TimeUnit.HOURS)); 
+			   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length/ProductionDB.getShoring())), TimeUnit.HOURS)); 
 			   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start_3, "Shore " + i, myModel.presentTime(), 3) ;
 			   sendMessage(msg_3);
 			   sendTraceNote("Activity: " + getName() + " Shoring: " + start_3.toString() + 
@@ -301,7 +262,7 @@ public class SectionProcessAll extends ParentProcess
 			   	myModel.excavators.provide(1);
 			   	for(int j=1; j<=myModel.getOldSeparated(); j++){
 				   	start_3 = myModel.presentTime();
-			   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/DurationDB.getPipe_removal()) * DurationDB.getPipe_rm_factor()), TimeUnit.HOURS));
+			   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getPipe_removal()) * ProductionDB.getPipe_rm_factor()), TimeUnit.HOURS));
 			   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_3, "Remove Pipe " + i +"."+ j, myModel.presentTime(), 3) ;
 					sendMessage(msg_4);
 			   		sendTraceNote("Activity: " + getName() + " Remove pipe: " + start_3.toString() + 
@@ -314,7 +275,7 @@ public class SectionProcessAll extends ParentProcess
 		   if(myModel.getFoundation()) {
 			   	myModel.excavators.provide(1);
 			   	start_3 = myModel.presentTime();
-		   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/DurationDB.getFoundation_duration())), TimeUnit.HOURS));
+		   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getFoundation_duration())), TimeUnit.HOURS));
 		   		ActivityMessage msg_5 = new ActivityMessage(myModel, this, start_3, "Foundation " + i, myModel.presentTime(), 3) ;
 				sendMessage(msg_5);
 		   		sendTraceNote("Activity: " + getName() + " Foundation: " + start_3.toString() + 
@@ -326,7 +287,7 @@ public class SectionProcessAll extends ParentProcess
 		   // TODO bed preparations not always necessary? is already possible by keeping the activity 0 but then it stil shows in output.
 		   myModel.crews.provide(1);
 		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Pipe_area * Bed_preparation)/DurationDB.getPreparation())), TimeUnit.HOURS)); 
+		   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Pipe_area * Bed_preparation)/ProductionDB.getPreparation())), TimeUnit.HOURS)); 
 		   ActivityMessage msg_6 = new ActivityMessage(myModel, this, start_3, "Prepare Bed " + i, myModel.presentTime(), 3) ;
 		   sendMessage(msg_6);
 		   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start_3.toString() + 
@@ -338,7 +299,7 @@ public class SectionProcessAll extends ParentProcess
 		   myModel.excavators.provide(1);
 		   for(int j=1; j<=myModel.getNewSeparated(); j++){
 			   start_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/DurationDB.getPipe_placement()) * DurationDB.getPipe_pl_factor()), TimeUnit.HOURS));
+			   hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/ProductionDB.getPipe_placement()) * ProductionDB.getPipe_pl_factor()), TimeUnit.HOURS));
 			   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_3, "Install Pipe " + i + "."+ j, myModel.presentTime(), 3) ;
 			   sendMessage(msg_7);
 			   sendTraceNote("Activity: " + getName() + " Install Pipe: " + start_3.toString() + 
@@ -351,7 +312,7 @@ public class SectionProcessAll extends ParentProcess
 		   myModel.crews.provide(1);
 		   start_3 = myModel.presentTime();
 		   // if there are housing connections backfill is only to top of main sewer pipe
-		   hold (new TimeSpan((myModel.getBackfillTime() * ((first_backfill_height * Pipe_area)/DurationDB.getBackfill()) * DurationDB.getSoil_pl_factor()), TimeUnit.HOURS));
+		   hold (new TimeSpan((myModel.getBackfillTime() * ((First_backfill_height * Pipe_area)/ProductionDB.getBackfill()) * ProductionDB.getSoil_pl_factor()), TimeUnit.HOURS));
 		   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "First Backfill " + i, myModel.presentTime(), 3);
 		   sendMessage(msg_8);
 		   sendTraceNote("Activity: " + getName() + " First Backfill: " + start_3.toString() + 
@@ -363,7 +324,7 @@ public class SectionProcessAll extends ParentProcess
 		   if(this.Shore  != 0)
 		   {	myModel.excavators.provide(1);
 		   		start_3 = myModel.presentTime();
-		   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length/DurationDB.getShoring_remove())), TimeUnit.HOURS)); 
+		   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length/ProductionDB.getShoring_remove())), TimeUnit.HOURS)); 
 		   		ActivityMessage msg_9 = new ActivityMessage(myModel, this, start_3, "Remove Shoring " + i, myModel.presentTime(), 3) ;
 		   		sendMessage(msg_9);
 		   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start_3.toString() + 
@@ -374,7 +335,48 @@ public class SectionProcessAll extends ParentProcess
 		   // gathers data on total construction time of pipe in main sewer loop, only active if turned on in utilitysimulation.java
 		   ActivityMessage msg = new ActivityMessage(myModel, this, start_2, "Pipe " + i + " construction", myModel.presentTime(), 2) ;
 		   sendMessage(msg);  
-		
+		   
+		   /**
+		    * If this pipe has a connection (rain or house) a process for developing this connection should be initialed.
+		    * 
+		    * The  loop iterates trough the total length of the array. 
+		    * If the number of the current pipe is stored in the array a connection process is started.
+		    */
+		   
+		   for(int j=0;j<Pipe_connections.length;j++)
+		   {
+			   if(Pipe_connections[j]==i){
+				   			        	
+		        	/**
+		    		 * Initiation of the connections process. This process can be performed by the same crew as the main sewer after the main 
+		    		 * sewer is completed or simultaneously by another crew after a certain amount of work is done on the main sewer.
+		    		 * 
+		    		 */
+	    		   // 2ND CREW STARTS WORK ON CONNECTIONS WHILE MAIN CREW STILL WORKS ON MAIN SEWER
+	    		   // DOES NOT WORK YET
+	    		   //	TODO set flag to allow work on connections to start after a certain amount of sewer has been completed. 
+	    		   // 	what if connections overtake pipes?   
+	    		   //   what if connections don't start after certain number of pipes in this section but after a few sections are done?
+	    		   //   what if 3 crews?
+
+ 
+		    		Connections housing_connection = new Connections(
+    		   		myModel, 				// owner
+    				this,					// parent
+    				"housing connections ",	// name
+    				true, 					// show in trace
+    				ProductionDB.getConnection_duration_hwa(),
+    				Second_backfill_height,
+    				Pipe_area, 
+    				Trench_area,
+    				ProductionDB.getBackfill(),
+    				ProductionDB.getSoil_pl_factor());
+    			   	
+    			   	housing_connection.activate(); 
+    			   	System.out.println("connection started");
+		    	}
+		   }
+		   
 	   // End of pipe iteration lifecycle
 	   }
 	   
@@ -400,8 +402,13 @@ public class SectionProcessAll extends ParentProcess
 	   		myModel.startingCondition.store(1);
    		}
 	   
+	   if(this.Num_Connections != 0){
+		   this.passivate();
+	   }
+	   
 	   // 9. install the connections, only if there are connections.
 	   //TODO what if 3d crane fills up trench, then 2nd crew only does connections and leaves trench open.
+	   /*
 	   if(this.Num_Connections != 0)
 	   {		
 		   startConnection_1 = myModel.presentTime();
@@ -411,7 +418,7 @@ public class SectionProcessAll extends ParentProcess
 			   else {myModel.crews.provide(1);}
 			   startConnection_2 = myModel.presentTime();
 			   startConnection_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getHousingConnectionTime() * DurationDB.getConnection_duration_hwa()), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
+			   hold (new TimeSpan((myModel.getHousingConnectionTime() * ProductionDB.getConnection_duration_hwa()), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
 			   ActivityMessage msg_10 = new ActivityMessage(myModel, this, startConnection_3, "Housing pipe " + j, myModel.presentTime(), 6) ;
 			   sendMessage(msg_10);
 			   sendTraceNote("Activity: " + getName() + " Install housing connection: " + startConnection_3.toString() + 
@@ -427,7 +434,7 @@ public class SectionProcessAll extends ParentProcess
 			   else {myModel.crews.provide(1);}
 			   myModel.trucks.provide(1);
 			   startConnection_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getBackfillTime() * ((second_backfill_height * Pipe_area)/DurationDB.getBackfill()) * DurationDB.getSoil_pl_factor()), TimeUnit.HOURS));
+			   hold (new TimeSpan((myModel.getBackfillTime() * ((Second_backfill_height * Pipe_area)/ProductionDB.getBackfill()) * ProductionDB.getSoil_pl_factor()), TimeUnit.HOURS));
 			   ActivityMessage msg_11 = new ActivityMessage(myModel, this, startConnection_3, "Second Backfill " + j, myModel.presentTime(), 6);
 			   sendMessage(msg_11);
 			   sendTraceNote("Activity: " + getName() + " Backfill: " + startConnection_3.toString() + 
@@ -444,7 +451,14 @@ public class SectionProcessAll extends ParentProcess
 		   sendMessage(msg_13);
 	   }
 	
+	   */
+	   /**
+	    * work cannot proceed until all connections have been made and second backfill is completed
+	    * for each connection completed one unit is stored in: Connections_finished_counter
+	    * a number of units equal to the total number of connections is requested and needs to be delivered before the process continues
+	    */
 	   
+  
 	   myModel.backfill();
 	   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
 		   myModel.trucks.stopUse();
@@ -473,7 +487,7 @@ public class SectionProcessAll extends ParentProcess
 	   // 11a. roll/prepare surface - sand TODO work further on 11a & b.
 	   myModel.rollers.provide(1);
 	   start_3 = myModel.presentTime();
-	   hold (new TimeSpan((myModel.getSurfacePrepareTime() * (Section_area/DurationDB.getPaving_preparation())), TimeUnit.HOURS));
+	   hold (new TimeSpan((myModel.getSurfacePrepareTime() * (Section_area/ProductionDB.getPaving_preparation())), TimeUnit.HOURS));
 	   ActivityMessage msg_12 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
 	   sendMessage(msg_12);
 	   sendTraceNote("Activity: " + getName() + " Compact: " + start_3.toString() + 
@@ -497,7 +511,7 @@ public class SectionProcessAll extends ParentProcess
 	   if(myModel.getPrepareSurface() == 1)
 		   {myModel.trucks.provide(1);
 		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((Section_length * Rock_layer )/DurationDB.getPaving_preparation())), TimeUnit.HOURS));
+		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((Section_length * Rock_layer )/ProductionDB.getPaving_preparation())), TimeUnit.HOURS));
 		   ActivityMessage msg_13 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
 		   sendMessage(msg_13);
 		   sendTraceNote("Activity: " + getName() + " Broken rock: " + start_3.toString() + 
@@ -520,7 +534,7 @@ public class SectionProcessAll extends ParentProcess
 		 * start new paving process
 		 */
 	    Paving pavement = new Paving(
-	    		myModel, this, "Paving Section ", true, New_pavement, Total_area, Section_area, DurationDB.getPaving_time());
+	    		myModel, this, "Paving Section ", true, New_pavement, Total_area, Section_area, ProductionDB.getPaving_time());
 		pavement.activate();
 		this.passivate();		//this needs to passivate while paving performs it's activities
 	   
@@ -541,9 +555,8 @@ public class SectionProcessAll extends ParentProcess
 	 */
 	private UtilitySimulation myModel;
 	private int Shore;					// Indicates if shoring is used and if so what type is used.
-	private int Num_Connections;
+	private int Num_Connections;		// indicates the number of connections in this section
 	private int Old_pavement; 			// type of old pavement
-	//private int oldPavement = Old_pavement;
 	private int New_pavement;  			// type of new pavement
 	private double Section_length;  	// length of section in m 
 	private double Pipe_length;  		// length of pipes in m
@@ -569,6 +582,7 @@ public class SectionProcessAll extends ParentProcess
 	private double Rock_layer;			// height of pavement preparation rock layer in m
 	private double Sand_layer;			// height of pavement preparation sand layer in m
 	private double Bed_preparation;		// height of bed preparation sand layer in m
+	private int Pipe_connections[];		// indicates if a pipe has a connection.
 	
 	/**
 	 * Test for reading the data from an arraylist in UtilitySimulation corresponding to this section
@@ -585,6 +599,7 @@ public class SectionProcessAll extends ParentProcess
 	private double Trench_area;				// total surface of the trench
 	private double Excavation_volume;  		// excavation volume per pipe
 	private double Total_area;				// total working area of all sections
-	private double first_backfill_height;	// height of first backfill in m (pipe diameter + 2x average wall thinkness)
-	private double second_backfill_height;	// height of first backfill in m (pipe diameter + 2x average wall thinkness)
+	private double First_backfill_height;	// height of first backfill in m (pipe diameter + 2x average wall thinkness)
+	private double Second_backfill_height;	// height of first backfill in m (pipe diameter + 2x average wall thinkness)
+	
 }

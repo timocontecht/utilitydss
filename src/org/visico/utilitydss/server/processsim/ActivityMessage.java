@@ -17,6 +17,14 @@ import desmoj.core.simulator.TimeInstant;
  * related outputs. Messages can be send to the standard DesmoJ receiver class.  
  *  
  */
+
+/**
+ * 
+ * @author Simon
+ * All activity messages of all detail levels get send. Based on the detail level attached to the message the receiver determines if the message is used.
+ * The detail level the receiver accepts is selected in UtilitySimulation.java.
+ *
+ */
 public class ActivityMessage extends Message 
 {
 	

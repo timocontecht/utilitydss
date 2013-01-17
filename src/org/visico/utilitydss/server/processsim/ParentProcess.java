@@ -9,6 +9,7 @@ import org.visico.utilitydss.server.processsim.SectionProcessAll;
 import org.visico.utilitydss.server.processsim.SewerExperiment;
 import org.visico.utilitydss.server.processsim.UtilitySimulation;
 
+import desmoj.core.advancedModellingFeatures.Bin;
 import desmoj.core.simulator.Model;
 import desmoj.core.simulator.SimProcess;
 import desmoj.core.simulator.TimeInstant;
@@ -54,12 +55,17 @@ public class ParentProcess extends SimProcess
 	
 	{
 		super(owner, name, showInTrace);
-		}
+		
+	Num_Connections = connections;
 
+	}
+	
 	@Override
 	public void lifeCycle() {
 	
 
 	}
+	
 	public int connections_done;
+	public int Num_Connections;
 }
