@@ -118,7 +118,7 @@ public class Paving extends ParentProcess
 	    		// no paving activities
 			   	if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())){
 			   		myModel.getExperiment().stop();
-			   		System.out.println("no paving activities performed " + myModel.presentTime());
+			   		System.out.println("No paving activities performed " + myModel.presentTime());
 			   		System.out.println(Parent + " completed");
 			   	}	
 			   	break;

@@ -203,47 +203,45 @@ public class PutProcessAll extends ParentProcess
 	   
 	   
 	   // 2. excavate the section
-	   myModel.excavators.provide(1);
-	   myModel.trucks.provide(1);
+	   myModel.crews.provide(1);	myModel.excavators.provide(1); myModel.trucks.provide(1);
 	   start_3 = myModel.presentTime();
 	   hold (new TimeSpan((myModel.getExcavatingTime() * (Excavation_volume/ProductionDB.getExcavation()) * ProductionDB.getPipe_rm_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));
 	   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start_3, "Excavate put ", myModel.presentTime(), 9) ;
 	   sendMessage(msg_2);
 	   sendTraceNote("Activity: " + getName() + " Pipe: " + " Excavating Start: " + start_3.toString() + 
 			   " End: " + myModel.presentTime().toString());
-	   myModel.excavators.takeBack(1);
-	   myModel.trucks.takeBack(1);
+	   myModel.crews.takeBack(1); myModel.excavators.takeBack(1); myModel.trucks.takeBack(1);
 	   
 	   // Closing sewer
 	   // One time activity in first section or put in first iteration of pipe
 	   if(this.getIdentNumber() == 1){
-		   	myModel.crews.provide(1);
+		   	myModel.crews.provide(1); 	myModel.excavators.provide(1);
 		   	start_3 = myModel.presentTime();
 		   	hold (new TimeSpan((myModel.getClosingTime() * ProductionDB.getClosing_sewer()), TimeUnit.HOURS));
 		   	ActivityMessage msg_2a = new ActivityMessage(myModel, this, start_3, "Closing sewer ", myModel.presentTime(), 9) ;
 	   		sendMessage(msg_2a);
 		   	sendTraceNote("Activity: " + getName() + " Pipe: " + " Closing sewer: " + start_3.toString() + 
 			   " End: " + myModel.presentTime().toString());
-		   	myModel.crews.takeBack(1);
+		   	myModel.crews.takeBack(1); 	myModel.excavators.takeBack(1);
 	   }
 	   
 	   // 3. shore the section
 	   // only for projects that require shoring (set variable Shore to right value in simulation class)
 	   if(this.Shore  != 0) {
-		   myModel.excavators.provide(1);
+		   myModel.crews.provide(1); myModel.excavators.provide(1);
 		   start_3 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length/ProductionDB.getShoring())), TimeUnit.HOURS)); 
 		   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start_3, "Shore ", myModel.presentTime(), 9) ;
 		   sendMessage(msg_3);
 		   sendTraceNote("Activity: " + getName() + " Shoring: " + start_3.toString() + 
 				   " End: " + myModel.presentTime().toString());
-		   myModel.excavators.takeBack(1);
+		   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 	   }
 	      
 	   // 4. remove the put
 	   // only for replacement projects (set variable Replacement in UtilitySimulation.java class to true/false )
 	   if(myModel.getReplacement()) {
-		    myModel.excavators.provide(1);
+		    myModel.crews.provide(1); myModel.excavators.provide(1);
 		    for(int j=1; j<=myModel.getOldSeparated(); j++){
 			   	start_3 = myModel.presentTime();
 			   	hold (new TimeSpan((myModel.getPutRemoveTime() * (1/ProductionDB.getPut_removal()) * ProductionDB.getPipe_rm_factor()), TimeUnit.HOURS));
@@ -252,34 +250,33 @@ public class PutProcessAll extends ParentProcess
 		   		sendTraceNote("Activity: " + getName() + " Put removal: " + start_3.toString() + 
 		   				" End: " + myModel.presentTime().toString());
 		    }
-		    myModel.excavators.takeBack(1);
+		    myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 	   }
 
 	   // 5a Foundation
 	   if(myModel.getFoundation()) {
-		   	myModel.excavators.provide(1);
+		    myModel.crews.provide(1); myModel.excavators.provide(1);
 		   	start_3 = myModel.presentTime();
 	   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getFoundation_duration())), TimeUnit.HOURS));
 	   		ActivityMessage msg_5 = new ActivityMessage(myModel, this, start_3, "Foundation ", myModel.presentTime(), 9) ;
 			sendMessage(msg_5);
 	   		sendTraceNote("Activity: " + getName() + " Foundation: " + start_3.toString() + 
 	   				" End: " + myModel.presentTime().toString());
-	   		myModel.excavators.takeBack(1);
+	   		myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 	   }
 	   
 	   // 5b prepare the bed
-	   myModel.crews.provide(1);
+	   myModel.crews.provide(1); myModel.excavators.provide(1);
 	   start_3 = myModel.presentTime();
 	   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Trench_area * Bed_preparation)/ProductionDB.getPreparation())), TimeUnit.HOURS));
 	   ActivityMessage msg_6 = new ActivityMessage(myModel, this, start_3, "Prepare Bed ", myModel.presentTime(), 9) ;
 	   sendMessage(msg_6);
 	   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start_3.toString() + 
 			   " End: " + myModel.presentTime().toString());
-	   myModel.crews.takeBack(1);
-	  
+	   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
+	   
 	   // 6. install the put
-	   myModel.crews.provide(1);
-	   myModel.excavators.provide(1);
+	   myModel.crews.provide(1); myModel.excavators.provide(1);
 	   for(int j=1; j<=myModel.getNewSeparated(); j++){
 		   start_3 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getPutPlacingTime() * ProductionDB.getPut_placement() * ProductionDB.getPipe_pl_factor()), TimeUnit.HOURS));    			
@@ -288,33 +285,32 @@ public class PutProcessAll extends ParentProcess
 		   sendTraceNote("Activity: " + getName() + " Install Put: " + start_3.toString() + 
 				   " End: " + myModel.presentTime().toString());
 	   }
-	   myModel.excavators.takeBack(1);
-	   myModel.crews.takeBack(1);
-	   
+	   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
+	   	   
 	   // 7. Put connections
 	   for (int j=1; j<=this.Num_Put_connections; j++) { 
-		   myModel.crews.provide(1);
+		   myModel.crews.provide(1); myModel.excavators.provide(1);
 		   start_3 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getPutConnectionTime() * ProductionDB.getConnection_put_duration()), TimeUnit.HOURS));
 		   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "Put connection " + j, myModel.presentTime(), 9) ;
 		   sendMessage(msg_8);
 		   sendTraceNote("Activity: " + getName() + " Connect pipes to put: " + start_3.toString() + 
 				   " End: " + myModel.presentTime().toString());
-		   myModel.crews.takeBack(1);
+		   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 	   }
 	   
 	   // 8. remove shoring
 	   // only for projects that require shoring (set variable Shore to right value in simulation class)
 	   if(this.Shore != 0)
-	   {	myModel.excavators.provide(1);
+	   {	myModel.crews.provide(1); myModel.excavators.provide(1);
 	   		start_3 = myModel.presentTime();
 	   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length/ProductionDB.getShoring_remove())), TimeUnit.HOURS));  
 	   		ActivityMessage msg_10 = new ActivityMessage(myModel, this, start_3, "Remove Shoring ", myModel.presentTime(), 9) ;
 	   		sendMessage(msg_10);
 	   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start_3.toString() + 
 	   				" End: " + myModel.presentTime().toString());
-			   		myModel.excavators.takeBack(1);
-			   }
+	   		myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
+		}
  
 			   // gathers data on total construction time of put in main sewer loop, only active if turned on in utilitysimulation.java
 	   ActivityMessage msg = new ActivityMessage(myModel, this, start_2, "Put construction", myModel.presentTime(), 8) ;
@@ -346,10 +342,10 @@ public class PutProcessAll extends ParentProcess
    		}
 	   
 	   // 9. backfill + compacting
-	   if(this.Num_Connections != 0){
+	   if(this.Num_Connections != 0){  //TODO this won't work as their are no connections in puts
 		   if(myModel.getSecondCrew()) {
 			   	myModel.secondcrews.provide(1);}
-		   else {myModel.crews.provide(1);}
+		   else {myModel.crews.provide(1); myModel.excavators.provide(1);}
 		   myModel.trucks.provide(1);
 		   start_3 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getBackfillTime() * (Excavation_volume/ProductionDB.getBackfill()) * ProductionDB.getSoil_pl_factor()), TimeUnit.HOURS));
@@ -359,23 +355,24 @@ public class PutProcessAll extends ParentProcess
 				   " End: " + myModel.presentTime().toString());
 		   if(myModel.getSecondCrew()) {
 			   	myModel.secondcrews.takeBack(1);}
-		   else {myModel.crews.takeBack(1);}
+		   else {myModel.crews.takeBack(1); myModel.excavators.takeBack(1);}
 		   myModel.trucks.takeBack(1);
 	   }
+	   
 	   myModel.backfill(); 
 	   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
 		   myModel.trucks.stopUse();
-		   myModel.crews.stopUse();
 		   if(myModel.getSecondCrew()){
 			   myModel.secondcrews.stopUse();
 			   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
 		   }
 		   else {
 			   myModel.crews.stopUse();
+			   myModel.excavators.stopUse();
 			   System.out.println("resource crews stopped at simulation time " + myModel.presentTime());
+			   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
 		   }
 		   System.out.println("resource trucks stopped at simulation time " + myModel.presentTime());
-		   System.out.println("resource excavators stopped at simulation time " + myModel.presentTime()); 
 	   }	
 		
 

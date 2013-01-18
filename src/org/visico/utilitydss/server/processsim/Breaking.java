@@ -103,7 +103,7 @@ public class Breaking extends ParentProcess
     			
     		default:
 		    // no pavement removal
-		   		System.out.println("no breaking activities performed " + myModel.presentTime());	   
+		   		System.out.println("No breaking activities performed " + myModel.presentTime());	   
 		   		break;
 	   }}
 	  
