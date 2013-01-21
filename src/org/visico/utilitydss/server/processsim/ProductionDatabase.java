@@ -7,6 +7,7 @@ import org.visico.utilitydss.shared.Section;
 import desmoj.core.simulator.Model;
 
 /**
+ * @author Simon
  * Database containing activity durations
  * For each activity the durations under specified circumstances are stored
  * The circumstances are stored in project and section specific parameters

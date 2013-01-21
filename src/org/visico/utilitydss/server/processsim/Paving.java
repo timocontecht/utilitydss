@@ -9,8 +9,9 @@ import desmoj.core.simulator.TimeSpan;
 
 public class Paving extends ParentProcess
 {	
-	
+
 	/**
+	    * @author Simon
 	    * Constructor of the paving class 
 	    *
 	    * Used to create a new paving operation in a section of a sewer line to be replaced
@@ -61,8 +62,10 @@ public class Paving extends ParentProcess
 						   " End: " + myModel.presentTime().toString());
 				   myModel.pavecrews.takeBack(1);
 				   myModel.pave();
+				   
 				   if (UtilitySimulation.getPaveCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
 			   			myModel.pavecrews.stopUse();
+			   			myModel.stonepavecrews.stopUse();
 			   			myModel.getExperiment().stop();
 			   			System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
 			   			System.out.println(Parent + " completed");
@@ -79,13 +82,14 @@ public class Paving extends ParentProcess
 			   sendMessage(msg_2);
 			   sendTraceNote("Activity: " + Parent + " Stone Paving: " + start.toString() + 
 			   " End: " + myModel.presentTime().toString());
-						   myModel.stonepavecrews.takeBack(1);
-						   myModel.stonepave();
+			   myModel.stonepavecrews.takeBack(1);
+			   myModel.pave();
 			   
-			   if (UtilitySimulation.getStonePaveCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
+			   if (UtilitySimulation.getPaveCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
 		   			myModel.stonepavecrews.stopUse();
+		   			myModel.pavecrews.stopUse();
 		   			myModel.getExperiment().stop();
-		   			System.out.println("resource stonepavecrews stopped at simulation time " + myModel.presentTime());
+		   			System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
 		   			System.out.println(Parent + " completed");
 				}  
 				break;
@@ -102,6 +106,7 @@ public class Paving extends ParentProcess
 						   " End: " + myModel.presentTime().toString());
 				   myModel.pavecrews.takeBack(1);
 				   myModel.pavecrews.stopUse();
+				   myModel.stonepavecrews.stopUse();
 				   myModel.getExperiment().stop();
 				   System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());	
 				   System.out.println(Parent + " completed");
@@ -115,12 +120,23 @@ public class Paving extends ParentProcess
 			   	break;
     			
     		default:
-	    		// no paving activities
+	    		/*
+    			// no paving activities
 			   	if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())){
-			   		myModel.getExperiment().stop();
+			   		myModel.pave();
 			   		System.out.println("No paving activities performed " + myModel.presentTime());
 			   		System.out.println(Parent + " completed");
-			   	}	
+			   		work out that it stops also when there is no paving activity
+			   		
+			   		:nieuwe shit:
+			   		if (UtilitySimulation.getPaveCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
+			   			myModel.stonepavecrews.stopUse();
+			   			myModel.pavecrews.stopUse();
+			   			myModel.getExperiment().stop();
+			   			System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
+			   			System.out.println(Parent + " completed");
+			   	}
+			   	*/	
 			   	break;
 	   }}
 	  

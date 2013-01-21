@@ -11,6 +11,7 @@ public class Breaking extends ParentProcess
 {
 	
 	/**
+	    * @author Simon
 	    * Constructor of the breaking class 
 	    *
 	    * Used to create a new breaking operation in a section of a sewer line to be replaced

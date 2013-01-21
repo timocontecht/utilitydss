@@ -11,6 +11,7 @@ public class PutProcessAll extends ParentProcess
 {
 	
 	/**
+	    * @author Simon
 	    * Constructor of the section 
 	    *
 	    * Used to create a new section of a sewer line to be replaced
@@ -183,8 +184,24 @@ public class PutProcessAll extends ParentProcess
 		//time instants for the different activitymsg's
 		TimeInstant start_1 = myModel.presentTime();				// starting time of activity corresponding to detail level 1 as selected in UtilitySimulation.java
 		TimeInstant start_2 = myModel.presentTime();				// starting time of activity corresponding to detail level 2 as selected in UtilitySimulation.java
-		TimeInstant start_3 = myModel.presentTime();				// starting time of activity corresponding to detail level 3 as selected in UtilitySimulation.java
  
+		/**
+		 * Delay before 2nd crews becomes operational
+		 * this allows practitioners to test what delay in 2nd crew arival on work site is optimal.
+		 * Only activated if there is a second crew and in first section (first sewer line or put)
+		 * 
+		 * COMMENT: this results in errors in usage percentages since the program thinks the resource is in use
+		 * A better solution would be to instantiate the resource after the selected amount of time has passed.
+		 */
+		if(myModel.getSecondCrew()== true && this.getIdentNumber() ==1){
+			SecondCrewDelay Delay = new SecondCrewDelay(
+					myModel,					//owner
+					"Delay for second crew", 	//name
+					true);
+			
+			Delay.activate();
+		}
+		
 		// 1. break the section or remove stone pavement
 		/**
 		 * start new breaking process
@@ -197,18 +214,17 @@ public class PutProcessAll extends ParentProcess
 		
 	   // gathers data on total duration of main put loop (1 task contains all activities for all put(s)), only active if turned on in utilitysimulation.java
 	    start_1 = myModel.presentTime();
-	   	   
 	   // gathers start time of every put in main loop, only active if turned on in utilitysimulation.java
 	   start_2 = myModel.presentTime();
 	   
 	   
 	   // 2. excavate the section
 	   myModel.crews.provide(1);	myModel.excavators.provide(1); myModel.trucks.provide(1);
-	   start_3 = myModel.presentTime();
+	   start_2 = myModel.presentTime();
 	   hold (new TimeSpan((myModel.getExcavatingTime() * (Excavation_volume/ProductionDB.getExcavation()) * ProductionDB.getPipe_rm_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));
-	   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start_3, "Excavate put ", myModel.presentTime(), 9) ;
+	   ActivityMessage msg_2 = new ActivityMessage(myModel, this, start_2, "Excavate put ", myModel.presentTime(), 8) ;
 	   sendMessage(msg_2);
-	   sendTraceNote("Activity: " + getName() + " Pipe: " + " Excavating Start: " + start_3.toString() + 
+	   sendTraceNote("Activity: " + getName() + " Pipe: " + " Excavating Start: " + start_2.toString() + 
 			   " End: " + myModel.presentTime().toString());
 	   myModel.crews.takeBack(1); myModel.excavators.takeBack(1); myModel.trucks.takeBack(1);
 	   
@@ -216,11 +232,11 @@ public class PutProcessAll extends ParentProcess
 	   // One time activity in first section or put in first iteration of pipe
 	   if(this.getIdentNumber() == 1){
 		   	myModel.crews.provide(1); 	myModel.excavators.provide(1);
-		   	start_3 = myModel.presentTime();
+		   	start_2 = myModel.presentTime();
 		   	hold (new TimeSpan((myModel.getClosingTime() * ProductionDB.getClosing_sewer()), TimeUnit.HOURS));
-		   	ActivityMessage msg_2a = new ActivityMessage(myModel, this, start_3, "Closing sewer ", myModel.presentTime(), 9) ;
+		   	ActivityMessage msg_2a = new ActivityMessage(myModel, this, start_2, "Closing sewer ", myModel.presentTime(), 8) ;
 	   		sendMessage(msg_2a);
-		   	sendTraceNote("Activity: " + getName() + " Pipe: " + " Closing sewer: " + start_3.toString() + 
+		   	sendTraceNote("Activity: " + getName() + " Pipe: " + " Closing sewer: " + start_2.toString() + 
 			   " End: " + myModel.presentTime().toString());
 		   	myModel.crews.takeBack(1); 	myModel.excavators.takeBack(1);
 	   }
@@ -229,11 +245,11 @@ public class PutProcessAll extends ParentProcess
 	   // only for projects that require shoring (set variable Shore to right value in simulation class)
 	   if(this.Shore  != 0) {
 		   myModel.crews.provide(1); myModel.excavators.provide(1);
-		   start_3 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length/ProductionDB.getShoring())), TimeUnit.HOURS)); 
-		   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start_3, "Shore ", myModel.presentTime(), 9) ;
+		   start_2 = myModel.presentTime();
+		   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length*ProductionDB.getShoring())), TimeUnit.HOURS)); 
+		   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start_2, "Shore ", myModel.presentTime(), 8) ;
 		   sendMessage(msg_3);
-		   sendTraceNote("Activity: " + getName() + " Shoring: " + start_3.toString() + 
+		   sendTraceNote("Activity: " + getName() + " Shoring: " + start_2.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 	   }
@@ -243,11 +259,11 @@ public class PutProcessAll extends ParentProcess
 	   if(myModel.getReplacement()) {
 		    myModel.crews.provide(1); myModel.excavators.provide(1);
 		    for(int j=1; j<=myModel.getOldSeparated(); j++){
-			   	start_3 = myModel.presentTime();
+			   	start_2 = myModel.presentTime();
 			   	hold (new TimeSpan((myModel.getPutRemoveTime() * (1/ProductionDB.getPut_removal()) * ProductionDB.getPipe_rm_factor()), TimeUnit.HOURS));
-		   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_3, "Remove Put " + j, myModel.presentTime(), 9) ;
+		   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_2, "Remove Put " + j, myModel.presentTime(), 8) ;
 				sendMessage(msg_4);
-		   		sendTraceNote("Activity: " + getName() + " Put removal: " + start_3.toString() + 
+		   		sendTraceNote("Activity: " + getName() + " Put removal: " + start_2.toString() + 
 		   				" End: " + myModel.presentTime().toString());
 		    }
 		    myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
@@ -256,33 +272,33 @@ public class PutProcessAll extends ParentProcess
 	   // 5a Foundation
 	   if(myModel.getFoundation()) {
 		    myModel.crews.provide(1); myModel.excavators.provide(1);
-		   	start_3 = myModel.presentTime();
+		   	start_2 = myModel.presentTime();
 	   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getFoundation_duration())), TimeUnit.HOURS));
-	   		ActivityMessage msg_5 = new ActivityMessage(myModel, this, start_3, "Foundation ", myModel.presentTime(), 9) ;
+	   		ActivityMessage msg_5 = new ActivityMessage(myModel, this, start_2, "Foundation ", myModel.presentTime(), 8) ;
 			sendMessage(msg_5);
-	   		sendTraceNote("Activity: " + getName() + " Foundation: " + start_3.toString() + 
+	   		sendTraceNote("Activity: " + getName() + " Foundation: " + start_2.toString() + 
 	   				" End: " + myModel.presentTime().toString());
 	   		myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 	   }
 	   
 	   // 5b prepare the bed
 	   myModel.crews.provide(1); myModel.excavators.provide(1);
-	   start_3 = myModel.presentTime();
+	   start_2 = myModel.presentTime();
 	   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Trench_area * Bed_preparation)/ProductionDB.getPreparation())), TimeUnit.HOURS));
-	   ActivityMessage msg_6 = new ActivityMessage(myModel, this, start_3, "Prepare Bed ", myModel.presentTime(), 9) ;
+	   ActivityMessage msg_6 = new ActivityMessage(myModel, this, start_2, "Prepare Bed ", myModel.presentTime(), 8) ;
 	   sendMessage(msg_6);
-	   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start_3.toString() + 
+	   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start_2.toString() + 
 			   " End: " + myModel.presentTime().toString());
 	   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 	   
 	   // 6. install the put
 	   myModel.crews.provide(1); myModel.excavators.provide(1);
 	   for(int j=1; j<=myModel.getNewSeparated(); j++){
-		   start_3 = myModel.presentTime();
+		   start_2 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getPutPlacingTime() * ProductionDB.getPut_placement() * ProductionDB.getPipe_pl_factor()), TimeUnit.HOURS));    			
-		   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_3, "Install Put " + j, myModel.presentTime(), 9) ;
+		   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_2, "Install Put " + j, myModel.presentTime(), 8) ;
 		   sendMessage(msg_7);
-		   sendTraceNote("Activity: " + getName() + " Install Put: " + start_3.toString() + 
+		   sendTraceNote("Activity: " + getName() + " Install Put: " + start_2.toString() + 
 				   " End: " + myModel.presentTime().toString());
 	   }
 	   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
@@ -290,11 +306,11 @@ public class PutProcessAll extends ParentProcess
 	   // 7. Put connections
 	   for (int j=1; j<=this.Num_Put_connections; j++) { 
 		   myModel.crews.provide(1); myModel.excavators.provide(1);
-		   start_3 = myModel.presentTime();
+		   start_2 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getPutConnectionTime() * ProductionDB.getConnection_put_duration()), TimeUnit.HOURS));
-		   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "Put connection " + j, myModel.presentTime(), 9) ;
+		   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_2, "Put connection " + j, myModel.presentTime(), 8) ;
 		   sendMessage(msg_8);
-		   sendTraceNote("Activity: " + getName() + " Connect pipes to put: " + start_3.toString() + 
+		   sendTraceNote("Activity: " + getName() + " Connect pipes to put: " + start_2.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 	   }
@@ -303,17 +319,17 @@ public class PutProcessAll extends ParentProcess
 	   // only for projects that require shoring (set variable Shore to right value in simulation class)
 	   if(this.Shore != 0)
 	   {	myModel.crews.provide(1); myModel.excavators.provide(1);
-	   		start_3 = myModel.presentTime();
-	   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length/ProductionDB.getShoring_remove())), TimeUnit.HOURS));  
-	   		ActivityMessage msg_10 = new ActivityMessage(myModel, this, start_3, "Remove Shoring ", myModel.presentTime(), 9) ;
+	   		start_2 = myModel.presentTime();
+	   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length*ProductionDB.getShoring_remove())), TimeUnit.HOURS));  
+	   		ActivityMessage msg_10 = new ActivityMessage(myModel, this, start_2, "Remove Shoring ", myModel.presentTime(), 8) ;
 	   		sendMessage(msg_10);
-	   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start_3.toString() + 
+	   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start_2.toString() + 
 	   				" End: " + myModel.presentTime().toString());
 	   		myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 		}
  
-			   // gathers data on total construction time of put in main sewer loop, only active if turned on in utilitysimulation.java
-	   ActivityMessage msg = new ActivityMessage(myModel, this, start_2, "Put construction", myModel.presentTime(), 8) ;
+	   // gathers data on total construction time of put in main sewer loop, only active if turned on in utilitysimulation.java
+	   ActivityMessage msg = new ActivityMessage(myModel, this, start_1, "Put construction", myModel.presentTime(), 7) ;
 	   sendMessage(msg);  
 		  
 	   // End of put iteration lifecycle
@@ -330,10 +346,6 @@ public class PutProcessAll extends ParentProcess
    			}
 	   }
 	   
-	   // gathers data on total duration of main put loop (1 task contains all puts in section), only active if turned on in utilitysimulation.java
-	   ActivityMessage msg1 = new ActivityMessage(myModel, this, start_1, "main sewer loop", myModel.presentTime(), 7) ;
-	   sendMessage(msg1);
-	   
 	   
 	   // Allows the next section to start after this if setting is set to 1 in UtilitySimulation.java)
 	   if(myModel.getSectionWait() == 1) 
@@ -347,11 +359,11 @@ public class PutProcessAll extends ParentProcess
 			   	myModel.secondcrews.provide(1);}
 		   else {myModel.crews.provide(1); myModel.excavators.provide(1);}
 		   myModel.trucks.provide(1);
-		   start_3 = myModel.presentTime();
+		   start_2 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getBackfillTime() * (Excavation_volume/ProductionDB.getBackfill()) * ProductionDB.getSoil_pl_factor()), TimeUnit.HOURS));
-		   ActivityMessage msg_11 = new ActivityMessage(myModel, this, start_3, "Second Backfill ", myModel.presentTime(), 0) ;
+		   ActivityMessage msg_11 = new ActivityMessage(myModel, this, start_2, "Second Backfill ", myModel.presentTime(), 0) ;
 		   sendMessage(msg_11);
-		   sendTraceNote("Activity: " + getName() + " Backfill: " + start_3.toString() + 
+		   sendTraceNote("Activity: " + getName() + " Backfill: " + start_2.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   if(myModel.getSecondCrew()) {
 			   	myModel.secondcrews.takeBack(1);}
@@ -386,11 +398,11 @@ public class PutProcessAll extends ParentProcess
 	   
 	   // 10a. roll/prepare surface - sand
 	   myModel.rollers.provide(1);
-	   start_3 = myModel.presentTime();
+	   start_2 = myModel.presentTime();
 	   hold (new TimeSpan((myModel.getSurfacePrepareTime() * (Section_area/ProductionDB.getPaving_preparation())), TimeUnit.HOURS));
-	   ActivityMessage msg_12 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
+	   ActivityMessage msg_12 = new ActivityMessage(myModel, this, start_2, "Roll ", myModel.presentTime(), 0) ;
 	   sendMessage(msg_12);
-	   sendTraceNote("Activity: " + getName() + " Compact: " + start_3.toString() + 
+	   sendTraceNote("Activity: " + getName() + " Compact: " + start_2.toString() + 
 			   " End: " + myModel.presentTime().toString());
 	   myModel.rollers.takeBack(1);
 	   myModel.prepare();
@@ -409,11 +421,11 @@ public class PutProcessAll extends ParentProcess
 	   // TODO investigate if this is a choice or always the same
 	   if(myModel.getPrepareSurface() == 1)
 	   {	myModel.trucks.provide(1);
-		   start_3 = myModel.presentTime();
+		   start_2 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((Section_area * Rock_layer )/ProductionDB.getPaving_preparation())), TimeUnit.HOURS)); 
-		   ActivityMessage msg_14 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
+		   ActivityMessage msg_14 = new ActivityMessage(myModel, this, start_2, "Roll ", myModel.presentTime(), 0) ;
 		   sendMessage(msg_14);
-		   sendTraceNote("Activity: " + getName() + " Broken rock: " + start_3.toString() + 
+		   sendTraceNote("Activity: " + getName() + " Broken rock: " + start_2.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.trucks.takeBack(1);
 		   myModel.prepare(); //TODO double with 11a, need to work on this. also influences paving.

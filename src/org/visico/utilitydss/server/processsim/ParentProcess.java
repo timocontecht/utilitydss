@@ -15,6 +15,18 @@ import desmoj.core.simulator.SimProcess;
 import desmoj.core.simulator.TimeInstant;
 import desmoj.core.simulator.TimeSpan;
 
+/**
+ * @author Simon
+ * Constructor of the parent class 
+ *
+ * This class functions as a parent to all lifecycle classes in this package.
+ *
+ * @param owner the model this process belongs to
+ * @param name this section's name
+ * @param showInTrace flag to indicate if this process shall produce output
+ *                    for the trace
+ */
+
 public class ParentProcess extends SimProcess
 {
 

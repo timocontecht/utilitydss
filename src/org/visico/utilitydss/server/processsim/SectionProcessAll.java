@@ -12,6 +12,7 @@ public class SectionProcessAll extends ParentProcess
 {
 	
 	/**
+	    * @author Simon
 	    * Constructor of the section 
 	    *
 	    * Used to create a new section of a sewer line to be replaced
@@ -21,6 +22,7 @@ public class SectionProcessAll extends ParentProcess
 	    * @param showInTrace flag to indicate if this process shall produce output
 	    *                    for the trace
 	    */
+	
 	public SectionProcessAll(Model owner, 
 			String name, 
 			boolean showInTrace, 
@@ -201,6 +203,23 @@ public class SectionProcessAll extends ParentProcess
 		TimeInstant start_3 = myModel.presentTime();				// starting time of activity corresponding to detail level 3 as selected in UtilitySimulation.java
 		connections_done = 0;
 		
+		/**
+		 * Delay before 2nd crews becomes operational
+		 * this allows practitioners to test what delay in 2nd crew arival on work site is optimal.
+		 *  Only activated if there is a second crew and in first section (first sewer line or put)
+		 * 
+		 * COMMENT: this results in errors in usage percentages since the program thinks the resource is in use
+		 * A better solution would be to instantiate the resource after the selected amount of time has passed.
+		 */
+		if(myModel.getSecondCrew()== true && this.getIdentNumber() ==1){
+			SecondCrewDelay Delay = new SecondCrewDelay(
+					myModel,					//owner
+					"Delay for second crew", 	//name
+					true);
+			
+			Delay.activate();
+		}
+		
 		// 1. break the section or remove stone pavement
 		/**
 		 * start new breaking process
@@ -247,10 +266,10 @@ public class SectionProcessAll extends ParentProcess
 		   if(this.Shore  != 0) {
 			   myModel.crews.provide(1); myModel.excavators.provide(1);
 			   start_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length/ProductionDB.getShoring())), TimeUnit.HOURS)); 
+			   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length*ProductionDB.getShoring())), TimeUnit.HOURS)); 
 			   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start_3, "Shore " + i, myModel.presentTime(), 3) ;
 			   sendMessage(msg_3);
-			   sendTraceNote("Activity: " + getName() + " Shoring: " + start_3.toString() + 
+			   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Shoring: " + start_3.toString() + 
 					   " End: " + myModel.presentTime().toString());
 			   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 		   }
@@ -264,7 +283,7 @@ public class SectionProcessAll extends ParentProcess
 			   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getPipe_removal()) * ProductionDB.getPipe_rm_factor()), TimeUnit.HOURS));
 			   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_3, "Remove Pipe " + i +"."+ j, myModel.presentTime(), 3) ;
 					sendMessage(msg_4);
-			   		sendTraceNote("Activity: " + getName() + " Remove pipe: " + start_3.toString() + 
+			   		sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Remove pipe: " + start_3.toString() + 
 			   				" End: " + myModel.presentTime().toString());
 			   	}
 			   	myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
@@ -277,7 +296,7 @@ public class SectionProcessAll extends ParentProcess
 		   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getFoundation_duration())), TimeUnit.HOURS));
 		   		ActivityMessage msg_5 = new ActivityMessage(myModel, this, start_3, "Foundation " + i, myModel.presentTime(), 3) ;
 				sendMessage(msg_5);
-		   		sendTraceNote("Activity: " + getName() + " Foundation: " + start_3.toString() + 
+		   		sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Foundation: " + start_3.toString() + 
 		   				" End: " + myModel.presentTime().toString());
 		   		myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 		   }
@@ -289,7 +308,7 @@ public class SectionProcessAll extends ParentProcess
 		   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Pipe_area * Bed_preparation)/ProductionDB.getPreparation())), TimeUnit.HOURS)); 
 		   ActivityMessage msg_6 = new ActivityMessage(myModel, this, start_3, "Prepare Bed " + i, myModel.presentTime(), 3) ;
 		   sendMessage(msg_6);
-		   sendTraceNote("Activity: " + getName() + " Prepare Bed: " + start_3.toString() + 
+		   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Prepare Bed: " + start_3.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 		   
@@ -300,7 +319,7 @@ public class SectionProcessAll extends ParentProcess
 			   hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/ProductionDB.getPipe_placement()) * ProductionDB.getPipe_pl_factor()), TimeUnit.HOURS));
 			   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_3, "Install Pipe " + i + "."+ j, myModel.presentTime(), 3) ;
 			   sendMessage(msg_7);
-			   sendTraceNote("Activity: " + getName() + " Install Pipe: " + start_3.toString() + 
+			   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Install Pipe: " + start_3.toString() + 
 					   " End: " + myModel.presentTime().toString());
 		   }
 		   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
@@ -312,7 +331,7 @@ public class SectionProcessAll extends ParentProcess
 		   hold (new TimeSpan((myModel.getBackfillTime() * ((First_backfill_height * Pipe_area)/ProductionDB.getBackfill()) * ProductionDB.getSoil_pl_factor()), TimeUnit.HOURS));
 		   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "First Backfill " + i, myModel.presentTime(), 3);
 		   sendMessage(msg_8);
-		   sendTraceNote("Activity: " + getName() + " First Backfill: " + start_3.toString() + 
+		   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " First Backfill: " + start_3.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 		   
@@ -321,10 +340,10 @@ public class SectionProcessAll extends ParentProcess
 		   if(this.Shore  != 0)
 		   {	myModel.crews.provide(1); myModel.excavators.provide(1);
 		   		start_3 = myModel.presentTime();
-		   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length/ProductionDB.getShoring_remove())), TimeUnit.HOURS)); 
+		   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length*ProductionDB.getShoring_remove())), TimeUnit.HOURS)); 
 		   		ActivityMessage msg_9 = new ActivityMessage(myModel, this, start_3, "Remove Shoring " + i, myModel.presentTime(), 3) ;
 		   		sendMessage(msg_9);
-		   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start_3.toString() + 
+		   		sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Remove Trench: " + start_3.toString() + 
 		   				" End: " + myModel.presentTime().toString());
 		   		myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 			   }
@@ -360,7 +379,7 @@ public class SectionProcessAll extends ParentProcess
 		    		Connections housing_connection = new Connections(
     		   		myModel, 				// owner
     				this,					// parent
-    				"housing connections ",	// name
+    				"housing connection ",	// name
     				true, 					// show in trace
     				ProductionDB.getConnection_duration_hwa(),
     				Second_backfill_height,
@@ -403,15 +422,16 @@ public class SectionProcessAll extends ParentProcess
 	   
 	   // Allows the next section to start after this if setting is set to 1 in UtilitySimulation.java)
 	   if(myModel.getSectionWait() == 1) 
-   		{
+		{
 	   		myModel.startingCondition.store(1);
-   		}
+		}
 	   
 	   // if there are connections and not all connections are finished this passivates and waits until all connections have finished.
-	   if(Num_Connections != 0 && connections_done < Num_Connections ){
+	   if(Num_Connections != 0 && connections_done < Num_Connections ){	  
+		   setPassive(true);
 		   this.passivate();
 	   }
-	   
+	   //System.out.print(isPassive() + Num_Connections + connections_done);
 
 	   /**
 	    * work cannot proceed until all connections have been made and second backfill is completed
@@ -563,4 +583,16 @@ public class SectionProcessAll extends ParentProcess
 	private double First_backfill_height;	// height of first backfill in m (pipe diameter + 2x average wall thinkness)
 	private double Second_backfill_height;	// height of first backfill in m (pipe diameter + 2x average wall thinkness)
 	
+	/**
+	 * Indicator for state of the class
+	 */
+	private boolean passive;
+	
+	public boolean isPassive() {
+		return passive;
+	}
+
+	public void setPassive(boolean passive) {
+		this.passive = passive;
+	}
 }

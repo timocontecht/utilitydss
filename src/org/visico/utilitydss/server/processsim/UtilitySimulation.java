@@ -308,6 +308,7 @@ public void setNUM_SEC(int nUM_SEC) {
 	      pavecrews = new PartTimeRes(this, "Resource pavecrews", scenario.getNUM_PAVECREWS(), true, true);
 	      stonepavecrews = new PartTimeRes(this, "Resource stonepavecrews", scenario.getNUM_STONEPAVECREWS(), true, true);
 	      startingCondition = new Bin (this, "starting condition check", scenario.getNUM_STARTINGCONDITION(), true, true);
+	      connectionsStartingCondition = new Bin (this, "connection starting condition check", scenario.getNUM_CONNECTIONSTARTINGCONDITION(), true, true);
 }
 
    
@@ -470,16 +471,15 @@ public void setNUM_SEC(int nUM_SEC) {
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
 
-   private static int[] put = 						{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
-   private static int[] shore = 					{ 0, 0, 0, 1, 1, 1, 2, 2, 2, 5 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+   private static int[] put = 						{ 0, 0, 0, 1, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] shore = 					{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 5 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																							// 2 means Sheet piling (damwand), 3 means supported walls  
-  // private static int[] connections = 			{ 2, 1, 2, 1, 1, 1, 2, 2, 2, 2 };  		// number of connections only if pipe section
    private static double[] num_put_connections = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
-   private static int[] old_pavement = 				{ 3, 3, 3, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
-																							// 3 means asphalt; break all sections at start, other gives error
-   private static int[] new_pavement = 				{ 3, 3, 3, 1, 1, 1, 2, 2, 2, 2 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
-																							// 3 means asphalt; pave all sections at start, other gives error
-   private static double[] section_length = 		{ 3, 2, 2, 1, 1, 1, 2, 2, 2, 2 };  		// length of section in
+   private static int[] old_pavement = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+																							// 3 means asphalt; break all sections at start, other gives error --> 3 can only be used if this goes for all sections
+   private static int[] new_pavement = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
+																							// 3 means asphalt; pave all sections at start, other gives error --> 3 can only be used if this goes for all sections
+   private static double[] section_length = 		{ 8, 8, 8, 1, 1, 1, 2, 2, 2, 2 };  		// length of section in
    private static double[] pipe_length = 			{ 2.4, 2.4, 2.4, 2, 1, 1, 2, 2, 2, 2 }; // length of pipes in
    private static double[] section_width = 			{ 4, 4, 4, 4, 1, 1, 2, 2, 2, 2 };  		// width of section in
    private static double[] trench_width = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of Trench in  					///////////// bigger with puts?
@@ -505,13 +505,14 @@ public void setNUM_SEC(int nUM_SEC) {
    private static double[] sand_layer = 			{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
    private static double[] bed_preparation =		{ 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.
 
-   //TODO each pipe should have a flag if it has a connection or not, this indicates a geometry.
+   //each pipe should have a flag if it has a connection or not, this indicates a geometry.
    // make connections independent connections.
    
-   private static int[] section1_connections =		{ 1, 2};							// indicates if a pipe in section 1 has a connection.
-   private static int[] section2_connections =		{ 1, };							// indicates if a pipe in section 2 has a connection.
-   private static int[] section3_connections =		{ };							// indicates if a pipe in section 2 has a connection.
-   private static int[][] pipe_connections = 		{ section1_connections, section2_connections, section3_connections, };
+   private static int[] section1_connections =		{ 1, };							// indicates if a pipe in section 1 has a connection.
+   private static int[] section2_connections =		{ 1, 2};							// indicates if a pipe in section 2 has a connection.
+   private static int[] section3_connections =		{ 1, 2, 4};							// indicates if a pipe in section 2 has a connection.
+   private static int[] section4_connections =		{ 1, 2, 3, 4};							// indicates if a pipe in section 2 has a connection.
+   private static int[][] pipe_connections = 		{ section1_connections, section2_connections, section3_connections, section4_connections };
    
    private static double total_length;			// total length of all sections, calculated by summing up the length of all sections.
    
@@ -527,7 +528,6 @@ public void setNUM_SEC(int nUM_SEC) {
    ArrayList<Integer> put = new ArrayList<Integer>(0); 					// indicates if section is pipe section or put, 0 is section, 1 is put.
    ArrayList<Integer> shore = new ArrayList<Integer>(0); 				// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																		// 2 means Sheet piling (damwand), 3 means supported walls  // number of pipes, only if pipe section
-   ArrayList<Integer> connections = new ArrayList<Integer>(0);			// number of connections only if pipe section
    ArrayList<Integer> num_put_connections = new ArrayList<Integer>(0);	// number of connections the put has, only if put
    ArrayList<Integer> old_pavement = new ArrayList<Integer>(0);			// type of old pavement
    ArrayList<Integer> new_pavement = new ArrayList<Integer>(0);			// type of new pavement
@@ -575,27 +575,28 @@ public void setNUM_SEC(int nUM_SEC) {
    													// 2 = second backfill, 3 = surface prepared, 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
    private static int inspectionType = 1;			// type of inspection applied: 1 = ????
    private static boolean foundation = true;		// indicates if the project requires foundation beneath the new sewer
-   private static int OldSeparated = 2;				// indicates if old sewer is separated or combined: 1 = combined, 2 = separated
-   private static int NewSeparated = 2;				// indicates if new sewer is separated or combined: 1 = combined, 2 = separated
-   private static double ConnectionWait = 100;		// determines how far along the main sewer should be before the 2nd crew starts with connections
+   private static int OldSeparated = 1;				// indicates if old sewer is separated or combined: 1 = combined, 2 = separated
+   private static int NewSeparated = 1;				// indicates if new sewer is separated or combined: 1 = combined, 2 = separated
+   private static double ConnectionWait = 350;		// determines how far along the main sewer should be before the 2nd crew starts with connections
    
    /**   
    * Model parameters: Simulation output settings
    */
-   private static int activityMsg = 3;				// indicates what data is collected in main loop: 1 = one activity for all pipes, 2 = per pipe, 3 =  per activity per pipe
-   private static int activityMsgConnection = 2;	// indicates what data is collected in connection loop: 1 =  = total time per connection, 2 = per each activity per connection
-   private static int activityMsgPut = 3;			// indicates what data is collected in main loop: 1 = without pipes, 2 = per pipe, 3 =  per activity per put
+   private static int activityMsg = 2;				// indicates what data is collected in main loop: 1 = one activity for all pipes, 2 = per pipe, 3 =  per activity per pipe
+   private static int activityMsgConnection = 2;	// indicates what data is collected in connection loop: 1 = total time per connection, 2 = per each activity per connection, 10 = don't show data for connections
+   private static int activityMsgPut = 2;			// indicates what data is collected in main loop: 1  = per put, 2 =  per activity per put
    /**
     * Process versions
     */
    
-  // static private processVersion pv = 1;  
-   
+  // static private processVersion pv = 1;  NOT USED
+   /*
    private enum processVersion
    {
 	   BREAK_ALL_UPFRONT,
 	   BREAK_PER_SECTION
    };
+   */
    
    /**
     * Random number stream used to draw an arrival time for the next truck. THIS IS NOT USED ATM 
@@ -646,6 +647,7 @@ public void setNUM_SEC(int nUM_SEC) {
    protected PartTimeRes stonepavecrews;
    
    protected Bin startingCondition;
+   protected Bin connectionsStartingCondition;
    
    ArrayList<ParentProcess> sections;
    ArrayList<ProcessAll> puts;
@@ -666,9 +668,6 @@ public void setNUM_SEC(int nUM_SEC) {
    }
    public void pave()   {	
 	   pavecounter ++;
-   }
-   public void stonepave()   {	
-	   stonepavecounter ++;
    }
    public void pipes_done()	{
 	   pipecounter ++;
@@ -693,22 +692,19 @@ public void setNUM_SEC(int nUM_SEC) {
    public static int getPaveCounter() {
 	  return pavecounter;
   }
-   public static int getStonePaveCounter() {
-	  return stonepavecounter;
-  }
 
    
    /**
     * Activity counters
     * Counts activities after a section or put is finished with that activity
-    * Allows end of part time resources when the required number of activities has passed
+    * Allows end of part time resources when the required number of activities has passed and those resources are no longer required
     */   
    private static int breakcounter = 0;
    private static int pipecounter = 0;
    private static int backfillcounter = 0;   
    private static int preparecounter = 0;
    private static int pavecounter = 0;
-   private static int stonepavecounter = 0;
-   private static int connections;
+   @SuppressWarnings("unused")
+private static int connections;
 }
 

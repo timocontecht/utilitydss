@@ -15,6 +15,7 @@ public class Connections extends ParentProcess
 	
 	
 	/**
+	    * @author Simon
 	    * Constructor of the housing connection class 
 	    *
 	    * Used to start work on housing connections by second crew while main crew is stil working on main sewer
@@ -48,26 +49,26 @@ public class Connections extends ParentProcess
 		
 		// check if there is a third crew for back filling the ditch after the connections are done.
 		if (Scenario.getNUM_3RDCREW() != 0){
-			ThirdCrew = 1;
+			// perform connection lifecycle
+			connections(1);
 		}
 		
 		else {
-			ThirdCrew = 0;
+			// perform connection lifecycle
+			connections(0);
 		}
 		
-		// perform connection lifecycle
-		connections(ThirdCrew);
-		
-		// if necessary reactivate the main process. This happens if there is one crew after each connection. The main process waits for the connection to be finished.
-		// This also happens after the last connection is done and back filled.
+	
+		// if necessary reactivate the main process. If there is one crew after this happens each connection. The main process waits for the connection to be finished.
+		// If there are more crews this also happens after the last connection is done and back filled if the parent is passive.
 		if (myModel.getSecondCrew() == false){
 			Parent.activate();
 		}
 		
-		if (Parent.connections_done == Parent.Num_Connections){
+		else if (Parent.connections_done == Parent.Num_Connections && Parent.isPassive() == true){
 			Parent.activate();
+			Parent.setPassive(false);
 		}
-		
 	}
 	
 	void connections(int third_crew)
@@ -79,7 +80,8 @@ public class Connections extends ParentProcess
 		{
 			case 0:		// one or two crews available
 				// 1. install the connections, only if there are connections and if there is a second crew.	   
-			   startConnection_1 = myModel.presentTime();
+			   myModel.connectionsStartingCondition.retrieve(1);
+				startConnection_1 = myModel.presentTime();
 			   if(myModel.getSecondCrew()) {
 				   	myModel.secondcrews.provide(1);}
 			   else {myModel.crews.provide(1); myModel.excavators.provide(1);}
@@ -109,18 +111,20 @@ public class Connections extends ParentProcess
 				   	myModel.secondcrews.takeBack(1);}
 			   else {myModel.crews.takeBack(1); myModel.excavators.takeBack(1);}
 			   myModel.trucks.takeBack(1);
+			   myModel.connectionsStartingCondition.store(1);
 			   
-			   ActivityMessage msg_12 = new ActivityMessage(myModel, Parent, startConnection_1, "Housing connection + backfill", myModel.presentTime(), 4);
+			   ActivityMessage msg_12 = new ActivityMessage(myModel, Parent, startConnection_1, "Connection + backfill " + this, myModel.presentTime(), 4);
 			   sendMessage(msg_12);
 			   
 			   Parent.connections_done ++;
+			   sendTraceNote(" parent ident " + Parent.getIdentNumber() + " connections done " + Parent.connections_done + "to do" + Parent.Num_Connections + " time " + myModel.presentTime().toString());
 			   break;
 				
 				
 			case 1:		// third crew available to fill up trench
 				// 1. install the connections, only if there are connections and if there is a second crew.	   
-			   startConnection_1 = myModel.presentTime();
 			   myModel.secondcrews.provide(1);
+			   startConnection_1 = myModel.presentTime();
 			   hold (new TimeSpan((myModel.getHousingConnectionTime() * Connection_duration_hwa), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
 			   ActivityMessage msg_13 = new ActivityMessage(myModel, Parent, startConnection_1, "Housing pipe " + this, myModel.presentTime(), 0) ;
 			   sendMessage(msg_13);
