@@ -33,7 +33,6 @@ public class ActivityMessage extends Message
 			String w, TimeInstant e, int d) 
 	{
 		super(model, "Customized Schedule Message", st);
-		// TODO Auto-generated constructor stub
 		
 		sec = s;
 		starttime = st;

@@ -25,7 +25,7 @@ public class Paving extends ParentProcess
 	public Paving(Model owner, ParentProcess parent, String name, boolean showInTrace, int New_pavement, double Total_Area, 
 			double Section_Area, double paving_time)
 	{
-		super(owner, name, showInTrace, New_pavement, New_pavement, New_pavement, paving_time, New_pavement, New_pavement, paving_time, paving_time, paving_time, paving_time, paving_time, name, name, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time);
+		super(owner, name, showInTrace, New_pavement, New_pavement, New_pavement, New_pavement, New_pavement, New_pavement, paving_time, New_pavement, New_pavement, paving_time, paving_time, paving_time, paving_time, paving_time, name, name, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time);
 		myModel = (UtilitySimulation)owner;
 		newPavement = New_pavement;
 		total_area = Total_Area;
@@ -85,6 +85,7 @@ public class Paving extends ParentProcess
 			   myModel.stonepavecrews.takeBack(1);
 			   myModel.pave();
 			   
+			   System.out.println(UtilitySimulation.getPaveCounter());
 			   if (UtilitySimulation.getPaveCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
 		   			myModel.stonepavecrews.stopUse();
 		   			myModel.pavecrews.stopUse();

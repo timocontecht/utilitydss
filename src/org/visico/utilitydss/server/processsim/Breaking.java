@@ -24,7 +24,7 @@ public class Breaking extends ParentProcess
 	public Breaking(Model owner, ParentProcess parent, String name, boolean showInTrace, int Old_pavement, double Total_Area, 
 			double Section_Area, double remove_pavement)
 	{
-		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
+		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
 		myModel = (UtilitySimulation)owner;
 		oldPavement = Old_pavement;
 		total_area = Total_Area;
@@ -69,12 +69,12 @@ public class Breaking extends ParentProcess
     			
     		case 2:
     			// brick pavement removal per section
-			   myModel.crews.provide(1);
+			   myModel.crews.provide(1); myModel.excavators.provide(1);
 			   start = myModel.presentTime();
 			   hold (new TimeSpan((myModel.getBreakingTime() * (section_area/Remove_Pavement)), TimeUnit.HOURS)); 
 			   ActivityMessage msg_2 = new ActivityMessage(myModel, Parent, start, "Remove Stones Section ", myModel.presentTime(), 0);
 			   sendMessage(msg_2);
-			   myModel.crews.takeBack(1);
+			   myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 			   sendTraceNote("Activity: " + Parent + " Breaking Start: " + start.toString() + 
 					   " End: " + myModel.presentTime().toString());
 			   System.out.println("stones removed at simulation time " + myModel.presentTime());

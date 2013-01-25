@@ -148,6 +148,9 @@ public void setNUM_SEC(int nUM_SEC) {
 					true, 					// ?
 					put[i],					// section or put:  0 is section, 1 is put.  
 					shore[i],				// number of pipes in section
+					replacement[i],			// indicates if this section has old sewer to be removed
+					oldSeparated[i],		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+					newSeparated[i],		// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
 					connections = pipe_connections[i].length,
 					num_put_connections[i],	// number of connections the put has, only if put
 					old_pavement[i],		// type of old pavement
@@ -195,6 +198,9 @@ public void setNUM_SEC(int nUM_SEC) {
 					true, 					// ?
 					put[i],					// section or put:  0 is section, 1 is put.  
 					shore[i],				// number of pipes in section
+					replacement[i],			// indicates if this section has old sewer to be removed
+					oldSeparated[i],		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+					newSeparated[i],		// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
 					connections = pipe_connections[i].length,
 					num_put_connections[i],	// number of connections the put has, only if put
 					old_pavement[i],		// type of old pavement
@@ -309,6 +315,13 @@ public void setNUM_SEC(int nUM_SEC) {
 	      stonepavecrews = new PartTimeRes(this, "Resource stonepavecrews", scenario.getNUM_STONEPAVECREWS(), true, true);
 	      startingCondition = new Bin (this, "starting condition check", scenario.getNUM_STARTINGCONDITION(), true, true);
 	      connectionsStartingCondition = new Bin (this, "connection starting condition check", scenario.getNUM_CONNECTIONSTARTINGCONDITION(), true, true);
+	      
+	      // when there is a second crew a new section can commence work after the main sewer loop of the previous section has been completed
+	      // this checks if there is a second crew and sets the section wait prioritization accordingly if this is the case
+	      if (Scenario.isSecondCrew() == true){
+	   	  sectionWait = 1;				// indicates after which activity the next section starts: 1 = after main loop (only possible if there is a 2nd crew), 
+	      }
+     
 }
 
    
@@ -379,10 +392,6 @@ public void setNUM_SEC(int nUM_SEC) {
     * These include, among others, the current and new type of pavement and if shoring is required
     * @return Boolean/Int Characteristic
     */  
-   public boolean getReplacement() {
-	      return Replacement;
-	   }
-   
    public boolean getOldPipeHeavy() {
 	    return oldPipeHeavy;
 		}
@@ -410,11 +419,7 @@ public void setNUM_SEC(int nUM_SEC) {
    public int getInspectionType() {
 	    return inspectionType;
 		}
-   
-   public boolean getFoundation()	{
-	   return foundation;
-   }
-      
+     
    public int getSectionWait() {
 	   return sectionWait;
    }
@@ -434,14 +439,7 @@ public void setNUM_SEC(int nUM_SEC) {
    public double getTotal_length() {
 	   return total_length;
    }
-   
-   public int getOldSeparated() {
-	   return OldSeparated;
-   }
-   
-   public int getNewSeparated() {
-	   return NewSeparated;
-   }
+
    public double getConnectionWait() {
 	   return ConnectionWait;
    }
@@ -470,51 +468,64 @@ public void setNUM_SEC(int nUM_SEC) {
     * Characteristics of each section/put, stored in arrays
     * examples: housing connections, K&L, puts to be placed with mobile crane
     */
-
-   private static int[] put = 						{ 0, 0, 0, 1, 1, 0, 0, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
-   private static int[] shore = 					{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 5 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+   // Section nr									{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; 		// indicates the number of the section for ease of characteristics input
+   // project characteristics
+   private static int[] put = 						{ 1, 0, 1, 0, 0, 1, 0, 1, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] shore = 					{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																							// 2 means Sheet piling (damwand), 3 means supported walls  
-   private static double[] num_put_connections = 	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// number of connections the put has, only if put
-   private static int[] old_pavement = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
-																							// 3 means asphalt; break all sections at start, other gives error --> 3 can only be used if this goes for all sections
-   private static int[] new_pavement = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones, 
-																							// 3 means asphalt; pave all sections at start, other gives error --> 3 can only be used if this goes for all sections
-   private static double[] section_length = 		{ 8, 8, 8, 1, 1, 1, 2, 2, 2, 2 };  		// length of section in
-   private static double[] pipe_length = 			{ 2.4, 2.4, 2.4, 2, 1, 1, 2, 2, 2, 2 }; // length of pipes in
-   private static double[] section_width = 			{ 4, 4, 4, 4, 1, 1, 2, 2, 2, 2 };  		// width of section in
-   private static double[] trench_width = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// width of Trench in  					///////////// bigger with puts?
-   private static double[] trench_depth = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// depth of Trench in
-   private static String[] old_sewer_type = 		{ "Concrete", "Concrete", "Concrete", "Concrete"}; 		// type of old sewer	Concrete, Gres, Plastic
-   private static String[] new_sewer_type = 		{ "Concrete", "Concrete", "Concrete", "Concrete"}; 		// type of new sewer	Concrete, Gres, Plastic
-   private static double[] old_diameter = 			{ 300, 300, 300, 300, 300, 300, 2, 2, 2, 2 };  		// diameter of old sewer 
-   private static double[] new_diameter = 			{ 300, 300, 300, 300, 300, 300, 2, 2, 2, 2 };  		// diameter of new sewer
-   private static double[] asphalt_old = 			{ 50, 40, 40, 40, 1, 1, 2, 2, 2, 2 };  		// layer thickness of old asphalt in
-   private static double[] asphalt_new = 			{ 40, 40, 40, 40, 1, 1, 2, 2, 2, 2 };  		// layer thickness of new asphalt in
-   private static double[] cables =		 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// weight class of cables in the ground
-   private static double[] length_connections =		{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average length of connections
-   private static double[] diameter_connections =	{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// average depth of connections
-   // !!! do not set foundation_type to zero: delivers divide by 0 error, if no foundation set foundation flag to false !!!
-   private static double[] foundation_type =		{ 2, 2, 2, 2, 3, 3, 3, 3, 3, 3 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
-   private static double[] soil_removed = 			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
-   private static double[] soil_new = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
-   private static double[] pipes_old = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
-   private static double[] pipes_new = 				{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
-   private static double[] old_put_area =			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// Area of the old put
-   private static double[] new_put_area =			{ 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };		// Area of the new put
-   private static double[] rock_layer = 			{ 0.3, 0.3, 0.3, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation rock layer in m 
+   private static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 1, 1, 0 }; 		// Indicates if this section has existing old sewer: 0 is no, 1 is yes
+   private static int [] oldSeparated = 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+   private static int [] newSeparated = 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
+   private static double[] num_put_connections = 	{ 2, 2, 2, 2, 2, 2, 2, 3, 2, 2 };  		// number of connections the put has, only if put
+   private static int[] old_pavement = 				{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+																							// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
+   private static int[] new_pavement = 				{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
+   																							// 3 means asphalt; pave all sections at end --> 3 can only be used if this goes for all sections
+   private static double[] cables =		 			{ 0, 0, 0, 0, 0, 5, 5, 0, 0, 0 };  		// weight class of cables in the ground 
+   private static double[] foundation_type =		{ 0, 0, 0, 3, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
+   private static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
+   private static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+   private static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+   private static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+
+   //Dimensions
+   private static double[] section_length = 		{ 4, 12.5, 4, 12.5, 12.5, 4, 12.5, 4, 12, 4 };  		// length of section in
+   private static double[] pipe_length = 			{ 2.4, 2.4, 2.4, 2.4, 2.4, 2.4, 2.4, 2.4, 2.4, 2,4 }; // length of pipes in
+   private static double[] section_width = 			{ 5, 5, 5, 5, 5, 7, 7, 7, 7, 7 };  		// width of section in
+   private static double[] trench_width = 			{ 4, 4, 4, 4, 4, 5, 5, 5, 5, 5 };  		// width of Trench in  					///////////// bigger with puts?
+   private static double[] trench_depth = 			{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };  		// depth of Trench in
+   private static String[] old_sewer_type = 		{ "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete"}; 		// type of old sewer	Concrete, Gres, Plastic
+   private static String[] new_sewer_type = 		{ "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete"}; 		// type of new sewer	Concrete, Gres, Plastic
+   private static double[] old_diameter = 			{ 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, };  		// diameter of old sewer 
+   private static double[] new_diameter = 			{ 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, };  		// diameter of new sewer
+   private static double[] asphalt_old = 			{ 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40};  		// layer thickness of old asphalt in
+   private static double[] asphalt_new = 			{ 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40 };  		// layer thickness of new asphalt in
+   private static double[] length_connections =		{ 4, 4, 4, 4, 4, 7, 7, 7, 7, 7,};  		// average length of connections
+   private static double[] diameter_connections =	{ 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, };  		// average depth of connections
+   private static double[] old_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
+   private static double[] new_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
+   // TODO doe eens fixen
+   private static double[] rock_layer = 			{ 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,0.3, 0.3, 0.3, 0.3};		// height of pavement preparation rock layer in m 
    private static double[] sand_layer = 			{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
-   private static double[] bed_preparation =		{ 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.
+   private static double[] bed_preparation =		{ 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.
 
    //each pipe should have a flag if it has a connection or not, this indicates a geometry.
    // make connections independent connections.
    
-   private static int[] section1_connections =		{ 1, };							// indicates if a pipe in section 1 has a connection.
-   private static int[] section2_connections =		{ 1, 2};							// indicates if a pipe in section 2 has a connection.
-   private static int[] section3_connections =		{ 1, 2, 4};							// indicates if a pipe in section 2 has a connection.
-   private static int[] section4_connections =		{ 1, 2, 3, 4};							// indicates if a pipe in section 2 has a connection.
-   private static int[][] pipe_connections = 		{ section1_connections, section2_connections, section3_connections, section4_connections };
+   private static int[] section1_connections =		{};							// indicates if a pipe in section 1 has a connection.
+   private static int[] section2_connections =		{ 2, 3, 4};							// indicates if a pipe in section 2 has a connection.
+   private static int[] section3_connections =		{};							// indicates if a pipe in section 2 has a connection.
+   private static int[] section4_connections =		{ 1, 3, 4};							// indicates if a pipe in section 2 has a connection.
+   private static int[] section5_connections =		{ 2, 3, 5};							// indicates if a pipe in section 2 has a connection.
+   private static int[] section6_connections =		{ };							// indicates if a pipe in section 2 has a connection.
+   private static int[] section7_connections =		{ 2, 3, 4};							// indicates if a pipe in section 2 has a connection.
+   private static int[] section8_connections =		{ };							// indicates if a pipe in section 2 has a connection.
+   private static int[] section9_connections =		{ 2, 3, 5};							// indicates if a pipe in section 2 has a connection.
+   private static int[] section10_connections =		{ };							// indicates if a pipe in section 2 has a connection.
+   private static int[][] pipe_connections = 		{ section1_connections, section2_connections, section3_connections, section4_connections,section5_connections,
+	   												section6_connections, section7_connections, section8_connections, section9_connections, section10_connections};
    
-   private static double total_length;			// total length of all sections, calculated by summing up the length of all sections.
+   private static double total_length;				// total length of all sections, calculated by summing up the length of all sections.
    
    /**  COMMENTED OUT as the arrays above are used for testing purposes. 
     * This is preparation for use with GUI, the arraylists can be filled from there
@@ -545,7 +556,6 @@ public void setNUM_SEC(int nUM_SEC) {
    ArrayList<Integer> cables = new ArrayList<Integer>(0);				// weight class of cables in the ground
    ArrayList<Integer> length_connections = new ArrayList<Integer>(0);	// average length of connections	
    ArrayList<Integer> depth_connections = new ArrayList<Integer>(0);	// average depth of connections
-   // !!! do not set foundation_type to zero: delivers divide by 0 error, if no foundation set foundation flag to false !!!
    ArrayList<Integer> foundation_type = new ArrayList<Integer>(0);		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
    ArrayList<Integer> trench_protection = new ArrayList<Integer>(0);	// Type of Trench protection used: 0 = next to trench 1 = in depot, 2 = transported off site
    ArrayList<Integer> soil_removed = new ArrayList<Integer>(0);			// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
@@ -566,7 +576,6 @@ public void setNUM_SEC(int nUM_SEC) {
    * Model parameters: SIMULATION SETTINGS
    */
    //TODO this should all move to scenario. having this in to places leads to mistakes.
-   private static boolean Replacement = true;		// indicates if the project is a replacement project
    private static boolean oldPipeHeavy	= false; 	// indicates if the old pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    private static boolean newPipeHeavy	= false; 	// indicates if the new pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    													// for puts this is indicated by an array per put as sizes differ.
@@ -574,17 +583,14 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int sectionWait = 1;				// indicates after which activity the next section starts: 1 = after main loop (only possible if there is a 2nd crew), 
    													// 2 = second backfill, 3 = surface prepared, 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
    private static int inspectionType = 1;			// type of inspection applied: 1 = ????
-   private static boolean foundation = true;		// indicates if the project requires foundation beneath the new sewer
-   private static int OldSeparated = 1;				// indicates if old sewer is separated or combined: 1 = combined, 2 = separated
-   private static int NewSeparated = 1;				// indicates if new sewer is separated or combined: 1 = combined, 2 = separated
-   private static double ConnectionWait = 350;		// determines how far along the main sewer should be before the 2nd crew starts with connections
+   private static double ConnectionWait = 500;		// determines how far along the main sewer should be before the 2nd crew starts with connections
    
    /**   
    * Model parameters: Simulation output settings
    */
-   private static int activityMsg = 2;				// indicates what data is collected in main loop: 1 = one activity for all pipes, 2 = per pipe, 3 =  per activity per pipe
-   private static int activityMsgConnection = 2;	// indicates what data is collected in connection loop: 1 = total time per connection, 2 = per each activity per connection, 10 = don't show data for connections
-   private static int activityMsgPut = 2;			// indicates what data is collected in main loop: 1  = per put, 2 =  per activity per put
+   private static int activityMsg = 1;				// indicates what data is collected in main loop: 1 = one activity for all pipes, 2 = per pipe, 3 =  per activity per pipe
+   private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = total time per connection, 2 = per each activity per connection, 10 = don't show data for connections
+   private static int activityMsgPut = 1;			// indicates what data is collected in main loop: 1  = per put, 2 =  per activity per put
    /**
     * Process versions
     */

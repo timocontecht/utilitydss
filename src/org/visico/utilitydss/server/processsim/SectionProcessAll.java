@@ -3,6 +3,8 @@ package org.visico.utilitydss.server.processsim;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import org.visico.utilitydss.shared.Scenario;
+
 import desmoj.core.simulator.Model;
 import desmoj.core.simulator.TimeInstant;
 import desmoj.core.simulator.TimeSpan;
@@ -28,6 +30,9 @@ public class SectionProcessAll extends ParentProcess
 			boolean showInTrace, 
 			int put,
 			int shore, 
+			int replacement,
+			int old_separated,
+			int new_separated,
 			int connections,
 			double num_put_connections,
 			int old_pavement,
@@ -60,14 +65,17 @@ public class SectionProcessAll extends ParentProcess
 			) 
 	
 	{
-		super(owner, name, showInTrace, put, shore, connections, num_put_connections, old_pavement, 
+		super(owner, name, showInTrace, put, shore, replacement, old_separated, new_separated, connections, num_put_connections, old_pavement, 
 				new_pavement, section_length, pipe_length, section_width, trench_width, trench_depth, 
 				old_sewer_type, new_sewer_type, old_diameter, new_diameter, asphalt_old, asphalt_new, cables, 
 				length_connections, diameter_connections, foundation_type, soil_removed, soil_new, pipes_old, 
 				pipes_new, rock_layer, sand_layer, old_put_area, new_put_area, bed_preparation);
 			
 		myModel = (UtilitySimulation)owner;
-		Shore = shore;							
+		Shore = shore;								// Indicates if shoring is used and if so what type is used.
+		Replacement = replacement; 					// indicates if this section has old sewer to be removed
+		Old_Separated = old_separated;				// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+		New_Separated = new_separated;				// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
 		Num_Connections = connections;				// indicates the number of connections in this section
 		Old_pavement = old_pavement; 				// type of old pavement
 		New_pavement = new_pavement;  				// type of new pavement
@@ -132,7 +140,7 @@ public class SectionProcessAll extends ParentProcess
 		Section_area = (Section_length * Section_width);				// total surface of the section
 		Pipe_area =	(Pipe_length * Trench_width);						// total surface of area around one pipe
 		Trench_area = (Pipe_length * NUM_Pipe * Trench_width);			// total surface of the trench
-		Excavation_volume = (Trench_area * Trench_depth);  				// excavation volume per pipe
+		Excavation_volume = (Pipe_area * Trench_depth);  				// excavation volume per pipe
 		Total_area = (myModel.getTotal_length() * Section_width);		// total working area of all sections
 		
 		if(this.Num_Connections != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
@@ -151,6 +159,7 @@ public class SectionProcessAll extends ParentProcess
 			myModel,				//owner
 			this, 					//name
 			Shore,					// number of pipes in section
+			Replacement,			// indicates if there is replacement
 			Old_pavement,			// type of old pavement
 			New_pavement,			// type of new pavement
 			Trench_width,			// width of Trench 
@@ -181,14 +190,6 @@ public class SectionProcessAll extends ParentProcess
 //=====================================================================================================================================================================
 		/** Actual life cycle **/
 		
-		
-		/**
-	    * FIXME difficult to model work on multiple sections at once --> drawback inherent to hard-coding the model?
-	    * Examples: work on connections can start before entire main sewer of section is laid
-	    * brick paving can start before entire section is closes as this is a slow process anyway
-	    * possibility is to work with flags that allow start of these activities after several pipes have been laid
-	    */
-
 		/**
 		 * Section needs to retrieve 1 of this resource in order to start
 		 * This allows control to make the section wait to start the lifecycle until the user wants this.
@@ -266,7 +267,7 @@ public class SectionProcessAll extends ParentProcess
 		   if(this.Shore  != 0) {
 			   myModel.crews.provide(1); myModel.excavators.provide(1);
 			   start_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length*ProductionDB.getShoring())), TimeUnit.HOURS)); 
+			   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length*ProductionDB.getShoring()) * ProductionDB.getCables_weight() * ProductionDB.getCables_weight()), TimeUnit.HOURS)); 
 			   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start_3, "Shore " + i, myModel.presentTime(), 3) ;
 			   sendMessage(msg_3);
 			   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Shoring: " + start_3.toString() + 
@@ -276,11 +277,11 @@ public class SectionProcessAll extends ParentProcess
 		   			   
 		   // 4. remove the pipe
 		   // only for replacement projects (set variable Replacement in UtilitySimulation.java class to true/false )
-		   if(myModel.getReplacement()) {
+		   if(Replacement == 1) {
 			    myModel.crews.provide(1); myModel.excavators.provide(1);
-			   	for(int j=1; j<=myModel.getOldSeparated(); j++){
+			   	for(int j=1; j<=Old_Separated; j++){
 				   	start_3 = myModel.presentTime();
-			   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getPipe_removal()) * ProductionDB.getPipe_rm_factor()), TimeUnit.HOURS));
+			   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getPipe_removal()) * ProductionDB.getPipe_rm_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));
 			   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_3, "Remove Pipe " + i +"."+ j, myModel.presentTime(), 3) ;
 					sendMessage(msg_4);
 			   		sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Remove pipe: " + start_3.toString() + 
@@ -290,7 +291,7 @@ public class SectionProcessAll extends ParentProcess
 		   }
 
 		   // 5a Foundation
-		   if(myModel.getFoundation()) {
+		   if(Foundation_type != 0) {
 			    myModel.crews.provide(1); myModel.excavators.provide(1);
 			   	start_3 = myModel.presentTime();
 		   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getFoundation_duration())), TimeUnit.HOURS));
@@ -303,6 +304,7 @@ public class SectionProcessAll extends ParentProcess
 		   
 		   // 5b prepare the bed
 		   // TODO bed preparations not always necessary? is already possible by keeping the activity 0 but then it stil shows in output.
+		   // possibly make it the lightest variant of foundation?
 		   myModel.crews.provide(1); myModel.excavators.provide(1);
 		   start_3 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Pipe_area * Bed_preparation)/ProductionDB.getPreparation())), TimeUnit.HOURS)); 
@@ -314,9 +316,9 @@ public class SectionProcessAll extends ParentProcess
 		   
 		   // 6. install the pipe
 		   myModel.crews.provide(1); myModel.excavators.provide(1);
-		   for(int j=1; j<=myModel.getNewSeparated(); j++){
+		   for(int j=1; j<=New_Separated; j++){
 			   start_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/ProductionDB.getPipe_placement()) * ProductionDB.getPipe_pl_factor()), TimeUnit.HOURS));
+			   hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/ProductionDB.getPipe_placement()) * ProductionDB.getPipe_pl_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));
 			   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_3, "Install Pipe " + i + "."+ j, myModel.presentTime(), 3) ;
 			   sendMessage(msg_7);
 			   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Install Pipe: " + start_3.toString() + 
@@ -328,7 +330,7 @@ public class SectionProcessAll extends ParentProcess
 		   myModel.crews.provide(1); myModel.excavators.provide(1);
 		   start_3 = myModel.presentTime();
 		   // if there are housing connections backfill is only to top of main sewer pipe
-		   hold (new TimeSpan((myModel.getBackfillTime() * ((First_backfill_height * Pipe_area)/ProductionDB.getBackfill()) * ProductionDB.getSoil_pl_factor()), TimeUnit.HOURS));
+		   hold (new TimeSpan((myModel.getBackfillTime() * ((First_backfill_height * Pipe_area)/ProductionDB.getBackfill()) * ProductionDB.getSoil_pl_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));
 		   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_3, "First Backfill " + i, myModel.presentTime(), 3);
 		   sendMessage(msg_8);
 		   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " First Backfill: " + start_3.toString() + 
@@ -340,10 +342,10 @@ public class SectionProcessAll extends ParentProcess
 		   if(this.Shore  != 0)
 		   {	myModel.crews.provide(1); myModel.excavators.provide(1);
 		   		start_3 = myModel.presentTime();
-		   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length*ProductionDB.getShoring_remove())), TimeUnit.HOURS)); 
+		   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length*ProductionDB.getShoring_remove()) * ProductionDB.getCables_weight()), TimeUnit.HOURS)); 
 		   		ActivityMessage msg_9 = new ActivityMessage(myModel, this, start_3, "Remove Shoring " + i, myModel.presentTime(), 3) ;
 		   		sendMessage(msg_9);
-		   		sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Remove Trench: " + start_3.toString() + 
+		   		sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Remove Shoring: " + start_3.toString() + 
 		   				" End: " + myModel.presentTime().toString());
 		   		myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 			   }
@@ -368,14 +370,6 @@ public class SectionProcessAll extends ParentProcess
 		    		 * sewer is completed or simultaneously by another crew after a certain amount of work is done on the main sewer.
 		    		 * 
 		    		 */
-	    		   // 2ND CREW STARTS WORK ON CONNECTIONS WHILE MAIN CREW STILL WORKS ON MAIN SEWER
-	    		   // DOES NOT WORK YET
-	    		   //	TODO set flag to allow work on connections to start after a certain amount of sewer has been completed. 
-	    		   // 	what if connections overtake pipes?   
-	    		   //   what if connections don't start after certain number of pipes in this section but after a few sections are done?
-	    		   //   what if 3 crews?
-
- 
 		    		Connections housing_connection = new Connections(
     		   		myModel, 				// owner
     				this,					// parent
@@ -402,10 +396,10 @@ public class SectionProcessAll extends ParentProcess
 	   // End of pipe iteration lifecycle
 	   }
 	   
-	   // sets flag that this section is done with all pipes
+	   // sets flags that this section is done with all pipes
 	   myModel.pipes_done();
 	   
-	   // Stops main sewer crew if there are second crews for connections and main crews completed all their work.   
+	   // Stops main sewer crew if there are second crews for connections and main crews completed all their work in all sections.   
 	   if(myModel.getSecondCrew()) // if there are second crews:
 	   {	
 		   if (UtilitySimulation.getPipeCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT()))
@@ -421,17 +415,35 @@ public class SectionProcessAll extends ParentProcess
 	   sendMessage(msg);
 	   
 	   // Allows the next section to start after this if setting is set to 1 in UtilitySimulation.java)
+	   // setting 1 is only possible if there are 2ND crews for connection work
 	   if(myModel.getSectionWait() == 1) 
 		{
 	   		myModel.startingCondition.store(1);
 		}
 	   
-	   // if there are connections and not all connections are finished this passivates and waits until all connections have finished.
+	   // if there are connections and not all connections are finished yet this passivates and waits until all connections have finished.
 	   if(Num_Connections != 0 && connections_done < Num_Connections ){	  
 		   setPassive(true);
 		   this.passivate();
 	   }
-	   //System.out.print(isPassive() + Num_Connections + connections_done);
+	   
+	   if (Scenario.getNUM_3RDCREW() != 0 && Num_Connections != 0){	  
+		   SecondBackfill second_backfill = new SecondBackfill(
+   		   		myModel, 				// owner
+   				this,					// parent
+   				"Second Backfill ",		// name
+   				true, 					// show in trace
+   				Second_backfill_height,
+   				Trench_area,
+   				ProductionDB.getBackfill(),
+   				ProductionDB.getSoil_pl_factor());
+   			   	
+		   		second_backfill.activate(); 
+   			   	System.out.println("second backfill started");
+		   
+		   setPassive(true);
+		   this.passivate();
+	   }
 
 	   /**
 	    * work cannot proceed until all connections have been made and second backfill is completed
@@ -440,12 +452,17 @@ public class SectionProcessAll extends ParentProcess
 	    */
 	   
   	   myModel.backfill();
-  	   
 	   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
 		   myModel.trucks.stopUse();
+		   
 		   if(myModel.getSecondCrew()){
 			   myModel.secondcrews.stopUse();
 			   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
+		   
+			   if(Scenario.getNUM_3RDCREW() != 0){
+				   myModel.thirdcrews.stopUse();
+				   System.out.println("resource third crews stopped at simulation time " + myModel.presentTime());
+			   }
 		   }
 		   else {
 			   myModel.crews.stopUse();
@@ -536,7 +553,10 @@ public class SectionProcessAll extends ParentProcess
 	 */
 	private UtilitySimulation myModel;
 	private int Shore;					// Indicates if shoring is used and if so what type is used.
-	int Num_Connections;		// indicates the number of connections in this section
+	private int Replacement; 			// indicates if this section has old sewer to be removed
+	private int Old_Separated;			// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+	private int New_Separated;			// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
+	int Num_Connections;				// indicates the number of connections in this section
 	private int Old_pavement; 			// type of old pavement
 	private int New_pavement;  			// type of new pavement
 	private double Section_length;  	// length of section in m 

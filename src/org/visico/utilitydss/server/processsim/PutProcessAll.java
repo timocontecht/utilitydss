@@ -2,6 +2,8 @@ package org.visico.utilitydss.server.processsim;
 
 import java.util.concurrent.TimeUnit;
 
+import org.visico.utilitydss.shared.Scenario;
+
 import desmoj.core.simulator.Model;
 import desmoj.core.simulator.SimProcess;
 import desmoj.core.simulator.TimeInstant;
@@ -25,7 +27,10 @@ public class PutProcessAll extends ParentProcess
 			String name, 
 			boolean showInTrace, 
 			int put,
-			int shore, 
+			int shore,
+			int replacement,
+			int old_separated,
+			int new_separated,
 			int connections,
 			double num_put_connections,
 			int old_pavement,
@@ -57,15 +62,18 @@ public class PutProcessAll extends ParentProcess
 			) 
 	
 	{
-		super(owner, name, showInTrace, put, shore, connections, num_put_connections, old_pavement, 
+		super(owner, name, showInTrace, put, shore, replacement, old_separated, new_separated, connections, num_put_connections, old_pavement, 
 				new_pavement, section_length, pipe_length, section_width, trench_width, trench_depth, 
 				old_sewer_type, new_sewer_type, old_diameter, new_diameter, asphalt_old, asphalt_new, cables, 
 				length_connections, diameter_connections, foundation_type, soil_removed, soil_new, pipes_old, 
 				pipes_new, rock_layer, sand_layer, old_put_area, new_put_area, bed_preparation);
 			
 		myModel = (UtilitySimulation)owner;
-		Shore = shore;	
-		Num_Connections = connections; 
+		Shore = shore;								// Indicates if shoring is used and if so what type is used.
+		Replacement = replacement;					// indicates if this section has old sewer to be removed
+		Old_Separated = old_separated;				// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+		New_Separated = new_separated;				// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
+		Num_Connections = connections; 				// indicates the number of connections in this section
 		Num_Put_connections = num_put_connections; 	// number of connections the put has, only if put
 		Old_pavement = old_pavement; 				// type of old pavement
 		New_pavement = new_pavement;  				// type of new pavement
@@ -136,6 +144,7 @@ public class PutProcessAll extends ParentProcess
 	   		myModel,				//owner
 			this, 					//name
 			Shore,					// number of pipes in section
+			Replacement, 
 			Old_pavement,			// type of old pavement
 			New_pavement,			// type of new pavement
 			Trench_width,			// width of Trench 
@@ -164,14 +173,6 @@ public class PutProcessAll extends ParentProcess
 //=====================================================================================================================================================================
 //=====================================================================================================================================================================
 		/** Actual life cycle **/
-		
-		/**
-	    * FIXME difficult to model work on multiple sections at once --> drawback inherent to hard-coding the model?
-	    * Examples: work on connections can start before entire main sewer of section is laid
-	    * 			brick paving can start before entire section is closes as this is a slow process anyway
-	    * possibility is to work with flags that allow start of these activities after several pipes have been laid
-	    */
-
 
 		/**
 		 * Section needs to retrieve 1 of this resource in order to start
@@ -233,7 +234,7 @@ public class PutProcessAll extends ParentProcess
 	   if(this.getIdentNumber() == 1){
 		   	myModel.crews.provide(1); 	myModel.excavators.provide(1);
 		   	start_2 = myModel.presentTime();
-		   	hold (new TimeSpan((myModel.getClosingTime() * ProductionDB.getClosing_sewer()), TimeUnit.HOURS));
+		   	hold (new TimeSpan((myModel.getClosingTime() * ProductionDB.getClosing_sewer() * ProductionDB.getCables_weight()), TimeUnit.HOURS));
 		   	ActivityMessage msg_2a = new ActivityMessage(myModel, this, start_2, "Closing sewer ", myModel.presentTime(), 8) ;
 	   		sendMessage(msg_2a);
 		   	sendTraceNote("Activity: " + getName() + " Pipe: " + " Closing sewer: " + start_2.toString() + 
@@ -246,7 +247,7 @@ public class PutProcessAll extends ParentProcess
 	   if(this.Shore  != 0) {
 		   myModel.crews.provide(1); myModel.excavators.provide(1);
 		   start_2 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length*ProductionDB.getShoring())), TimeUnit.HOURS)); 
+		   hold (new TimeSpan((myModel.getShoringTime() * (Pipe_length*ProductionDB.getShoring()) * ProductionDB.getCables_weight()), TimeUnit.HOURS)); 
 		   ActivityMessage msg_3 = new ActivityMessage(myModel, this, start_2, "Shore ", myModel.presentTime(), 8) ;
 		   sendMessage(msg_3);
 		   sendTraceNote("Activity: " + getName() + " Shoring: " + start_2.toString() + 
@@ -256,11 +257,11 @@ public class PutProcessAll extends ParentProcess
 	      
 	   // 4. remove the put
 	   // only for replacement projects (set variable Replacement in UtilitySimulation.java class to true/false )
-	   if(myModel.getReplacement()) {
+	   if(Replacement == 1) {
 		    myModel.crews.provide(1); myModel.excavators.provide(1);
-		    for(int j=1; j<=myModel.getOldSeparated(); j++){
+		    for(int j=1; j<=Old_Separated; j++){
 			   	start_2 = myModel.presentTime();
-			   	hold (new TimeSpan((myModel.getPutRemoveTime() * (1/ProductionDB.getPut_removal()) * ProductionDB.getPipe_rm_factor()), TimeUnit.HOURS));
+			   	hold (new TimeSpan((myModel.getPutRemoveTime() * (1/ProductionDB.getPut_removal()) * ProductionDB.getPipe_rm_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));
 		   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_2, "Remove Put " + j, myModel.presentTime(), 8) ;
 				sendMessage(msg_4);
 		   		sendTraceNote("Activity: " + getName() + " Put removal: " + start_2.toString() + 
@@ -270,10 +271,10 @@ public class PutProcessAll extends ParentProcess
 	   }
 
 	   // 5a Foundation
-	   if(myModel.getFoundation()) {
+	   if(this.Foundation_type != 0) {
 		    myModel.crews.provide(1); myModel.excavators.provide(1);
 		   	start_2 = myModel.presentTime();
-	   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getFoundation_duration())), TimeUnit.HOURS));
+	   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getFoundation_duration()) * ProductionDB.getCables_weight()), TimeUnit.HOURS));
 	   		ActivityMessage msg_5 = new ActivityMessage(myModel, this, start_2, "Foundation ", myModel.presentTime(), 8) ;
 			sendMessage(msg_5);
 	   		sendTraceNote("Activity: " + getName() + " Foundation: " + start_2.toString() + 
@@ -293,9 +294,9 @@ public class PutProcessAll extends ParentProcess
 	   
 	   // 6. install the put
 	   myModel.crews.provide(1); myModel.excavators.provide(1);
-	   for(int j=1; j<=myModel.getNewSeparated(); j++){
+	   for(int j=1; j<=New_Separated; j++){
 		   start_2 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getPutPlacingTime() * ProductionDB.getPut_placement() * ProductionDB.getPipe_pl_factor()), TimeUnit.HOURS));    			
+		   hold (new TimeSpan((myModel.getPutPlacingTime() * ProductionDB.getPut_placement() * ProductionDB.getPipe_pl_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));    			
 		   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_2, "Install Put " + j, myModel.presentTime(), 8) ;
 		   sendMessage(msg_7);
 		   sendTraceNote("Activity: " + getName() + " Install Put: " + start_2.toString() + 
@@ -307,7 +308,7 @@ public class PutProcessAll extends ParentProcess
 	   for (int j=1; j<=this.Num_Put_connections; j++) { 
 		   myModel.crews.provide(1); myModel.excavators.provide(1);
 		   start_2 = myModel.presentTime();
-		   hold (new TimeSpan((myModel.getPutConnectionTime() * ProductionDB.getConnection_put_duration()), TimeUnit.HOURS));
+		   hold (new TimeSpan((myModel.getPutConnectionTime() * ProductionDB.getConnection_put_duration()* ProductionDB.getCables_weight()), TimeUnit.HOURS));
 		   ActivityMessage msg_8 = new ActivityMessage(myModel, this, start_2, "Put connection " + j, myModel.presentTime(), 8) ;
 		   sendMessage(msg_8);
 		   sendTraceNote("Activity: " + getName() + " Connect pipes to put: " + start_2.toString() + 
@@ -320,10 +321,10 @@ public class PutProcessAll extends ParentProcess
 	   if(this.Shore != 0)
 	   {	myModel.crews.provide(1); myModel.excavators.provide(1);
 	   		start_2 = myModel.presentTime();
-	   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length*ProductionDB.getShoring_remove())), TimeUnit.HOURS));  
+	   		hold (new TimeSpan((myModel.getRemoveTrenchTime() * (Pipe_length*ProductionDB.getShoring_remove()) * ProductionDB.getCables_weight()), TimeUnit.HOURS));  
 	   		ActivityMessage msg_10 = new ActivityMessage(myModel, this, start_2, "Remove Shoring ", myModel.presentTime(), 8) ;
 	   		sendMessage(msg_10);
-	   		sendTraceNote("Activity: " + getName() + " Remove Trench: " + start_2.toString() + 
+	   		sendTraceNote("Activity: " + getName() + " Remove Shoring: " + start_2.toString() + 
 	   				" End: " + myModel.presentTime().toString());
 	   		myModel.crews.takeBack(1); myModel.excavators.takeBack(1);
 		}
@@ -353,10 +354,13 @@ public class PutProcessAll extends ParentProcess
 	   		myModel.startingCondition.store(1);
    		}
 	   
-	   // 9. backfill + compacting
-	   if(this.Num_Connections != 0){  //TODO this won't work as their are no connections in puts
+	   // 9. backfill + compacting 
+	   if(this.Num_Connections != 0){  //TODO this won't work as their are no connections in puts --> just delete if statement and make this first backfill and call constructor for 2nd backfill
 		   if(myModel.getSecondCrew()) {
-			   	myModel.secondcrews.provide(1);}
+			   if(Scenario.getNUM_3RDCREW() != 0)
+			   		{myModel.thirdcrews.provide(1);} 
+			   else {myModel.secondcrews.provide(1);}
+		   }
 		   else {myModel.crews.provide(1); myModel.excavators.provide(1);}
 		   myModel.trucks.provide(1);
 		   start_2 = myModel.presentTime();
@@ -366,10 +370,14 @@ public class PutProcessAll extends ParentProcess
 		   sendTraceNote("Activity: " + getName() + " Backfill: " + start_2.toString() + 
 				   " End: " + myModel.presentTime().toString());
 		   if(myModel.getSecondCrew()) {
-			   	myModel.secondcrews.takeBack(1);}
+			   if(Scenario.getNUM_3RDCREW() != 0)
+			   		{myModel.thirdcrews.takeBack(1);} 
+			   else {myModel.secondcrews.takeBack(1);}
+		   }
 		   else {myModel.crews.takeBack(1); myModel.excavators.takeBack(1);}
 		   myModel.trucks.takeBack(1);
 	   }
+	   
 	   
 	   myModel.backfill(); 
 	   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
@@ -377,6 +385,11 @@ public class PutProcessAll extends ParentProcess
 		   if(myModel.getSecondCrew()){
 			   myModel.secondcrews.stopUse();
 			   System.out.println("resource second crews stopped at simulation time " + myModel.presentTime());
+		   
+			   if(Scenario.getNUM_3RDCREW() != 0){
+				   myModel.thirdcrews.stopUse();
+				   System.out.println("resource third crews stopped at simulation time " + myModel.presentTime());
+			   }
 		   }
 		   else {
 			   myModel.crews.stopUse();
@@ -468,7 +481,10 @@ public class PutProcessAll extends ParentProcess
 	 */
 	private UtilitySimulation myModel;
 	private int Shore;					// Indicates if shoring is used and if so what type is used.	
-	private double Num_Connections; 
+	private int Replacement; 			// indicates if this section has old sewer to be removed
+	private int Old_Separated;			// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+	private int New_Separated;			// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
+	private double Num_Connections;  	// indicates the number of connections in this section --> is zero for puts
 	private double Num_Put_connections; // number of connections the put has, only if put
 	private int Old_pavement; 			// type of old pavement
 	private int New_pavement;  			// type of new pavement
@@ -495,7 +511,7 @@ public class PutProcessAll extends ParentProcess
 	private double Pipes_new;  			// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Rock_layer;			// height of pavement preparation rock layer in m
 	private double Sand_layer;			// height of pavement preparation sand layer in m
-	private double Bed_preparation;		// TODO add to utilitysimulation.java production quantity of bed preparation in m^2 per hour
+	private double Bed_preparation;		// production quantity of bed preparation in m^2 per hour
 	
 	/**
 	 * Test for reading the data from an arraylist in UtilitySimulation corresponding to this section

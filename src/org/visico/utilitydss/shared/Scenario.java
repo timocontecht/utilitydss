@@ -19,23 +19,24 @@ public class Scenario implements Serializable
 	/**
 	    * Model parameters: Project parameters (the number of sections, puts and resources, etc)
 	    */
-	   private static int NUM_SEC = 4;			// number of sections
+	   private static int NUM_SEC = 9;			// number of sections
 	   // MAX 4 FOR NOW as the arrays in UtilitySimulation.java aren't longer.
 	   private int NUM_PUT = 0;					// number of puts
 	   private int NUM_BREAKER = 1;				// number of breakers
 	   private int NUM_EXCAVATOR = 1;			// number of excavators
 	   private int NUM_CRANE = 0;				// number of truck-mounted cranes
 	   private int NUM_CREW = 1;				// number of crews
-	   private int NUM_2NDCREW = 0;				// number of 2ndcrews --> if != 0 --> secondCrew should be set to true 
-	   private static int NUM_3RDCREW = 0;		// number of 3rdcrews --> can only exist if there is also a second crew
+	   private int NUM_2NDCREW = 1;				// number of 2ndcrews --> if != 0 --> secondCrew should be set to true 
+	   private static int NUM_3RDCREW = 01;		// number of 3rdcrews --> can only exist if there is also a second crew
 	   private int NUM_ROLLER = 1;				// number of rollers
 	   private int NUM_TRUCK = 2;				// number of trucks
 	   private int NUM_PAVECREWS = 1;			// number of pave crews
 	   private int NUM_STONEPAVECREWS = 1;		// number of stone pave crews
 	   private int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
 	   private int NUM_CONNECTIONSTARTINGCONDITION = 1; // forces connections to wait for predecessors to be done with specified activity
-	  
-	   private static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
+	   
+	   // this could be removed by linking to NUM_2NDCREW directly
+	   private static boolean secondCrew = true;		// indicates if there is a 2nd crew present to perform housing connections
 
 	public int getNUM_SEC() {
 		return NUM_SEC;
@@ -156,6 +157,5 @@ public class Scenario implements Serializable
 	public static void setSecondCrew(boolean secondCrew) {
 		Scenario.secondCrew = secondCrew;
 	}
-	
 	   
 }

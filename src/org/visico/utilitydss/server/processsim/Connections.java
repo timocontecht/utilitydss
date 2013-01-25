@@ -29,7 +29,7 @@ public class Connections extends ParentProcess
 	public Connections(Model owner, SectionProcessAll parent, String name, boolean showInTrace, double connection_duration_hwa, 
 			double second_backfill_height, double pipe_area, double trench_Area, double backfill, double soil_pl_factor)
 	{
-		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
+		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
 		myModel = (UtilitySimulation)owner;
 		Connection_duration_hwa = connection_duration_hwa;
 		Second_backfill_height = second_backfill_height;
@@ -64,11 +64,11 @@ public class Connections extends ParentProcess
 		if (myModel.getSecondCrew() == false){
 			Parent.activate();
 		}
-		
+
 		else if (Parent.connections_done == Parent.Num_Connections && Parent.isPassive() == true){
-			Parent.activate();
-			Parent.setPassive(false);
-		}
+				Parent.activate();
+				Parent.setPassive(false);
+		}		
 	}
 	
 	void connections(int third_crew)
@@ -81,11 +81,10 @@ public class Connections extends ParentProcess
 			case 0:		// one or two crews available
 				// 1. install the connections, only if there are connections and if there is a second crew.	   
 			   myModel.connectionsStartingCondition.retrieve(1);
-				startConnection_1 = myModel.presentTime();
 			   if(myModel.getSecondCrew()) {
 				   	myModel.secondcrews.provide(1);}
 			   else {myModel.crews.provide(1); myModel.excavators.provide(1);}
-			   startConnection_2 = myModel.presentTime();
+			   startConnection_1 = myModel.presentTime();  startConnection_2 = myModel.presentTime();
 			   hold (new TimeSpan((myModel.getHousingConnectionTime() * Connection_duration_hwa), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
 			   ActivityMessage msg_10 = new ActivityMessage(myModel, Parent, startConnection_2, "Housing pipe " + this, myModel.presentTime(), 5) ;
 			   sendMessage(msg_10);
@@ -95,7 +94,7 @@ public class Connections extends ParentProcess
 				   	myModel.secondcrews.takeBack(1);}
 			   else {myModel.crews.takeBack(1); myModel.excavators.takeBack(1);}
 		   
-	   
+			   // TODO second backfill should also happen at pipes where there is no connection
 			   // 10. (second) backfill + compacting
 			   if(myModel.getSecondCrew()) {
 				   	myModel.secondcrews.provide(1);}
@@ -121,7 +120,8 @@ public class Connections extends ParentProcess
 			   break;
 				
 				
-			case 1:		// third crew available to fill up trench
+			case 1:		
+				// third crew available to fill up trench
 				// 1. install the connections, only if there are connections and if there is a second crew.	   
 			   myModel.secondcrews.provide(1);
 			   startConnection_1 = myModel.presentTime();
@@ -132,25 +132,9 @@ public class Connections extends ParentProcess
 					   " End: " + myModel.presentTime().toString());
 			   myModel.secondcrews.takeBack(1);
 			   Parent.connections_done ++; 
-			      
-			   // 10. (second) backfill + compacting
-			   // this happens by third crew when all connections in a section have been completed.
-			   System.out.println(this + "connections done" + Parent.connections_done + "total number of connections "+ Parent.Num_Connections); //aslfj;lf;lf does not workyet
-			   if (Parent.connections_done == Parent.Num_Connections){
-				   //TODO needs to wait till all pipes are done also(there can be pipes stil active that don't have a connection)
-				   myModel.thirdcrews.provide(1);
-				   myModel.trucks.provide(1);
-				   startConnection_1 = myModel.presentTime();
-				   hold (new TimeSpan((myModel.getBackfillTime() * ((Second_backfill_height * Trench_Area)/Backfill) * Soil_pl_factor), TimeUnit.HOURS));
-				   ActivityMessage msg_14 = new ActivityMessage(myModel, Parent, startConnection_1, "Second Backfill total trench ", myModel.presentTime(), 0);
-				   sendMessage(msg_14);
-				   sendTraceNote("Activity: " + Parent + " Backfill total trench: " + startConnection_1.toString() + 
-						   " End: " + myModel.presentTime().toString());
-				   myModel.thirdcrews.takeBack(1);
-				   myModel.trucks.takeBack(1);
-			   }
+			   
 			   break;
-			
+ 
 			default:
 			    // no connections
 			   	System.out.println("Error: no connection activities performed " + myModel.presentTime());	   
@@ -167,7 +151,7 @@ public class Connections extends ParentProcess
 	   private double Trench_Area;					// total area of the trench
 	   private double Backfill;						// backfill production in m^3 per hour
 	   private double Soil_pl_factor;				// factor for where the soil is placed before backfilling ( in depot, off site or besides the ditch)
-	   private SectionProcessAll Parent;				// parent of this class
+	   private SectionProcessAll Parent;			// parent of this class
 	   private int ThirdCrew;
 	   private static final int Old_pavement = 0;	
 	   private static final double remove_pavement = 0;
