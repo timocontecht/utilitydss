@@ -29,7 +29,7 @@ public class Connections extends ParentProcess
 	public Connections(Model owner, SectionProcessAll parent, String name, boolean showInTrace, double connection_duration_hwa, 
 			double second_backfill_height, double pipe_area, double trench_Area, double backfill, double soil_pl_factor)
 	{
-		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
+		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
 		myModel = (UtilitySimulation)owner;
 		Connection_duration_hwa = connection_duration_hwa;
 		Second_backfill_height = second_backfill_height;
@@ -71,6 +71,7 @@ public class Connections extends ParentProcess
 		}		
 	}
 	
+	
 	void connections(int third_crew)
 	{	
 		TimeInstant startConnection_1 = myModel.presentTime();		// starting time of connection activity corresponding to detail level 1 as selected in UtilitySimulation.java
@@ -79,8 +80,7 @@ public class Connections extends ParentProcess
 		switch(third_crew)
 		{
 			case 0:		// one or two crews available
-				// 1. install the connections, only if there are connections and if there is a second crew.	   
-			   myModel.connectionsStartingCondition.retrieve(1);
+				// 1. install the connections, only if there are connections and if there is a second crew.
 			   if(myModel.getSecondCrew()) {
 				   	myModel.secondcrews.provide(1);}
 			   else {myModel.crews.provide(1); myModel.excavators.provide(1);}
@@ -110,7 +110,6 @@ public class Connections extends ParentProcess
 				   	myModel.secondcrews.takeBack(1);}
 			   else {myModel.crews.takeBack(1); myModel.excavators.takeBack(1);}
 			   myModel.trucks.takeBack(1);
-			   myModel.connectionsStartingCondition.store(1);
 			   
 			   ActivityMessage msg_12 = new ActivityMessage(myModel, Parent, startConnection_1, "Connection + backfill " + this, myModel.presentTime(), 4);
 			   sendMessage(msg_12);
@@ -122,15 +121,21 @@ public class Connections extends ParentProcess
 				
 			case 1:		
 				// third crew available to fill up trench
-				// 1. install the connections, only if there are connections and if there is a second crew.	   
-			   myModel.secondcrews.provide(1);
+				// 1. install the connections, only if there are connections`.   
+				if(myModel.getSecondCrew()) {
+				   	myModel.secondcrews.provide(1);}
+			   else {myModel.crews.provide(1); myModel.excavators.provide(1);}
+				//myModel.secondcrews.provide(1);
 			   startConnection_1 = myModel.presentTime();
 			   hold (new TimeSpan((myModel.getHousingConnectionTime() * Connection_duration_hwa), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
 			   ActivityMessage msg_13 = new ActivityMessage(myModel, Parent, startConnection_1, "Housing pipe " + this, myModel.presentTime(), 0) ;
 			   sendMessage(msg_13);
 			   sendTraceNote("Activity: " + Parent + " Install housing connection: " + startConnection_1.toString() + 
 					   " End: " + myModel.presentTime().toString());
-			   myModel.secondcrews.takeBack(1);
+			   if(myModel.getSecondCrew()) {
+				   	myModel.secondcrews.takeBack(1);}
+			   else {myModel.crews.takeBack(1); myModel.excavators.takeBack(1);}
+			   //myModel.secondcrews.takeBack(1);
 			   Parent.connections_done ++; 
 			   
 			   break;

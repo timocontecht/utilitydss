@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.visico.utilitydss.shared.Scenario;
-import org.visico.utilitydss.shared.Section;
 
 import desmoj.core.advancedModellingFeatures.Bin;
 import desmoj.core.dist.ContDistUniform;
@@ -134,117 +133,232 @@ public void setNUM_SEC(int nUM_SEC) {
    public void doInitialSchedules() 
    { 
 	   sections = new ArrayList<ParentProcess>();
-
-	   // initialize the sections 
-	   for (int i=0; i<scenario.getNUM_SEC(); i++)
-	   {
-		   if(put[i]==0)
-		   {
-					   
-			   SectionProcessAll section = new SectionProcessAll(
-			   //ParentProcess section = new ParentProcess(
-					this, 					//owner
-					"Section", 				//name
-					true, 					// ?
-					put[i],					// section or put:  0 is section, 1 is put.  
-					shore[i],				// number of pipes in section
-					replacement[i],			// indicates if this section has old sewer to be removed
-					oldSeparated[i],		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
-					newSeparated[i],		// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
-					connections = pipe_connections[i].length,
-					num_put_connections[i],	// number of connections the put has, only if put
-					old_pavement[i],		// type of old pavement
-					new_pavement[i],		// type of new pavement
-					section_length[i],		// length of section in
-					pipe_length[i],			// length of pipes in
-					section_width[i],		// width of section in
-					trench_width[i],		// width of Trench 
-					trench_depth[i],		// depth of Trench in
-					old_sewer_type[i],		// type of old sewer
-					new_sewer_type[i],		// type of new sewer
-					old_diameter[i],		// diameter of old sewer 
-					new_diameter[i],		// diameter of new sewer
-					asphalt_old[i],			// layer thickness of old asphalt in
-					asphalt_new[i],			// layer thickness of new asphalt in
-					cables[i],				// weight class of cables in the ground
-					length_connections[i],	// average length of connections
-					diameter_connections[i],// average depth of connections
-					foundation_type[i], 	// type foundation used: 1 = , 2 =
-					soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
-					soil_new[i],  			// where is the new soil placed: 1 = , 2 =
-					pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
-					pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
-					rock_layer[i],			// height of pavement preparation rock layer in m
-					sand_layer[i],			// height of pavement preparation sand layer in m
-					old_put_area[i],		// area of the old put
-					new_put_area[i],		// area of the new put
-					bed_preparation[i],		// height of bed preparation layer
-					pipe_connections[i]		// indicates if a pipe has a connection.
-				);
-	
-			   section.activate();
-			   sections.add(section);
-			   SewerExperiment exp = (SewerExperiment)this.getExperiment();
-			   exp.getReceiver().createSectionElement(section);
-		   }
-		   
-		   else
+	   
+	   /*if (Scenario.Deventer){
+		   // initialize the sections 
+		   for (int i=0; i<scenario.getNUM_SEC(); i++)
 		   {
 			   
-			   PutProcessAll section = new PutProcessAll(
-			   //ParentProcess section = new ParentProcess(
-					this, 					//owner
-					"Put",					//name
-					true, 					// ?
-					put[i],					// section or put:  0 is section, 1 is put.  
-					shore[i],				// number of pipes in section
-					replacement[i],			// indicates if this section has old sewer to be removed
-					oldSeparated[i],		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
-					newSeparated[i],		// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
-					connections = pipe_connections[i].length,
-					num_put_connections[i],	// number of connections the put has, only if put
-					old_pavement[i],		// type of old pavement
-					new_pavement[i],		// type of new pavement
-					section_length[i],		// length of section in
-					pipe_length[i],			// length of pipes in
-					section_width[i],		// width of section in
-					trench_width[i],		// width of Trench 
-					trench_depth[i],		// depth of Trench in
-					old_sewer_type[i],		// type of old sewer
-					new_sewer_type[i],		// type of new sewer
-					old_diameter[i],		// diameter of old sewer 
-					new_diameter[i],		// diameter of new sewer
-					asphalt_old[i],			// layer thickness of old asphalt in
-					asphalt_new[i],			// layer thickness of new asphalt in
-					cables[i],				// weight class of cables in the ground
-					length_connections[i],	// average length of connections
-					diameter_connections[i],// average depth of connections
-					foundation_type[i], 	// type foundation used: 1 = , 2 =
-					soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
-					soil_new[i],  			// where is the new soil placed: 1 = , 2 =
-					pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
-					pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
-					rock_layer[i],			// height of pavement preparation rock layer in m
-					sand_layer[i],			// height of pavement preparation sand layer in m
-					old_put_area[i],		// area of the old put
-					new_put_area[i],		// area of the new put
-					bed_preparation[i]		// height of bed preparation layer 
-				);
-	 
-			   section.activate();
-			   sections.add(section);
-			   SewerExperiment exp = (SewerExperiment)this.getExperiment();
-			   exp.getReceiver().createSectionElement(section);
-			     
+			   if(Deventer.put[i]==0)
+			   {
+						   
+				   SectionProcessAll section = new SectionProcessAll(
+				   //ParentProcess section = new ParentProcess(
+						this, 					//owner
+						"Section", 				//name
+						true, 					// ?
+						Deventer.shore[i],				// number of pipes in section
+						Deventer.replacement[i],			// indicates if this section has old sewer to be removed
+						Deventer.oldSeparated[i],		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+						Deventer.newSeparated[i],		// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
+						connections = Deventer.pipe_connections[i].length,
+						Deventer.num_put_connections[i],	// number of connections the put has, only if put
+						Deventer.old_pavement[i],		// type of old pavement
+						Deventer.new_pavement[i],		// type of new pavement
+						Deventer.section_length[i],		// length of section in
+						Deventer.pipe_length,			// length of pipes in
+						Deventer.section_width[i],		// width of section in
+						Deventer.trench_width[i],		// width of Trench 
+						Deventer.trench_depth[i],		// depth of Trench in
+						Deventer.old_sewer_type,		// type of old sewer
+						Deventer.new_sewer_type,		// type of new sewer
+						Deventer.old_diameter[i],		// diameter of old sewer 
+						Deventer.old_diameter_sep,
+						Deventer.new_diameter[i],		// diameter of new sewer
+						Deventer.new_diameter_sep,
+						Deventer.asphalt_old[i],			// layer thickness of old asphalt in
+						Deventer.asphalt_new[i],			// layer thickness of new asphalt in
+						Deventer.cables[i],				// weight class of cables in the ground
+						Deventer.length_connections[i],	// average length of connections
+						Deventer.diameter_connections[i],// average depth of connections
+						Deventer.foundation_type[i], 	// type foundation used: 1 = , 2 =
+						Deventer.soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
+						Deventer.soil_new[i],  			// where is the new soil placed: 1 = , 2 =
+						Deventer.pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
+						Deventer.pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
+						Deventer.rock_layer[i],			// height of pavement preparation rock layer in m
+						Deventer.sand_layer[i],			// height of pavement preparation sand layer in m
+						Deventer.old_put_area[i],		// area of the old put
+						Deventer.new_put_area[i],		// area of the new put
+						Deventer.bed_preparation[i],		// height of bed preparation layer
+						Deventer.pipe_connections[i]		// indicates if a pipe has a connection.
+					);
+		
+				   section.activate();
+				   sections.add(section);
+				   SewerExperiment exp = (SewerExperiment)this.getExperiment();
+				   exp.getReceiver().createSectionElement(section);
+			   }
+			   
+			   else 
+			   {
+				   
+				   PutProcessAll section = new PutProcessAll(
+				   //ParentProcess section = new ParentProcess(
+						this, 					//owner
+						"Put",					//name
+						true, 					// ?
+						Deventer.shore[i],				// number of pipes in section
+						Deventer.replacement[i],			// indicates if this section has old sewer to be removed
+						Deventer.oldSeparated[i],		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+						Deventer.newSeparated[i],		// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
+						connections = Deventer.pipe_connections[i].length,
+						Deventer.num_put_connections[i],	// number of connections the put has, only if put
+						Deventer.old_pavement[i],		// type of old pavement
+						Deventer.new_pavement[i],		// type of new pavement
+						Deventer.section_length[i],		// length of section in
+						Deventer.pipe_length,			// length of pipes in
+						Deventer.section_width[i],		// width of section in
+						Deventer.trench_width[i],		// width of Trench 
+						Deventer.trench_depth[i],		// depth of Trench in
+						Deventer.old_sewer_type,		// type of old sewer
+						Deventer.new_sewer_type,		// type of new sewer
+						Deventer.old_diameter[i],		// diameter of old sewer 
+						Deventer.old_diameter_sep,
+						Deventer.new_diameter[i],		// diameter of new sewer
+						Deventer.new_diameter_sep,
+						Deventer.asphalt_old[i],			// layer thickness of old asphalt in
+						Deventer.asphalt_new[i],			// layer thickness of new asphalt in
+						Deventer.cables[i],				// weight class of cables in the ground
+						Deventer.length_connections[i],	// average length of connections
+						Deventer.diameter_connections[i],// average depth of connections
+						Deventer.foundation_type[i], 	// type foundation used: 1 = , 2 =
+						Deventer.soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
+						Deventer.soil_new[i],  			// where is the new soil placed: 1 = , 2 =
+						Deventer.pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
+						Deventer.pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
+						Deventer.rock_layer[i],			// height of pavement preparation rock layer in m
+						Deventer.sand_layer[i],			// height of pavement preparation sand layer in m
+						Deventer.old_put_area[i],		// area of the old put
+						Deventer.new_put_area[i],		// area of the new put
+						Deventer.bed_preparation[i]		// height of bed preparation layer
+					);
+				   
+				   section.activate();
+				   sections.add(section);
+				   SewerExperiment exp = (SewerExperiment)this.getExperiment();
+				   exp.getReceiver().createSectionElement(section);
+				    
+			   }
 		   }
-
+		   
+		   // calculates the total length of the work area for breaking and paving operations over the full length of the project.
+		   for (int i=0; i<=scenario.getNUM_SEC()-1; i++)
+		   { total_length = total_length + section_length[i];
+		   }
 	   }
-	   
-	   // calculates the total length of the work area for breaking and paving operations over the full length of the project.
-	   for (int i=0; i<=scenario.getNUM_SEC()-1; i++)
-	   { total_length = total_length + section_length[i];
+		
+	   else {*/
+		   // initialize the sections 
+		   for (int i=0; i<scenario.getNUM_SEC(); i++)
+		   {
+			   
+			   if(put[i]==0)
+			   {
+						   
+				   SectionProcessAll section = new SectionProcessAll(
+				   //ParentProcess section = new ParentProcess(
+						this, 					//owner
+						"Section", 				//name
+						true, 					// ?
+						shore[i],				// number of pipes in section
+						replacement[i],			// indicates if this section has old sewer to be removed
+						oldSeparated[i],		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+						newSeparated[i],		// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
+						connections = pipe_connections[i].length,
+						num_put_connections[i],	// number of connections the put has, only if put
+						old_pavement[i],		// type of old pavement
+						new_pavement[i],		// type of new pavement
+						section_length[i],		// length of section in
+						pipe_length[i],			// length of pipes in
+						section_width[i],		// width of section in
+						trench_width[i],		// width of Trench 
+						trench_depth[i],		// depth of Trench in
+						old_sewer_type[i],		// type of old sewer
+						new_sewer_type[i],		// type of new sewer
+						old_diameter[i],		// diameter of old sewer 
+						new_diameter[i],		// diameter of new sewer
+						asphalt_old[i],			// layer thickness of old asphalt in
+						asphalt_new[i],			// layer thickness of new asphalt in
+						cables[i],				// weight class of cables in the ground
+						length_connections[i],	// average length of connections
+						diameter_connections[i],// average depth of connections
+						foundation_type[i], 	// type foundation used: 1 = , 2 =
+						soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
+						soil_new[i],  			// where is the new soil placed: 1 = , 2 =
+						pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
+						pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
+						rock_layer[i],			// height of pavement preparation rock layer in m
+						sand_layer[i],			// height of pavement preparation sand layer in m
+						old_put_area[i],		// area of the old put
+						new_put_area[i],		// area of the new put
+						bed_preparation[i],		// height of bed preparation layer
+						pipe_connections[i]		// indicates if a pipe has a connection.
+					);
+		
+				   section.activate();
+				   sections.add(section);
+				   SewerExperiment exp = (SewerExperiment)this.getExperiment();
+				   exp.getReceiver().createSectionElement(section);
+			   }
+			   
+			   else 
+			   {
+				   
+				   PutProcessAll section = new PutProcessAll(
+				   //ParentProcess section = new ParentProcess(
+						this, 					//owner
+						"Put",					//name
+						true, 					// ?
+						shore[i],				// number of pipes in section
+						replacement[i],			// indicates if this section has old sewer to be removed
+						oldSeparated[i],		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+						newSeparated[i],		// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
+						connections = pipe_connections[i].length,
+						num_put_connections[i],	// number of connections the put has, only if put
+						old_pavement[i],		// type of old pavement
+						new_pavement[i],		// type of new pavement
+						section_length[i],		// length of section in
+						pipe_length[i],			// length of pipes in
+						section_width[i],		// width of section in
+						trench_width[i],		// width of Trench 
+						trench_depth[i],		// depth of Trench in
+						old_sewer_type[i],		// type of old sewer
+						new_sewer_type[i],		// type of new sewer
+						old_diameter[i],		// diameter of old sewer 
+						new_diameter[i],		// diameter of new sewer
+						asphalt_old[i],			// layer thickness of old asphalt in
+						asphalt_new[i],			// layer thickness of new asphalt in
+						cables[i],				// weight class of cables in the ground
+						length_connections[i],	// average length of connections
+						diameter_connections[i],// average depth of connections
+						foundation_type[i], 	// type foundation used: 1 = , 2 =
+						soil_removed[i],  		// where is the removed soil placed: 1 = , 2 =
+						soil_new[i],  			// where is the new soil placed: 1 = , 2 =
+						pipes_old[i],  			// where are the removed pipes placed: 1 = , 2 =
+						pipes_new[i],  			// where are the new pipes placed: 1 = , 2 =
+						rock_layer[i],			// height of pavement preparation rock layer in m
+						sand_layer[i],			// height of pavement preparation sand layer in m
+						old_put_area[i],		// area of the old put
+						new_put_area[i],		// area of the new put
+						bed_preparation[i]		// height of bed preparation layer 
+					);
+		 
+				   section.activate();
+				   sections.add(section);
+				   SewerExperiment exp = (SewerExperiment)this.getExperiment();
+				   exp.getReceiver().createSectionElement(section);
+				     
+			   }
+	
+		   }
+		   
+		   // calculates the total length of the work area for breaking and paving operations over the full length of the project.
+		   for (int i=0; i<=scenario.getNUM_SEC()-1; i++)
+		   { total_length = total_length + section_length[i];
+		   }
 	   }
-   }
+//}
    
    /**
     * Initializes static model components like distributions and queues.
@@ -314,7 +428,6 @@ public void setNUM_SEC(int nUM_SEC) {
 	      pavecrews = new PartTimeRes(this, "Resource pavecrews", scenario.getNUM_PAVECREWS(), true, true);
 	      stonepavecrews = new PartTimeRes(this, "Resource stonepavecrews", scenario.getNUM_STONEPAVECREWS(), true, true);
 	      startingCondition = new Bin (this, "starting condition check", scenario.getNUM_STARTINGCONDITION(), true, true);
-	      connectionsStartingCondition = new Bin (this, "connection starting condition check", scenario.getNUM_CONNECTIONSTARTINGCONDITION(), true, true);
 	      
 	      // when there is a second crew a new section can commence work after the main sewer loop of the previous section has been completed
 	      // this checks if there is a second crew and sets the section wait prioritization accordingly if this is the case
@@ -497,18 +610,23 @@ public void setNUM_SEC(int nUM_SEC) {
    private static String[] old_sewer_type = 		{ "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete"}; 		// type of old sewer	Concrete, Gres, Plastic
    private static String[] new_sewer_type = 		{ "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete", "Concrete"}; 		// type of new sewer	Concrete, Gres, Plastic
    private static double[] old_diameter = 			{ 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, };  		// diameter of old sewer 
+   private static double[] old_diameter_sep = 		{ 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, };  		// diameter of old sewer 
    private static double[] new_diameter = 			{ 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, };  		// diameter of new sewer
+   private static double[] new_diameter_sep = 		{ 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, };  		// diameter of old sewer 
    private static double[] asphalt_old = 			{ 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40};  		// layer thickness of old asphalt in
    private static double[] asphalt_new = 			{ 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40 };  		// layer thickness of new asphalt in
    private static double[] length_connections =		{ 4, 4, 4, 4, 4, 7, 7, 7, 7, 7,};  		// average length of connections
    private static double[] diameter_connections =	{ 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, };  		// average depth of connections
-   private static double[] old_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
-   private static double[] new_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
+   public static double[] old_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
+   public static double[] old_put_area_sep=			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
+   public static double[] new_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
+   public static double[] new_put_area_sep =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
+   
    // TODO doe eens fixen
    private static double[] rock_layer = 			{ 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,0.3, 0.3, 0.3, 0.3};		// height of pavement preparation rock layer in m 
    private static double[] sand_layer = 			{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
    private static double[] bed_preparation =		{ 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.
-
+   
    //each pipe should have a flag if it has a connection or not, this indicates a geometry.
    // make connections independent connections.
    
@@ -525,7 +643,7 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int[][] pipe_connections = 		{ section1_connections, section2_connections, section3_connections, section4_connections,section5_connections,
 	   												section6_connections, section7_connections, section8_connections, section9_connections, section10_connections};
    
-   private static double total_length;				// total length of all sections, calculated by summing up the length of all sections.
+
    
    /**  COMMENTED OUT as the arrays above are used for testing purposes. 
     * This is preparation for use with GUI, the arraylists can be filled from there
@@ -564,11 +682,10 @@ public void setNUM_SEC(int nUM_SEC) {
    ArrayList<Integer> pipes_new = new ArrayList<Integer>(0);			// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
    ArrayList<Integer> old_put_area = new ArrayList<Integer>(0);			// Area of the old put
    ArrayList<Integer> new_put_area = new ArrayList<Integer>(0);			// Area of the new put
-   private static double total_length = 400								// total length of all sections (for breaking all sections at once)
+   private static double total_length;									// total length of all sections (for breaking all sections at once)
    private static double rock_layer = 0,3								// height of pavement preparation rock layer in m 
    private static double sand_layer = 0,3								// height of pavement preparation sand layer in m
    ArrayList<Integer> put_connection_type = new ArrayList<Integer>(0);
-   private static int total_length = 0;			// total length of all sections, calculated by summing up the length of all sections.
    */  
    
    
@@ -608,8 +725,9 @@ public void setNUM_SEC(int nUM_SEC) {
     * Random number stream used to draw an arrival time for the next truck. THIS IS NOT USED ATM 
     * 						because trucks are modeled as a resource.
     * See init() method for stream parameters. 
+    * 
+    * Truck has been kept in code for now for possible future users, however it is not used or taken into account
     */
-   //TODO decide if truck is static resource or needs to be modeled 
    private desmoj.core.dist.ContDistExponential truckArrivalTime;
    
    /**
@@ -653,7 +771,6 @@ public void setNUM_SEC(int nUM_SEC) {
    protected PartTimeRes stonepavecrews;
    
    protected Bin startingCondition;
-   protected Bin connectionsStartingCondition;
    
    ArrayList<ParentProcess> sections;
    ArrayList<ProcessAll> puts;
@@ -699,6 +816,8 @@ public void setNUM_SEC(int nUM_SEC) {
 	  return pavecounter;
   }
 
+   // parameter total length of all sections, used for calculations on breaking and paving operations performed on all sections at once.
+   private static double total_length;				// total length of all sections, calculated by summing up the length of all sections.
    
    /**
     * Activity counters

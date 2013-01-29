@@ -16,6 +16,9 @@ public class Scenario implements Serializable
 	 */
 	private static final long serialVersionUID = 1900805806525469149L;
 
+	// indicator for if project run is Deventer or test
+	public static final boolean Deventer = false;
+
 	/**
 	    * Model parameters: Project parameters (the number of sections, puts and resources, etc)
 	    */
@@ -27,7 +30,7 @@ public class Scenario implements Serializable
 	   private int NUM_CRANE = 0;				// number of truck-mounted cranes
 	   private int NUM_CREW = 1;				// number of crews
 	   private int NUM_2NDCREW = 1;				// number of 2ndcrews --> if != 0 --> secondCrew should be set to true 
-	   private static int NUM_3RDCREW = 01;		// number of 3rdcrews --> can only exist if there is also a second crew
+	   private static int NUM_2NDBACKFILLCREW = 1;		// number of crews available for second backfill --> usually an extra spare crane 
 	   private int NUM_ROLLER = 1;				// number of rollers
 	   private int NUM_TRUCK = 2;				// number of trucks
 	   private int NUM_PAVECREWS = 1;			// number of pave crews
@@ -95,7 +98,7 @@ public class Scenario implements Serializable
 	}
 	
 	public static int getNUM_3RDCREW() {
-		return NUM_3RDCREW;
+		return NUM_2NDBACKFILLCREW;
 	}
 
 	public void setNUM_3RDCREW(int nUM_3RDCREW) {

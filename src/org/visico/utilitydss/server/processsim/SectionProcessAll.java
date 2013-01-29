@@ -28,7 +28,6 @@ public class SectionProcessAll extends ParentProcess
 	public SectionProcessAll(Model owner, 
 			String name, 
 			boolean showInTrace, 
-			int put,
 			int shore, 
 			int replacement,
 			int old_separated,
@@ -65,7 +64,7 @@ public class SectionProcessAll extends ParentProcess
 			) 
 	
 	{
-		super(owner, name, showInTrace, put, shore, replacement, old_separated, new_separated, connections, num_put_connections, old_pavement, 
+		super(owner, name, showInTrace, shore, replacement, old_separated, new_separated, connections, num_put_connections, old_pavement, 
 				new_pavement, section_length, pipe_length, section_width, trench_width, trench_depth, 
 				old_sewer_type, new_sewer_type, old_diameter, new_diameter, asphalt_old, asphalt_new, cables, 
 				length_connections, diameter_connections, foundation_type, soil_removed, soil_new, pipes_old, 

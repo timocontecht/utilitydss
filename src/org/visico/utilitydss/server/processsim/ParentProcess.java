@@ -33,7 +33,6 @@ public class ParentProcess extends SimProcess
 	public ParentProcess(Model owner, 
 			String name, 
 			boolean showInTrace, 
-			int put,
 			int shore, 
 			int replacement,
 			int old_separated,
