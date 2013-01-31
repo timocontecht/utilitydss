@@ -21,7 +21,7 @@ public class Deventer {
 		// Section nr.									{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }; 		// indicates the number of the section for ease of characteristics input
 	   // project characteristics
 	   public static int[] put = 						{ 1, 0, 1, 0, 2, 0, 0, 1, 0, 1, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
-	   public static int[] shore = 					?	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+	   public static int[] shore = 						{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																										// 2 means Sheet piling (damwand), 3 means supported walls  
 	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 					// Indicates if this section has existing old sewer: 0 is no, 1 is yes
 	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
@@ -65,18 +65,18 @@ public class Deventer {
 	   
 	   //each pipe should have a flag if it has a connection or not, this indicates a geometry.
 	   // make connections independent connections.
-	   
+	   													//{ 1, 0, 1, 0, 2, 0, 0, 1, 0, 1, 0, 1 };
 	   private static int[] section1_connections =	d	{};							// indicates if a pipe in section 1 has a connection.
 	   private static int[] section2_connections =	d	{ 2, 3, 4};							// indicates if a pipe in section 2 has a connection.
 	   private static int[] section3_connections =	d	{};							// indicates if a pipe in section 2 has a connection.
 	   private static int[] section4_connections =	d	{ 1, 3, 4};							// indicates if a pipe in section 2 has a connection.
-	   private static int[] section5_connections =	d	{ 2, 3, 5};							// indicates if a pipe in section 2 has a connection.
-	   private static int[] section6_connections =	d	{ };							// indicates if a pipe in section 2 has a connection.
+	   private static int[] section5_connections =	d	{ };							// indicates if a pipe in section 2 has a connection.
+	   private static int[] section6_connections =	d	{ 1, 3, 4};							// indicates if a pipe in section 2 has a connection.
 	   private static int[] section7_connections =	d	{ 2, 3, 4};							// indicates if a pipe in section 2 has a connection.
 	   private static int[] section8_connections =	d	{ };							// indicates if a pipe in section 2 has a connection.
 	   private static int[] section9_connections =	d	{ 2, 3, 5};							// indicates if a pipe in section 2 has a connection.
 	   private static int[] section10_connections =	d	{ };							// indicates if a pipe in section 2 has a connection.
-	   private static int[] section11_connections =	d	{ };							// indicates if a pipe in section 2 has a connection.
+	   private static int[] section11_connections =	d	{ 1, 3, 4};							// indicates if a pipe in section 2 has a connection.
 	   private static int[] section12_connections =	d	{ };							// indicates if a pipe in section 2 has a connection.
 	   public static int[][] pipe_connections = 	d	{ section1_connections, section2_connections, section3_connections, section4_connections,section5_connections,
 		   												section6_connections, section7_connections, section8_connections, section9_connections, section10_connections, 
@@ -91,7 +91,7 @@ public class Deventer {
 	   // project characteristics
 	   /*
 		   												public static int[] put = 						{ 1, 0, 1, 0, 2, 0, 0, 1, 0, 1, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
-	   public static int[] shore = 					?	{ 0, 0, 0, 0, 0}; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+	   public static int[] shore = 						{ 0, 0, 0, 0, 0}; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																								// 2 means Sheet piling (damwand), 3 means supported walls  
 	   public static int [] replacement =				{ 0, 0, 0, 0, 0}; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
 	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1}; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
@@ -496,7 +496,7 @@ public class Deventer {
 		 * Fase 1C3
 		 */
 	
-		S// Section nr.									{ 1, 2, 3, 4, 5, 6, 7, 8, 9}; 		// indicates the number of the section for ease of characteristics input
+		// Section nr.									{ 1, 2, 3, 4, 5, 6, 7, 8, 9}; 		// indicates the number of the section for ease of characteristics input
 	   // project characteristics
 	   /*   												
 	   public static int[] put = 						{ 1, 0, 1, 0, 2, 0, 0, 1, 0 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  

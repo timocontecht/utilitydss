@@ -773,7 +773,7 @@ public void setNUM_SEC(int nUM_SEC) {
    protected Bin startingCondition;
    
    ArrayList<ParentProcess> sections;
-   ArrayList<ProcessAll> puts;
+   ArrayList<ParentProcess> puts;
    
    
    /**
