@@ -231,7 +231,7 @@ public class ProductionDatabase
 		if(Soil_new == 1) {soil_pl_factor = 1.1;}
 		else {soil_pl_factor = 1;}
 		 		
-		// Housing/Rainwater connection (in hours per unit) // TODO find actual production		
+		// Housing/Rainwater connection (in hours per unit)	
 		// TODO what if no kolk but housing connections?
 		if(Diameter_connections <= 200 ) {connection_pipe_duration = 15;}			// duration per meter
 		else if(Diameter_connections > 200 ) {connection_pipe_duration = 10;}

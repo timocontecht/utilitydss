@@ -23,7 +23,7 @@ public class Paving extends ParentProcess
 	    */
 	
 	public Paving(Model owner, ParentProcess parent, String name, boolean showInTrace, int New_pavement, double Total_Area, 
-			double Section_Area, double paving_time)
+			double Section_Area, double paving_time, double rock_layer, double paving_preparation)
 	{
 		super(owner, name, showInTrace, New_pavement, New_pavement, New_pavement, New_pavement, New_pavement, paving_time, New_pavement, New_pavement, paving_time, paving_time, paving_time, paving_time, paving_time, name, name, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time, paving_time);
 		myModel = (UtilitySimulation)owner;
@@ -32,6 +32,8 @@ public class Paving extends ParentProcess
 		section_area = Section_Area;
 		Paving_Time = paving_time;
 		Parent = parent; 
+		Rock_layer = rock_layer;
+		Paving_preparation = paving_preparation;				
 	}
 	
 	/**
@@ -55,7 +57,7 @@ public class Paving extends ParentProcess
     			   // asphalt paving
 				   myModel.pavecrews.provide(1);
 				   start = myModel.presentTime();
-				   hold (new TimeSpan((myModel.getPaveTime() * (section_area/Paving_Time)), TimeUnit.HOURS));
+				   hold (new TimeSpan((myModel.getPaveTime() * (section_area/Paving_Time) * num_layers), TimeUnit.HOURS));
 				   ActivityMessage msg_1 = new ActivityMessage(myModel, Parent, start, "Pave ", myModel.presentTime(), 0) ;
 				   sendMessage(msg_1);
 				   sendTraceNote("Activity: " + Parent + " Asphalt Paving: " + start.toString() + 
@@ -96,13 +98,27 @@ public class Paving extends ParentProcess
 				break;
     			
     		case 3:
+    			// roll/prepare surface - broken rock for asphalt paving
+    			if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())){
+    				myModel.trucks.provide(1);
+    			   start = myModel.presentTime();
+    			   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((total_area * Rock_layer )/Paving_preparation)), TimeUnit.HOURS));
+    			   ActivityMessage msg_3 = new ActivityMessage(myModel, Parent, start, "Roll all", myModel.presentTime(), 0) ;
+    			   sendMessage(msg_3);
+    			   sendTraceNote("Activity: " + getName() + " Broken rock all: " + start.toString() + 
+    					   " End: " + myModel.presentTime().toString());
+    			   myModel.trucks.takeBack(1);
+    			   myModel.rollers.stopUse();
+    			   System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
+    	   		}
+    			
     			// asphalt pavement all sections at once
-			   	if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())){
+			   	if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())){
 			   		myModel.pavecrews.provide(1);
 				   start = myModel.presentTime();
-				   hold (new TimeSpan((myModel.getPaveTime() * (total_area/Paving_Time)), TimeUnit.HOURS));
-				   ActivityMessage msg_3 = new ActivityMessage(myModel, Parent, start, "Pave all ", myModel.presentTime(), 0) ;
-				   sendMessage(msg_3);
+				   hold (new TimeSpan((myModel.getPaveTime() * (total_area/Paving_Time) * num_layers), TimeUnit.HOURS));
+				   ActivityMessage msg_4 = new ActivityMessage(myModel, Parent, start, "Pave all ", myModel.presentTime(), 0) ;
+				   sendMessage(msg_4);
 				   sendTraceNote("Activity: " + Parent + " Asphalt Paving: " + start.toString() + 
 						   " End: " + myModel.presentTime().toString());
 				   myModel.pavecrews.takeBack(1);
@@ -147,4 +163,6 @@ public class Paving extends ParentProcess
 	private double total_area;
 	private double Paving_Time;
 	private ParentProcess Parent;
+	private double Rock_layer;
+	private double Paving_preparation;
 }

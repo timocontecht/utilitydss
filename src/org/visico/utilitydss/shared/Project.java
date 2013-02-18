@@ -45,9 +45,7 @@ public class Project implements Serializable
 		this.description = description;
 	}
 	
-	
-	
-	
+		
 	String name;
 	String location;
 	String description;

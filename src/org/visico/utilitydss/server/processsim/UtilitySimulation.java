@@ -56,7 +56,7 @@ public class UtilitySimulation extends Model
 	      // be created which crashes Netscape :-)
 	   
 	// start the experiment at simulation time 0.0
-	   exp.start();
+		exp.start();
 
 	   // --> now the simulation is running until it reaches its end criterion
 	   // ...
@@ -134,6 +134,10 @@ public void setNUM_SEC(int nUM_SEC) {
    { 
 	   sections = new ArrayList<ParentProcess>();
 	   
+	   
+	   /**
+	    * Initializes section routines from class Deventer.java for using project parameters of case Deventer.
+	    */
 	   /*if (Scenario.Deventer){
 		   // initialize the sections 
 		   for (int i=0; i<scenario.getNUM_SEC(); i++)
@@ -148,7 +152,7 @@ public void setNUM_SEC(int nUM_SEC) {
 						"Section", 				//name
 						true, 					// ?
 						Deventer.shore[i],				// number of pipes in section
-						Deventer.replacement[i],			// indicates if this section has old sewer to be removed
+						Deventer.replacement[i],		// indicates if this section has old sewer to be removed
 						Deventer.oldSeparated[i],		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
 						Deventer.newSeparated[i],		// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
 						connections = Deventer.pipe_connections[i].length,
@@ -247,9 +251,13 @@ public void setNUM_SEC(int nUM_SEC) {
 		   { total_length = total_length + section_length[i];
 		   }
 	   }
-		
+		 
 	   else {*/
-		   // initialize the sections 
+		   // initialize the sections
+	   
+	   /**
+	    * Initializes normal section routines
+	    */
 		   for (int i=0; i<scenario.getNUM_SEC(); i++)
 		   {
 			   
@@ -524,10 +532,6 @@ public void setNUM_SEC(int nUM_SEC) {
    public void setScenario(Scenario scenario) {
 	   	this.scenario = scenario;
    		}
-
-   public int getPrepareSurface() {
-	    return prepareSurface;
-		}
    
    public int getInspectionType() {
 	    return inspectionType;
@@ -692,13 +696,12 @@ public void setNUM_SEC(int nUM_SEC) {
 /**
    * Model parameters: SIMULATION SETTINGS
    */
-   //TODO this should all move to scenario. having this in to places leads to mistakes.
+   //TODO this should all move to scenario. having this in two places leads to mistakes.
    private static boolean oldPipeHeavy	= false; 	// indicates if the old pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    private static boolean newPipeHeavy	= false; 	// indicates if the new pipes are to heavy to be placed by mobile excavator and therefore require mobile crane	
    													// for puts this is indicated by an array per put as sizes differ.
-   private static int prepareSurface = 2;			// indicates if broken rock is placed : 1 = yes, 2 = no
    private static int sectionWait = 1;				// indicates after which activity the next section starts: 1 = after main loop (only possible if there is a 2nd crew), 
-   													// 2 = second backfill, 3 = surface prepared, 4 = broken rock placed (only in combination with broken rock set to true), 5 = paving
+   													// 2 = second backfill, 3 = surface prepared, 4 = paving
    private static int inspectionType = 1;			// type of inspection applied: 1 = ????
    private static double ConnectionWait = 500;		// determines how far along the main sewer should be before the 2nd crew starts with connections
    
@@ -708,18 +711,6 @@ public void setNUM_SEC(int nUM_SEC) {
    private static int activityMsg = 1;				// indicates what data is collected in main loop: 1 = one activity for all pipes, 2 = per pipe, 3 =  per activity per pipe
    private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = total time per connection, 2 = per each activity per connection, 10 = don't show data for connections
    private static int activityMsgPut = 1;			// indicates what data is collected in main loop: 1  = per put, 2 =  per activity per put
-   /**
-    * Process versions
-    */
-   
-  // static private processVersion pv = 1;  NOT USED
-   /*
-   private enum processVersion
-   {
-	   BREAK_ALL_UPFRONT,
-	   BREAK_PER_SECTION
-   };
-   */
    
    /**
     * Random number stream used to draw an arrival time for the next truck. THIS IS NOT USED ATM 

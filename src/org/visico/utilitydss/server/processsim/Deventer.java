@@ -18,49 +18,49 @@ public class Deventer {
 		 * Fase 1B1
 		 */
 	
-		// Section nr.									{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }; 		// indicates the number of the section for ease of characteristics input
+		// Section nr.									{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }; 		// indicates the number of the section for ease of characteristics input
 	   // project characteristics
-	   public static int[] put = 						{ 1, 0, 1, 0, 2, 0, 0, 1, 0, 1, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
-	   public static int[] shore = 						{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+	   public static int[] put = 						{ 0, 1, 0, 1, 0, 2, 0, 0, 1, 0, 1, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
+	   public static int[] shore = 						{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																										// 2 means Sheet piling (damwand), 3 means supported walls  
-	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 					// Indicates if this section has existing old sewer: 0 is no, 1 is yes
-	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
-	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0};			// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
-	   public static double[] num_put_connections = 	{ 2, 0, 3, 0, 3, 0, 0, 2, 0, 2, 0, 1 };  		// number of connections the put has, only if put
-	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 					// Indicates if this section has existing old sewer: 0 is no, 1 is yes
+	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0};			// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
+	   public static double[] num_put_connections = 	{ 0, 2, 0, 3, 0, 3, 0, 0, 2, 0, 2, 0, 1 };  		// number of connections the put has, only if put
+	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 																										// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
-	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
+	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
 	   																									// 3 means asphalt; pave all sections at end --> 3 can only be used if this goes for all sections
-	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// weight class of cables in the ground 
-	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
-	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
-	   public static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	   public static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// weight class of cables in the ground 
+	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
+	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
+	   public static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 
 	   //Dimensions
-	   public static double[] section_length = 		d	{ 4, 12.5, 4, 12.5, 12.5, 4, 12.5, 4, 12, 4, 12, 4 };  				// length of section in
+	   public static double[] section_length = 			{ 10, 2,25, 19, 2,25, 63, 2,25, 35, 80, 2, 64, 1,5, 46, 0,64 };  				// length of section in
 	   public static double pipe_length = 				2.4; 															// length of pipes in
-	   public static double[] section_width = 		d	{ 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7 };  								// width of section in
-	   public static double[] trench_width = 		d	{ 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5 };  								// width of Trench in  					///////////// bigger with puts?
-	   public static double[] trench_depth = 		d	{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};  								// depth of Trench in
+	   public static double[] section_width = 			{ 7, 7, 7, 7, 13, 13, 13, 18, 18, 18, 18, 18, 8 };  								// width of section in
+	   public static double[] trench_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of Trench in  					///////////// bigger with puts?
+	   public static double[] trench_depth = 			{ 4.4, 4.4, 4.4, 4.2, 4, 4, 4, 3, 3, 2.5, 1.8, 1.8, 1.6};  								// depth of Trench in
 	   public static String old_sewer_type = 		 	"Concrete"; 													// type of old sewer	Concrete, Gres, Plastic
 	   public static String new_sewer_type = 		 	"Concrete"; 													// type of new sewer	Concrete, Gres, Plastic
 	   public static double[] old_diameter = 			{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer (HWA if separated)
-	   public static double[] old_diameter_sep =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
-	   public static double[] new_diameter = 			{ 000, 800, 000, 800, 000, 800, 000, 500, 000, 500, 000, 300, 000 };  		// diameter of new sewer (HWA if separated)
-	   public static double[] new_diameter_sep = 		{ 000, 800, 000, 800, 000, 800, 000, 500, 000, 500, 000, 300, 000 };  		// diameter of old sewer separated DWA streng 
+	   public static double[] old_diameter_HWA =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
+	   public static double[] new_diameter = 			{ 315, 000, 315, 000, 315, 000, 315, 000, 000, 000, 000, 000, 000 };  		// diameter of new sewer (HWA if separated)
+	   public static double[] new_diameter_HWA = 		{ 800, 000, 800, 000, 800, 000, 800, 500, 000, 400, 000, 300, 000 };  		// diameter of old sewer separated DWA streng 
 	   public static double[] asphalt_old = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40};  		// layer thickness of old asphalt in
 	   public static double[] asphalt_new = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40 };  		// layer thickness of new asphalt in
 	   public static double[] length_connections =		{ 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};  		// average length of connections
-	   public static double[] diameter_connections =d	{ 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300 };  		// average depth of connections
+	   public static double[] diameter_connections =	{ 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160 };  		// average depth of connections
 	   public static double[] old_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
-	   public static double[] old_put_area_sep=			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
+	   public static double[] old_put_area_HWA =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
 	   public static double[] new_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
-	   public static double[] new_put_area_sep =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
+	   public static double[] new_put_area_HWA =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
 	   // TODO doe eens fixen
 	   public static double[] rock_layer = 			d	{ 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,0.3, 0.3, 0.3, 0.3};		// height of pavement preparation rock layer in m 
-	   public static double[] sand_layer = 			d	{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
+	   public static double[] sand_layer = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };		// height of pavement preparation sand layer in m
 	   public static double[] bed_preparation =		d	{ 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.
 	   
 	   //each pipe should have a flag if it has a connection or not, this indicates a geometry.
@@ -96,7 +96,7 @@ public class Deventer {
 	   public static int [] replacement =				{ 0, 0, 0, 0, 0}; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
 	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1}; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
 	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1};		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
-	   public static double[] num_put_connections = 	{ 2, 0, 3, 0, 3};  		// number of connections the put has, only if put
+	   public static double[] num_put_connections = d	{ 2, 0, 3, 0, 3};  		// number of connections the put has, only if put
 	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0}; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 																								// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
 	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0};  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
@@ -109,27 +109,27 @@ public class Deventer {
 	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0};  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 
 	   //Dimensions
-	   public static double[] section_length = 		d	{ 4, 12.5, 4, 12.5, 12.5}; 															// length of pipes in
-	   public static double[] section_width = 		d	{ 5, 5, 5, 5, 5};  								// width of section in
-	   public static double[] trench_width = 		d	{ 4, 4, 4, 4, 4};  								// width of Trench in  					///////////// bigger with puts?
-	   public static double[] trench_depth = 		d	{ 2, 2, 2, 2, 2};  								// depth of Trench in
+	   public static double[] section_length = 			{ 82, 2, 88, 2, 58}; 															// length of pipes in
+	   public static double[] section_width = 			{ 7, 7, 7, 7, 7};  								// width of section in
+	   public static double[] trench_width = 			{ 7, 7, 7, 7, 7};  								// width of Trench in  					///////////// bigger with puts?
+	   public static double[] trench_depth = 			{ 3.7, 3.7, 3.7, 3.7, 3.7};  								// depth of Trench in
 	   public static String old_sewer_type = 		 	"Concrete"; 													// type of old sewer	Concrete, Gres, Plastic
 	   public static String new_sewer_type = 		 	"Concrete"; 													// type of new sewer	Concrete, Gres, Plastic
 	   public static double[] old_diameter = 			{ 000, 000, 000, 000, 000};  		// diameter of old sewer (HWA if separated)
-	   public static double[] old_diameter_sep =		{ 000, 000, 000, 000, 000}; 		// diameter of old sewer separated DWA streng 
-	   public static double[] new_diameter = 			{ 000, 800, 000, 800, 000};  		// diameter of new sewer (HWA if separated)
-	   public static double[] new_diameter_sep = 		{ 000, 800, 000, 800, 000};  		// diameter of old sewer separated DWA streng 
+	   public static double[] old_diameter_HWA =		{ 000, 000, 000, 000, 000}; 		// diameter of old sewer separated DWA streng 
+	   public static double[] new_diameter = 			{ 315, 000, 315, 000, 315};  		// diameter of new sewer (HWA if separated)
+	   public static double[] new_diameter_HWA = 		{ 600, 000, 600, 000, 600};  		// diameter of old sewer separated DWA streng 
 	   public static double[] asphalt_old = 		?	{ 40, 40, 40, 40, 40};  		// layer thickness of old asphalt in
 	   public static double[] asphalt_new = 		?	{ 40, 40, 40, 40, 40};  		// layer thickness of new asphalt in
-	   public static double[] length_connections =	d	{ 5, 5, 5, 5, 5};  		// average length of connections
-	   public static double[] diameter_connections =d	{ 300, 300, 300, 300, 300 };  		// average depth of connections
+	   public static double[] length_connections =		{ 5, 5, 5, 5, 5};  		// average length of connections
+	   public static double[] diameter_connections =	{ 160, 160, 160, 160, 160 };  		// average depth of connections
 	   public static double[] old_put_area =			{ 4, 4, 4, 4, 4};		// Area of the old put in m^2
-	   public static double[] old_put_area_sep=			{ 4, 4, 4, 4, 4};		// Area of the old put in m^2
+	   public static double[] old_put_area_HWA =			{ 4, 4, 4, 4, 4};		// Area of the old put in m^2
 	   public static double[] new_put_area =			{ 4, 4, 4, 4, 4};		// Area of the new put in m^2
-	   public static double[] new_put_area_sep =		{ 4, 4, 4, 4, 4};		// Area of the new put in m^2
+	   public static double[] new_put_area_HWA =		{ 4, 4, 4, 4, 4};		// Area of the new put in m^2
 	   // TODO doe eens fixen
 	   public static double[] rock_layer = 			d	{ 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,0.3, 0.3, 0.3, 0.3};		// height of pavement preparation rock layer in m 
-	   public static double[] sand_layer = 			d	{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
+	   public static double[] sand_layer = 				{ 0, 0, 0, 0, 0 };		// height of pavement preparation sand layer in m
 	   public static double[] bed_preparation =		d	{ 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.   
 	   
 	   
@@ -149,50 +149,50 @@ public class Deventer {
 		 * Fase 1B3
 		 */
 	
-	   // Section nr.									{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }; 		// indicates the number of the section for ease of characteristics input
+	   // Section nr.									{ 1, 2, 3, 4, 5, 6, 7, 8, 9 }; 		// indicates the number of the section for ease of characteristics input
 	   // project characteristics
 	   /*
 		   												public static int[] put = 						{ 1, 0, 1, 0, 2, 0, 0, 1, 0, 1, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
-	   public static int[] shore = 					?	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+	   public static int[] shore = 						{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																								// 2 means Sheet piling (damwand), 3 means supported walls  
-	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
-	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
-	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0};		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
-	   public static double[] num_put_connections = 	{ 2, 0, 3, 0, 3, 0, 0, 2, 0, 2, 0, 1, 0, 0, 0 };  		// number of connections the put has, only if put
-	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
+	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 0, 0, 0 };		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
+	   public static double[] num_put_connections = d	{ 2, 0, 3, 0, 3, 0, 0, 2, 0 };  		// number of connections the put has, only if put
+	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 																								// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
-	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
+	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
 	   																							// 3 means asphalt; pave all sections at end --> 3 can only be used if this goes for all sections
-	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// weight class of cables in the ground 
-	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
-	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
-	   public static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	   public static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// weight class of cables in the ground 
+	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
+	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
+	   public static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 
 	   //Dimensions
-	   public static double[] section_length = 		d	{ 4, 12.5, 4, 12.5, 12.5, 4, 12.5, 4, 12, 4, 4, 12, 4, 5, 15 };  				// length of section in
+	   public static double[] section_length = 			{ 20, 2.25, 55, 2.2, 24, 2, 80, 2, 47};  				// length of section in
 	   public static double pipe_length = 				2.4; 															// length of pipes in
-	   public static double[] section_width = 		d	{ 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of section in
-	   public static double[] trench_width = 		d	{ 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };  								// width of Trench in  					///////////// bigger with puts?
-	   public static double[] trench_depth = 		d	{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };  								// depth of Trench in
+	   public static double[] section_width = 			{ 13, 13, 13, 13, 13, 7, 7, 7, 7 };  								// width of section in
+	   public static double[] trench_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of Trench in  					///////////// bigger with puts?
+	   public static double[] trench_depth = 			{ 3.8, 3.8, 3.8, 3.7, 3.7, 3.7, 3.6, 3.5, 3.4 };  								// depth of Trench in
 	   public static String old_sewer_type = 		 	"Concrete"; 													// type of old sewer	Concrete, Gres, Plastic
 	   public static String new_sewer_type = 		 	"Concrete"; 													// type of new sewer	Concrete, Gres, Plastic
 	   public static double[] old_diameter = 			{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer (HWA if separated)
-	   public static double[] old_diameter_sep =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
-	   public static double[] new_diameter = 			{ 000, 800, 000, 800, 000, 800, 000, 500, 000, 500, 000, 300, 000, xxx, xxx };  		// diameter of new sewer (HWA if separated)
-	   public static double[] new_diameter_sep = 		{ 000, 800, 000, 800, 000, 800, 000, 500, 000, 500, 000, 300, 000, xxx, xxx };  		// diameter of old sewer separated DWA streng 
+	   public static double[] old_diameter_HWA =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
+	   public static double[] new_diameter = 		d	{ 315, 800, 000, 800, 000, 800, 000, 500, 000, 500, 000, 300, 000, xxx, xxx };  		// diameter of new sewer (HWA if separated)
+	   public static double[] new_diameter_HWA = 	d	{ 000, 800, 000, 800, 000, 800, 000, 500, 000, 500, 000, 300, 000, xxx, xxx };  		// diameter of old sewer separated DWA streng 
 	   public static double[] asphalt_old = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40};  		// layer thickness of old asphalt in
 	   public static double[] asphalt_new = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40 };  		// layer thickness of new asphalt in
-	   public static double[] length_connections =	d	{ 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};  		// average length of connections
-	   public static double[] diameter_connections =d	{ 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, };  		// average depth of connections
+	   public static double[] length_connections =		{ 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};  		// average length of connections
+	   public static double[] diameter_connections =	{ 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160 };  		// average depth of connections
 	   public static double[] old_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
-	   public static double[] old_put_area_sep=			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
+	   public static double[] old_put_area_HWA =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
 	   public static double[] new_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
-	   public static double[] new_put_area_sep =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
+	   public static double[] new_put_area_HWA =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
 	   // TODO doe eens fixen
 	   public static double[] rock_layer = 			d	{ 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,0.3, 0.3, 0.3, 0.3};		// height of pavement preparation rock layer in m 
-	   public static double[] sand_layer = 			d	{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
+	   public static double[] sand_layer = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };		// height of pavement preparation sand layer in m
 	   public static double[] bed_preparation =		d	{ 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.   
 	   	   
 	   //each pipe should have a flag if it has a connection or not, this indicates a geometry.
@@ -222,50 +222,50 @@ public class Deventer {
 	   /**
 		 * Fase 1B4
 		 */
-	   // Section nr.									{ 1, 2, 3, 4, 5, 6, 7, 8, 9}; 		// indicates the number of the section for ease of characteristics input
+	   // Section nr.									{ 1, 2, 3, 4, 5, 6, 7, 8}; 		// indicates the number of the section for ease of characteristics input
 	   // project characteristics
 	   /*   												
-	   public static int[] put = 						{ 1, 0, 1, 0, 2, 0, 0, 1, 0 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
-	   public static int[] shore = 					?	{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+	   public static int[] put = 						{ 1, 0, 1, 0, 2, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
+	   public static int[] shore = 						{ 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																								// 2 means Sheet piling (damwand), 3 means supported walls  
-	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
-	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
-	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 0, 0, 0};		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
-	   public static double[] num_put_connections = 	{ 2, 0, 3, 0, 3, 0, 0, 2, 0 };  		// number of connections the put has, only if put
-	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0 }; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
+	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 0, 0 };		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
+	   public static double[] num_put_connections = d	{ 2, 0, 3, 0, 3, 0, 0, 2 };  		// number of connections the put has, only if put
+	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 																								// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
-	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
+	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
 	   																							// 3 means asphalt; pave all sections at end --> 3 can only be used if this goes for all sections
-	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// weight class of cables in the ground 
-	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
-	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
-	   public static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	   public static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// weight class of cables in the ground 
+	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
+	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
+	   public static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 
 	   //Dimensions
-	   public static double[] section_length = 		d	{ 4, 12.5, 4, 12.5, 12.5, 4, 12.5, 4, 12 };  				// length of section in
+	   public static double[] section_length = 			{ 37, 2.25, 54, 2.25, 59, 2.25, 76, 2,25 };  				// length of section in
 	   public static double pipe_length = 				2.4; 															// length of pipes in
-	   public static double[] section_width = 		d	{ 5, 5, 5, 5, 5, 7, 7, 7, 7 };  								// width of section in
-	   public static double[] trench_width = 		d	{ 4, 4, 4, 4, 4, 5, 5, 5, 5 };  								// width of Trench in  					///////////// bigger with puts?
-	   public static double[] trench_depth = 		d	{ 2, 2, 2, 2, 2, 2, 2, 2, 2 };  								// depth of Trench in
+	   public static double[] section_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of section in
+	   public static double[] trench_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of Trench in  					///////////// bigger with puts?
+	   public static double[] trench_depth = 			{ 3.5, 3.4, 3.3, 3.1, 2.5, 2.4, 2.2, 2 };  								// depth of Trench in
 	   public static String old_sewer_type = 		 	"Concrete"; 													// type of old sewer	Concrete, Gres, Plastic
 	   public static String new_sewer_type = 		 	"Concrete"; 													// type of new sewer	Concrete, Gres, Plastic
 	   public static double[] old_diameter = 			{ 000, 000, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer (HWA if separated)
-	   public static double[] old_diameter_sep =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
-	   public static double[] new_diameter = 			{ 000, 800, 000, 800, 000, 800, 000, 500, 000 };  		// diameter of new sewer (HWA if separated)
-	   public static double[] new_diameter_sep = 		{ 000, 800, 000, 800, 000, 800, 000, 500, 000 };  		// diameter of old sewer separated DWA streng 
+	   public static double[] old_diameter_HWA =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
+	   public static double[] new_diameter = 		d	{ 000, 800, 000, 800, 000, 800, 000, 500, 000 };  		// diameter of new sewer (HWA if separated)
+	   public static double[] new_diameter_HWA = 	d	{ 000, 800, 000, 800, 000, 800, 000, 500, 000 };  		// diameter of old sewer separated DWA streng 
 	   public static double[] asphalt_old = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40};  		// layer thickness of old asphalt in
 	   public static double[] asphalt_new = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40 };  		// layer thickness of new asphalt in
-	   public static double[] length_connections =	d	{ 5, 5, 5, 5, 5, 5, 5, 5, 5 };  		// average length of connections
-	   public static double[] diameter_connections =d	{ 300, 300, 300, 300, 300, 300, 300, 300, 300 };  		// average depth of connections
+	   public static double[] length_connections =		{ 5, 5, 5, 5, 5, 5, 5, 5, 5 };  		// average length of connections
+	   public static double[] diameter_connections =	{ 160, 160, 160, 160, 160, 160, 160, 160, 160 };  		// average depth of connections
 	   public static double[] old_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
-	   public static double[] old_put_area_sep=			{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
+	   public static double[] old_put_area_HWA =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
 	   public static double[] new_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4};		// Area of the new put in m^2
-	   public static double[] new_put_area_sep =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
+	   public static double[] new_put_area_HWA =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
 	   // TODO doe eens fixen
 	   public static double[] rock_layer = 			d	{ 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,0.3, 0.3, 0.3, 0.3};		// height of pavement preparation rock layer in m 
-	   public static double[] sand_layer = 			d	{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
+	   public static double[] sand_layer = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };		// height of pavement preparation sand layer in m
 	   public static double[] bed_preparation =		d	{ 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.   
 	   
 	   //each pipe should have a flag if it has a connection or not, this indicates a geometry.
@@ -293,16 +293,16 @@ public class Deventer {
 	   // project characteristics
 	   /*
 		   												public static int[] put = 						{ 1, 0, 1, 0, 2, 0, 0, 1, 0, 1, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
-	   public static int[] shore = 					?	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
-																								// 2 means Sheet piling (damwand), 3 means supported walls  
+	   public static int[] shore = 						{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+																											// 2 means Sheet piling (damwand), 3 means supported walls  
 	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
 	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
-	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0};		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
-	   public static double[] num_put_connections = 	{ 2, 0, 3, 0, 3, 0, 0, 2, 0, 2, 0, 1, 0, 0, 0 };  		// number of connections the put has, only if put
+	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 };		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
+	   public static double[] num_put_connections = d	{ 2, 0, 3, 0, 3, 0, 0, 2, 0, 2, 0, 1, 0, 0, 0 };  		// number of connections the put has, only if put
 	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
-																								// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
+																											// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
 	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
-	   																							// 3 means asphalt; pave all sections at end --> 3 can only be used if this goes for all sections
+	   																										// 3 means asphalt; pave all sections at end --> 3 can only be used if this goes for all sections
 	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// weight class of cables in the ground 
 	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
 	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
@@ -311,28 +311,28 @@ public class Deventer {
 	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 
 	   //Dimensions
-	   public static double[] section_length = 		d	{ 4, 12.5, 4, 12.5, 12.5, 4, 12.5, 4, 12, 4, 4, 12, 4, 5, 15 };  				// length of section in
+	   public static double[] section_length = 			{ 33, 2, 39, 2.25, 80, 2.25, 80, 2.25, 80, 2.25, 70, 2.25, 39, 2.25, 31 };  				// length of section in
 	   public static double pipe_length = 				2.4; 															// length of pipes in
-	   public static double[] section_width = 		d	{ 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of section in
-	   public static double[] trench_width = 		d	{ 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };  								// width of Trench in  					///////////// bigger with puts?
-	   public static double[] trench_depth = 		d	{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };  								// depth of Trench in
+	   public static double[] section_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of section in
+	   public static double[] trench_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of Trench in  					///////////// bigger with puts?
+	   public static double[] trench_depth = 			{ 3.4, 3.4, 3.3, 3.3, 3.2, 3.2, 3.2, 3.0, 2.8, 2.7, 2.6, 2.5, 2.4, 2.4, 2.4 };  								// depth of Trench in
 	   public static String old_sewer_type = 		 	"Concrete"; 													// type of old sewer	Concrete, Gres, Plastic
 	   public static String new_sewer_type = 		 	"Concrete"; 													// type of new sewer	Concrete, Gres, Plastic
 	   public static double[] old_diameter = 			{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer (HWA if separated)
-	   public static double[] old_diameter_sep =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
-	   public static double[] new_diameter = 			{ 000, 800, 000, 800, 000, 800, 000, 500, 000, 500, 000, 300, 000, xxx, xxx };  		// diameter of new sewer (HWA if separated)
-	   public static double[] new_diameter_sep = 		{ 000, 800, 000, 800, 000, 800, 000, 500, 000, 500, 000, 300, 000, xxx, xxx };  		// diameter of old sewer separated DWA streng 
+	   public static double[] old_diameter_HWA =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
+	   public static double[] new_diameter = 		d	{ 000, 800, 000, 800, 000, 800, 000, 500, 000, 500, 000, 300, 000, xxx, xxx };  		// diameter of new sewer (HWA if separated)
+	   public static double[] new_diameter_HWA = 	d	{ 000, 800, 000, 800, 000, 800, 000, 500, 000, 500, 000, 300, 000, xxx, xxx };  		// diameter of old sewer separated DWA streng 
 	   public static double[] asphalt_old = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40};  		// layer thickness of old asphalt in
 	   public static double[] asphalt_new = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40 };  		// layer thickness of new asphalt in
-	   public static double[] length_connections =	d	{ 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};  		// average length of connections
-	   public static double[] diameter_connections =d	{ 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, };  		// average depth of connections
+	   public static double[] length_connections =		{ 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};  		// average length of connections
+	   public static double[] diameter_connections =	{ 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160 };  		// average depth of connections
 	   public static double[] old_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
-	   public static double[] old_put_area_sep=			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
+	   public static double[] old_put_area_HWA =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
 	   public static double[] new_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
-	   public static double[] new_put_area_sep =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
+	   public static double[] new_put_area_HWA =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
 	   // TODO doe eens fixen
 	   public static double[] rock_layer = 			d	{ 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,0.3, 0.3, 0.3, 0.3};		// height of pavement preparation rock layer in m 
-	   public static double[] sand_layer = 			d	{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
+	   public static double[] sand_layer = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };		// height of pavement preparation sand layer in m
 	   public static double[] bed_preparation =		d	{ 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.   
 	   	   
 	   //each pipe should have a flag if it has a connection or not, this indicates a geometry.
@@ -363,50 +363,50 @@ public class Deventer {
 		 * Fase 1C1
 		 */
 	
-	   // Section nr.									{ 1, 2, 3, 4, 5, 6, 7, 8 }; 		// indicates the number of the section for ease of characteristics input
+	   // Section nr.									{ 1, 2, 3, 4, 5, 6, 7 }; 		// indicates the number of the section for ease of characteristics input
 	   // project characteristics
 	   /*
-		public static int[] put = 						{ 1, 0, 1, 0, 2, 0, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
-	   public static int[] shore = 					?	{ 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+		public static int[] put = 						{ 1, 0, 1, 0, 2, 0, 0 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
+	   public static int[] shore = 					?	{ 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																								// 2 means Sheet piling (damwand), 3 means supported walls  
-	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0 }; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
-	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
-	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 0, 0 };		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
-	   public static double[] num_put_connections = 	{ 2, 0, 3, 0, 3, 0, 0, 2 };  		// number of connections the put has, only if put
-	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0 }; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
+	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 0 };		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
+	   public static double[] num_put_connections = d	{ 2, 0, 3, 0, 3, 0, 0};  		// number of connections the put has, only if put
+	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 																								// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
-	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
+	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
 	   																							// 3 means asphalt; pave all sections at end --> 3 can only be used if this goes for all sections
-	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// weight class of cables in the ground 
-	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
-	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
-	   public static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	   public static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0 };  		// weight class of cables in the ground 
+	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
+	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
+	   public static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 
 	   //Dimensions
-	   public static double[] section_length = 		d	{ 4, 12.5, 4, 12.5, 12.5, 4, 12.5, 4};  				// length of section in
+	   public static double[] section_length = 			{ 25, 1.5, 80, 1.5, 80, 2, 15};  				// length of section in
 	   public static double pipe_length = 				2.4; 															// length of pipes in
-	   public static double[] section_width = 		d	{ 5, 5, 5, 5, 5, 7, 7, 7 };  								// width of section in
-	   public static double[] trench_width = 		d	{ 4, 4, 4, 4, 4, 5, 5, 5 };  								// width of Trench in  					///////////// bigger with puts?
-	   public static double[] trench_depth = 		d	{ 2, 2, 2, 2, 2, 2, 2, 2 };  								// depth of Trench in
+	   public static double[] section_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of section in
+	   public static double[] trench_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of Trench in  					///////////// bigger with puts?
+	   public static double[] trench_depth = 			{ 2.2, 2.2, 2, 1.8, 1.7, 1.5, 1.5 };  								// depth of Trench in
 	   public static String old_sewer_type = 		 	"Concrete"; 													// type of old sewer	Concrete, Gres, Plastic
 	   public static String new_sewer_type = 		 	"Concrete"; 													// type of new sewer	Concrete, Gres, Plastic
-	   public static double[] old_diameter = 			{ 000, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer (HWA if separated)
-	   public static double[] old_diameter_sep =		{ 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
-	   public static double[] new_diameter = 			{ 000, 800, 000, 800, 000, 800, 000, 500 };  		// diameter of new sewer (HWA if separated)
-	   public static double[] new_diameter_sep = 		{ 000, 800, 000, 800, 000, 800, 000, 500 };  		// diameter of old sewer separated DWA streng 
+	   public static double[] old_diameter = 			{ 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer (HWA if separated)
+	   public static double[] old_diameter_HWA =		{ 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
+	   public static double[] new_diameter = 		d	{ 000, 800, 000, 800, 000, 800, 000 };  		// diameter of new sewer (HWA if separated)
+	   public static double[] new_diameter_HWA = 	d	{ 400, 400, 400, 400, 400, 500, 500 };  		// diameter of old sewer separated DWA streng 
 	   public static double[] asphalt_old = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40 };  		// layer thickness of old asphalt in
 	   public static double[] asphalt_new = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40 };  		// layer thickness of new asphalt in
-	   public static double[] length_connections =	d	{ 5, 5, 5, 5, 5, 5, 5, 5};  		// average length of connections
-	   public static double[] diameter_connections =d	{ 300, 300, 300, 300, 300, 300, 300, 300, };  		// average depth of connections
+	   public static double[] length_connections =		{ 5, 5, 5, 5, 5, 5, 5, 5};  		// average length of connections
+	   public static double[] diameter_connections =	{ 160, 160, 160, 160, 160, 160, 160, 160 };  		// average depth of connections
 	   public static double[] old_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
-	   public static double[] old_put_area_sep=			{ 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
+	   public static double[] old_put_area_HWA =			{ 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
 	   public static double[] new_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
-	   public static double[] new_put_area_sep =		{ 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
+	   public static double[] new_put_area_HWA =		{ 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
 	   // TODO doe eens fixen
 	   public static double[] rock_layer = 			d	{ 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3};		// height of pavement preparation rock layer in m 
-	   public static double[] sand_layer = 			d	{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2 };		// height of pavement preparation sand layer in m
+	   public static double[] sand_layer = 				{ 0, 0, 0, 0, 0, 0, 0, 0 };		// height of pavement preparation sand layer in m
 	   public static double[] bed_preparation =		d	{ 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.   
 	   
 	   //each pipe should have a flag if it has a connection or not, this indicates a geometry.
@@ -429,50 +429,50 @@ public class Deventer {
 		 * Fase 1C2
 		 */
 	
-		// Section nr.									{ 1, 2, 3, 4, 5, 6, 7, 8, 9}; 		// indicates the number of the section for ease of characteristics input
+		// Section nr.									{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }; 		// indicates the number of the section for ease of characteristics input
 	   // project characteristics
 	   /*   												
-	   public static int[] put = 						{ 1, 0, 1, 0, 2, 0, 0, 1, 0 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
-	   public static int[] shore = 					?	{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+	   public static int[] put = 					d	{ 1, 0, 1, 0, 2, 0, 0, 1, 0 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
+	   public static int[] shore = 						{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																								// 2 means Sheet piling (damwand), 3 means supported walls  
-	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
-	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
-	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 0, 0, 0};		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
-	   public static double[] num_put_connections = 	{ 2, 0, 3, 0, 3, 0, 0, 2, 0 };  		// number of connections the put has, only if put
-	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
+	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+	   public static int [] newSeparated = 			d	{ 1, 1, 1, 1, 1, 1, 0, 0, 0};		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
+	   public static double[] num_put_connections = d	{ 2, 0, 3, 0, 3, 0, 0, 2, 0 };  		// number of connections the put has, only if put
+	   public static int[] old_pavement = 				{  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 																								// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
-	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
+	   public static int[] new_pavement = 				{  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
 	   																							// 3 means asphalt; pave all sections at end --> 3 can only be used if this goes for all sections
-	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// weight class of cables in the ground 
-	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
-	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
-	   public static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	   public static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// weight class of cables in the ground 
+	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
+	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
+	   public static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 
 	   //Dimensions
-	   public static double[] section_length = 		d	{ 4, 12.5, 4, 12.5, 12.5, 4, 12.5, 4, 12 };  				// length of section in
+	   public static double[] section_length = 			{ 25, 2, 80, 2.25, 46, 2.25, 80, 2.25, 80, 2.25, 93, 2.25,31, 2, 24 };  				// length of section in
 	   public static double pipe_length = 				2.4; 															// length of pipes in
-	   public static double[] section_width = 		d	{ 5, 5, 5, 5, 5, 7, 7, 7, 7 };  								// width of section in
-	   public static double[] trench_width = 		d	{ 4, 4, 4, 4, 4, 5, 5, 5, 5 };  								// width of Trench in  					///////////// bigger with puts?
-	   public static double[] trench_depth = 		d	{ 2, 2, 2, 2, 2, 2, 2, 2, 2 };  								// depth of Trench in
+	   public static double[] section_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of section in
+	   public static double[] trench_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of Trench in  					///////////// bigger with puts?
+	   public static double[] trench_depth = 			{ 4.3, 4.1, 3.9, 3.7, 3.4, 3.4, 3.3, 3.3, 3.2, 3.1, 3, 2.9, 2.8, 2.8, 2.7 };  								// depth of Trench in
 	   public static String old_sewer_type = 		 	"Concrete"; 													// type of old sewer	Concrete, Gres, Plastic
 	   public static String new_sewer_type = 		 	"Concrete"; 													// type of new sewer	Concrete, Gres, Plastic
-	   public static double[] old_diameter = 			{ 000, 000, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer (HWA if separated)
-	   public static double[] old_diameter_sep =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
-	   public static double[] new_diameter = 			{ 000, 800, 000, 800, 000, 800, 000, 500, 000 };  		// diameter of new sewer (HWA if separated)
-	   public static double[] new_diameter_sep = 		{ 000, 800, 000, 800, 000, 800, 000, 500, 000 };  		// diameter of old sewer separated DWA streng 
+	   public static double[] old_diameter = 			{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer (HWA if separated)
+	   public static double[] old_diameter_HWA =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
+	   public static double[] new_diameter = 		d	{ 000, 800, 000, 800, 000, 800, 000, 500, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of new sewer (HWA if separated)
+	   public static double[] new_diameter_HWA = 	d	{ 000, 800, 000, 800, 000, 800, 000, 500, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer separated DWA streng 
 	   public static double[] asphalt_old = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40};  		// layer thickness of old asphalt in
 	   public static double[] asphalt_new = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40 };  		// layer thickness of new asphalt in
-	   public static double[] length_connections =	d	{ 5, 5, 5, 5, 5, 5, 5, 5, 5 };  		// average length of connections
-	   public static double[] diameter_connections =d	{ 300, 300, 300, 300, 300, 300, 300, 300, 300 };  		// average depth of connections
+	   public static double[] length_connections =		{ 5, 5, 5, 5, 5, 5, 5, 5, 5 };  		// average length of connections
+	   public static double[] diameter_connections =	{ 160, 160, 160, 160, 160, 160, 160, 160, 160 };  		// average depth of connections
 	   public static double[] old_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
-	   public static double[] old_put_area_sep=			{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
+	   public static double[] old_put_area_HWA =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
 	   public static double[] new_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4};		// Area of the new put in m^2
-	   public static double[] new_put_area_sep =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
+	   public static double[] new_put_area_HWA =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
 	   // TODO doe eens fixen
 	   public static double[] rock_layer = 			d	{ 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,0.3, 0.3, 0.3, 0.3};		// height of pavement preparation rock layer in m 
-	   public static double[] sand_layer = 			d	{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
+	   public static double[] sand_layer = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };		// height of pavement preparation sand layer in m
 	   public static double[] bed_preparation =		d	{ 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.   
 	   
 	   //each pipe should have a flag if it has a connection or not, this indicates a geometry.
@@ -505,7 +505,7 @@ public class Deventer {
 	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
 	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
 	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 0, 0, 0};		// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
-	   public static double[] num_put_connections = 	{ 2, 0, 3, 0, 3, 0, 0, 2, 0 };  		// number of connections the put has, only if put
+	   public static double[] num_put_connections = d	{ 2, 0, 3, 0, 3, 0, 0, 2, 0 };  		// number of connections the put has, only if put
 	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
 																								// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
 	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
@@ -518,28 +518,28 @@ public class Deventer {
 	   public static double[] pipes_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	
 	   //Dimensions
-	   public static double[] section_length = 		d	{ 4, 12.5, 4, 12.5, 12.5, 4, 12.5, 4, 12 };  				// length of section in
+	   public static double[] section_length = 			{ 55, 2, 80, 1.5, 80, 1.5, 80, 2, 67 };  				// length of section in
 	   public static double pipe_length = 				2.4; 															// length of pipes in
-	   public static double[] section_width = 		d	{ 5, 5, 5, 5, 5, 7, 7, 7, 7 };  								// width of section in
-	   public static double[] trench_width = 		d	{ 4, 4, 4, 4, 4, 5, 5, 5, 5 };  								// width of Trench in  					///////////// bigger with puts?
-	   public static double[] trench_depth = 		d	{ 2, 2, 2, 2, 2, 2, 2, 2, 2 };  								// depth of Trench in
+	   public static double[] section_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of section in
+	   public static double[] trench_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7, 7 };  								// width of Trench in  					///////////// bigger with puts?
+	   public static double[] trench_depth = 			{ 2.7, 2.5, 2.4, 2.3, 2.2, 2.1, 1.9, 1.8, 1.5};  								// depth of Trench in
 	   public static String old_sewer_type = 		 	"Concrete"; 													// type of old sewer	Concrete, Gres, Plastic
 	   public static String new_sewer_type = 		 	"Concrete"; 													// type of new sewer	Concrete, Gres, Plastic
 	   public static double[] old_diameter = 			{ 000, 000, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer (HWA if separated)
-	   public static double[] old_diameter_sep =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
-	   public static double[] new_diameter = 			{ 000, 800, 000, 800, 000, 800, 000, 500, 000 };  		// diameter of new sewer (HWA if separated)
-	   public static double[] new_diameter_sep = 		{ 000, 800, 000, 800, 000, 800, 000, 500, 000 };  		// diameter of old sewer separated DWA streng 
+	   public static double[] old_diameter_HWA =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
+	   public static double[] new_diameter = 		d	{ 000, 800, 000, 800, 000, 800, 000, 500, 000 };  		// diameter of new sewer (HWA if separated)
+	   public static double[] new_diameter_HWA = 	d	{ 000, 800, 000, 800, 000, 800, 000, 500, 000 };  		// diameter of old sewer separated DWA streng 
 	   public static double[] asphalt_old = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40};  		// layer thickness of old asphalt in
 	   public static double[] asphalt_new = 		?	{ 40, 40, 40, 40, 40, 40, 40, 40, 40 };  		// layer thickness of new asphalt in
-	   public static double[] length_connections =	d	{ 5, 5, 5, 5, 5, 5, 5, 5, 5 };  		// average length of connections
-	   public static double[] diameter_connections =d	{ 300, 300, 300, 300, 300, 300, 300, 300, 300 };  		// average depth of connections
+	   public static double[] length_connections =		{ 5, 5, 5, 5, 5, 5, 5, 5, 5 };  		// average length of connections
+	   public static double[] diameter_connections =	{ 160, 160, 160, 160, 160, 160, 160, 160, 160 };  		// average depth of connections
 	   public static double[] old_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
-	   public static double[] old_put_area_sep=			{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
+	   public static double[] old_put_area_HWA =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the old put in m^2
 	   public static double[] new_put_area =			{ 4, 4, 4, 4, 4, 4, 4, 4, 4};		// Area of the new put in m^2
-	   public static double[] new_put_area_sep =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
+	   public static double[] new_put_area_HWA =		{ 4, 4, 4, 4, 4, 4, 4, 4, 4 };		// Area of the new put in m^2
 	   // TODO doe eens fixen
 	   public static double[] rock_layer = 			d	{ 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,0.3, 0.3, 0.3, 0.3};		// height of pavement preparation rock layer in m 
-	   public static double[] sand_layer = 			d	{ 0.04, 0.04, 0.04, 2, 1, 1, 2, 2, 2, 2 };		// height of pavement preparation sand layer in m
+	   public static double[] sand_layer = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };		// height of pavement preparation sand layer in m
 	   public static double[] bed_preparation =		d	{ 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 }; //height of bed preparation layer.   
 	   
 	   //each pipe should have a flag if it has a connection or not, this indicates a geometry.

@@ -7,6 +7,10 @@ import desmoj.core.simulator.Model;
 
 public class Section
 {
+	/** 
+	 * Not used ATM
+	 * this section should store section parameters
+	 */
 	
 	/**
 	* Calculation of section specific parameters

@@ -143,7 +143,7 @@ public class SectionProcessAll extends ParentProcess
 		Total_area = (myModel.getTotal_length() * Section_width);		// total working area of all sections
 		
 		if(this.Num_Connections != 0) 		// if there are housing connections backfill is only to top of main sewer pipe
-			// height of first backfill in m (pipe diameter + 2x average wall thickness)
+			// height of first backfill in m (pipe diameter + 2x average wall thickness (wall = 0.13 * diameter) calculated by multiplying the pipe diameter with 1.26)
 			{First_backfill_height = New_diameter * 1.26 * 0.001;
 			// height of second backfill in m, only if there are connections
 			Second_backfill_height = Trench_depth - First_backfill_height;}
@@ -302,8 +302,8 @@ public class SectionProcessAll extends ParentProcess
 		   }
 		   
 		   // 5b prepare the bed
-		   // TODO bed preparations not always necessary? is already possible by keeping the activity 0 but then it stil shows in output.
-		   // possibly make it the lightest variant of foundation?
+		   // TODO bed preparations not always necessary? is already possible by keeping the activity 0 but then it still shows in output.
+		   // TODO possibly make it the lightest variant of foundation?
 		   myModel.crews.provide(1); myModel.excavators.provide(1);
 		   start_3 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getBedPreparationTime() * ((Pipe_area * Bed_preparation)/ProductionDB.getPreparation())), TimeUnit.HOURS)); 
@@ -481,31 +481,27 @@ public class SectionProcessAll extends ParentProcess
 	   
 	   // TODO It could also be that only a broken-stone road is constructed and paving alone is performed later
 	   
-	   // 11a. roll/prepare surface - sand TODO work further on 11a & b.
-	   myModel.rollers.provide(1);
-	   start_3 = myModel.presentTime();
-	   hold (new TimeSpan((myModel.getSurfacePrepareTime() * (Section_area/ProductionDB.getPaving_preparation())), TimeUnit.HOURS));
-	   ActivityMessage msg_12 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
-	   sendMessage(msg_12);
-	   sendTraceNote("Activity: " + getName() + " Compact: " + start_3.toString() + 
-			   " End: " + myModel.presentTime().toString());
-
-	   myModel.rollers.takeBack(1);
-	   myModel.prepare();
-	   if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
-		   myModel.rollers.stopUse();
-		   System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
+	   // 11a. roll/prepare surface - sand for brick paving
+	   if(New_pavement == 2){
+		   myModel.rollers.provide(1);
+		   start_3 = myModel.presentTime();
+		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * (Section_area/ProductionDB.getPaving_preparation())), TimeUnit.HOURS));
+		   ActivityMessage msg_12 = new ActivityMessage(myModel, this, start_3, "Roll ", myModel.presentTime(), 0) ;
+		   sendMessage(msg_12);
+		   sendTraceNote("Activity: " + getName() + " Compact: " + start_3.toString() + 
+				   " End: " + myModel.presentTime().toString());
+	
+		   myModel.rollers.takeBack(1);
+		   myModel.prepare();
+		   if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
+			   myModel.rollers.stopUse();
+			   System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
+		   }
 	   }
 	  
-	   // Allows the next section to start after this if setting is set to 3 in UtilitySimulation.java)
-	   if(myModel.getSectionWait() == 3) 
-	   {
-		   myModel.startingCondition.store(1);
-	   }
-	   
-	   // 11b. roll/prepare surface - broken rock
+	   // 11b. roll/prepare surface - broken rock for asphalt paving
 	   // TODO finish & investigate if this is a choice or always the same + who does this?
-	   if(myModel.getPrepareSurface() == 1)
+	   if(New_pavement == 1 )
 		   {myModel.trucks.provide(1);
 		   start_3 = myModel.presentTime();
 		   hold (new TimeSpan((myModel.getSurfacePrepareTime() * ((Section_length * Rock_layer )/ProductionDB.getPaving_preparation())), TimeUnit.HOURS));
@@ -519,11 +515,12 @@ public class SectionProcessAll extends ParentProcess
 		    	  myModel.rollers.stopUse();
 		       System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
    		   		}
-		   // Allows the next section to start after this if setting is set to 4 in UtilitySimulation.java)
-		   if(myModel.getSectionWait() == 4) 
-		   {
-			   myModel.startingCondition.store(1);
-		   }
+	   }
+	   
+	   // Allows the next section to start after this if setting is set to 3 in UtilitySimulation.java)
+	   if(myModel.getSectionWait() == 3) 
+	   {
+		   myModel.startingCondition.store(1);
 	   }
 	   
 	   // 12. pave 
@@ -531,12 +528,12 @@ public class SectionProcessAll extends ParentProcess
 		 * start new paving process
 		 */
 	    Paving pavement = new Paving(
-	    		myModel, this, "Paving Section ", true, New_pavement, Total_area, Section_area, ProductionDB.getPaving_time());
+	    		myModel, this, "Paving Section ", true, New_pavement, Total_area, Section_area, ProductionDB.getPaving_time(), Rock_layer, ProductionDB.getPaving_preparation());
 		pavement.activate();
 		this.passivate();		//this needs to passivate while paving performs it's activities
 	   
 	   // Allows the next section to start after this if setting is set to 5 in UtilitySimulation.java)
-	   if(myModel.getSectionWait() == 5) 
+	   if(myModel.getSectionWait() == 4) 
 	   {
 		   myModel.startingCondition.store(1);
 	   }

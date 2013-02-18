@@ -9,8 +9,6 @@ import java.io.Serializable;
 public class Scenario implements Serializable
 {
 
-	// how to start connections after a certain amount of time?
-	// implement start connections after certain amount of pipes
 	/**
 	 * 
 	 */
@@ -23,7 +21,8 @@ public class Scenario implements Serializable
 	    * Model parameters: Project parameters (the number of sections, puts and resources, etc)
 	    */
 	   private static int NUM_SEC = 9;			// number of sections
-	   // MAX 4 FOR NOW as the arrays in UtilitySimulation.java aren't longer.
+	   // Max nr. of sections is restricted by array length of parameters in UtilitySimulation.java.
+	   // this shouls be replaced by variable length ArrayLists filled by data from UI
 	   private int NUM_PUT = 0;					// number of puts
 	   private int NUM_BREAKER = 1;				// number of breakers
 	   private int NUM_EXCAVATOR = 1;			// number of excavators

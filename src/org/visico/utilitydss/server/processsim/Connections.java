@@ -11,8 +11,6 @@ import desmoj.core.simulator.TimeSpan;
 
 public class Connections extends ParentProcess
 { 	
-	//TODO fix crews/cranes/excavators!!!!!!!!!!!!!!!
-	
 	
 	/**
 	    * @author Simon
