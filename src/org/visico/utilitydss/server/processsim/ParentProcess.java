@@ -31,7 +31,6 @@ public class ParentProcess extends SimProcess
 			int replacement,
 			int old_separated,
 			int new_separated,
-			int connections,
 			double num_put_connections,
 			int old_pavement,
 			int new_pavement,
@@ -64,8 +63,6 @@ public class ParentProcess extends SimProcess
 	{
 		super(owner, name, showInTrace);
 		
-	Num_Connections = connections;
-
 	}
 	
 	@Override

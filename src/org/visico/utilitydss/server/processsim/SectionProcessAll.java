@@ -32,7 +32,6 @@ public class SectionProcessAll extends ParentProcess
 			int replacement,
 			int old_separated,
 			int new_separated,
-			int connections,
 			double num_put_connections,
 			int old_pavement,
 			int new_pavement,
@@ -44,7 +43,9 @@ public class SectionProcessAll extends ParentProcess
 			String old_sewer_type,
 			String new_sewer_type,
 			double old_diameter,
+			double old_diameter_sep,
 			double new_diameter,
+			double new_diameter_sep,
 			double asphalt_old,
 			double asphalt_new,
 			double cables,
@@ -58,13 +59,15 @@ public class SectionProcessAll extends ParentProcess
 			double rock_layer,
 			double sand_layer,
 			double old_put_area,
+			double old_put_area_sep,
 			double new_put_area,
+			double new_put_area_sep,
 			double bed_preparation,
 			int pipe_connections[]
 			) 
 	
 	{
-		super(owner, name, showInTrace, shore, replacement, old_separated, new_separated, connections, num_put_connections, old_pavement, 
+		super(owner, name, showInTrace, shore, replacement, old_separated, new_separated, num_put_connections, old_pavement, 
 				new_pavement, section_length, pipe_length, section_width, trench_width, trench_depth, 
 				old_sewer_type, new_sewer_type, old_diameter, new_diameter, asphalt_old, asphalt_new, cables, 
 				length_connections, diameter_connections, foundation_type, soil_removed, soil_new, pipes_old, 
@@ -75,7 +78,6 @@ public class SectionProcessAll extends ParentProcess
 		Replacement = replacement; 					// indicates if this section has old sewer to be removed
 		Old_Separated = old_separated;				// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
 		New_Separated = new_separated;				// Indicates if the new section has combined or separated sewer: 0 is combined, 2 is separated
-		Num_Connections = connections;				// indicates the number of connections in this section
 		Old_pavement = old_pavement; 				// type of old pavement
 		New_pavement = new_pavement;  				// type of new pavement
 		Section_length = section_length;  			// length of section in
@@ -86,7 +88,9 @@ public class SectionProcessAll extends ParentProcess
 		Old_sewer_type = old_sewer_type; 			// type of old sewer
 		New_sewer_type = new_sewer_type; 			// type of new sewer
 		Old_diameter = old_diameter;  				// diameter of old sewer 
+		Old_diameter_Sep = old_diameter_sep;  		// diameter of old DWA sewer in case of separated
 		New_diameter = new_diameter;  				// diameter of new sewer
+		New_diameter_Sep = new_diameter_sep;  		// diameter of new DWA sewer in case of separated
 		Asphalt_old = asphalt_old;  				// layer thickness of old asphalt in
 		Asphalt_new = asphalt_new;  				// layer thickness of new asphalt in // 
 		Cables = cables;  							// weight class of cables in the ground
@@ -100,7 +104,9 @@ public class SectionProcessAll extends ParentProcess
 		Rock_layer = rock_layer;					// height of broken rock layer
 		Sand_layer = sand_layer;					// height of sand layer	
 		Old_put_area = old_put_area;				// area of the old put
+		Old_put_area_sep = old_put_area_sep;				// area of the old put
 		New_put_area = new_put_area;				// area of the new put
+		New_put_area_sep = new_put_area_sep;				// area of the new put
 		Pipe_connections = pipe_connections;		// indicates if a pipe has a connection.
 		}
 	
@@ -130,7 +136,6 @@ public class SectionProcessAll extends ParentProcess
 
 	public void lifeCycle() 
 	{
-		System.out.println("nothing to report" + Num_Connections);
 		
 		/**
 		 * Calculation of section specific parameters
@@ -166,7 +171,9 @@ public class SectionProcessAll extends ParentProcess
 			Old_sewer_type,			// type of old sewer
 			New_sewer_type,			// type of new sewer
 			Old_diameter,			// diameter of old sewer 
+			Old_diameter_Sep,		// diameter of old DWA sewer in case of separated sewer
 			New_diameter,			// diameter of new sewer
+			New_diameter_Sep,		// diameter of new DWA sewer in case of separated sewer
 			Asphalt_old,			// layer thickness of old asphalt in
 			Asphalt_new,			// layer thickness of new asphalt in
 			Cables,					// weight class of cables in the ground
@@ -180,7 +187,9 @@ public class SectionProcessAll extends ParentProcess
 			Rock_layer,				// height of pavement preparation rock layer in m
 			Sand_layer,				// height of pavement preparation sand layer in m
 			Old_put_area,			// area of the old put
+			Old_put_area_sep,		// area of the new DWA put in case of separated sewer
 			New_put_area,			// area of the new put
+			New_put_area_sep,		// area of the new DWA put in case of separated sewer
 			Bed_preparation			// height of bed preparation layer 
 			);
 		
@@ -211,7 +220,7 @@ public class SectionProcessAll extends ParentProcess
 		 * COMMENT: this results in errors in usage percentages since the program thinks the resource is in use
 		 * A better solution would be to instantiate the resource after the selected amount of time has passed.
 		 */
-		if(myModel.getSecondCrew()== true && this.getIdentNumber() ==1){
+		if(myModel.getSecondCrew()== true && this.getIdentNumber() == 1){
 			SecondCrewDelay Delay = new SecondCrewDelay(
 					myModel,					//owner
 					"Delay for second crew", 	//name
@@ -280,7 +289,8 @@ public class SectionProcessAll extends ParentProcess
 			    myModel.crews.provide(1); myModel.excavators.provide(1);
 			   	for(int j=1; j<=Old_Separated; j++){
 				   	start_3 = myModel.presentTime();
-			   		hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getPipe_removal()) * ProductionDB.getPipe_rm_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));
+			   		if(j == 1){hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getPipe_removal()) * ProductionDB.getPipe_rm_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));} // pipe removal combined sewer or HWA sewer
+			   		else{hold (new TimeSpan((myModel.getPipeRemoveTime() * (Pipe_length/ProductionDB.getPipe_removal_sep()) * ProductionDB.getPipe_rm_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));} // pipe removal separated sewer  Dwa sewer
 			   		ActivityMessage msg_4 = new ActivityMessage(myModel, this, start_3, "Remove Pipe " + i +"."+ j, myModel.presentTime(), 3) ;
 					sendMessage(msg_4);
 			   		sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Remove pipe: " + start_3.toString() + 
@@ -317,7 +327,8 @@ public class SectionProcessAll extends ParentProcess
 		   myModel.crews.provide(1); myModel.excavators.provide(1);
 		   for(int j=1; j<=New_Separated; j++){
 			   start_3 = myModel.presentTime();
-			   hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/ProductionDB.getPipe_placement()) * ProductionDB.getPipe_pl_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));
+			   if(j == 1){hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/ProductionDB.getPipe_placement()) * ProductionDB.getPipe_pl_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));}// pipe placement combined sewer or HWA sewer
+			   else{hold (new TimeSpan((myModel.getPipePlacingTime() * (Pipe_length/ProductionDB.getPipe_placement_sep()) * ProductionDB.getPipe_pl_factor() * ProductionDB.getCables_weight()), TimeUnit.HOURS));} // pipe placement separated sewer  Dwa sewer
 			   ActivityMessage msg_7 = new ActivityMessage(myModel, this, start_3, "Install Pipe " + i + "."+ j, myModel.presentTime(), 3) ;
 			   sendMessage(msg_7);
 			   sendTraceNote("Activity: " + getName() + " Pipe: " + i + " Install Pipe: " + start_3.toString() + 
@@ -357,40 +368,43 @@ public class SectionProcessAll extends ParentProcess
 		    * If this pipe has a connection (rain or house) a process for developing this connection should be initialed.
 		    * 
 		    * The  loop iterates trough the total length of the array. 
-		    * If the number of the current pipe is stored in the array a connection process is started.
+		    * A connection process is only started if there is a connection in this pipe.
 		    */
 		   
-		   for(int j=0;j<Pipe_connections.length;j++)
-		   {
-			   if(Pipe_connections[j]==i){
-				   			        	
+		   
+		   for(int j=0; j<Pipe_connections.length; j++)
+			   {
+			   if(Pipe_connections[j] == i)
+			   	   {
+		   
+	   			        	
 		        	/**
 		    		 * Initiation of the connections process. This process can be performed by the same crew as the main sewer after the main 
 		    		 * sewer is completed or simultaneously by another crew after a certain amount of work is done on the main sewer.
 		    		 * 
 		    		 */
 		    		Connections housing_connection = new Connections(
-    		   		myModel, 				// owner
-    				this,					// parent
-    				"housing connection ",	// name
-    				true, 					// show in trace
-    				ProductionDB.getConnection_duration_hwa(),
-    				Second_backfill_height,
-    				Pipe_area, 
-    				Trench_area,
-    				ProductionDB.getBackfill(),
-    				ProductionDB.getSoil_pl_factor());
-    			   	
-    			   	housing_connection.activate(); 
-    			   	System.out.println("connection started");
-    			   	
-    			   	// if there is only one crew the main process waits till the connection is constructed
-    			   	if (myModel.getSecondCrew() == false) {
-    			   		this.passivate();
-    			   	}
-    			 
-		    	}
-		   }
+			   		myModel, 				// owner
+					this,					// parent
+					"housing connection ",	// name
+					true, 					// show in trace
+					ProductionDB.getConnection_duration_hwa(),
+					Second_backfill_height,
+					Pipe_area,
+					ProductionDB.getBackfill(),
+					ProductionDB.getSoil_pl_factor()); 
+				   	
+				   	housing_connection.activate(); 
+				   	System.out.println("connection started");
+				   	this.Num_Connections ++;
+				   	// if there is only one crew the main process waits till the connection is constructed
+				   	if (myModel.getSecondCrew() == false) {
+				   		this.passivate();
+				   	}
+			   	}
+			 
+	    	}
+		   
 		   
 	   // End of pipe iteration lifecycle
 	   }
@@ -401,7 +415,7 @@ public class SectionProcessAll extends ParentProcess
 	   // Stops main sewer crew if there are second crews for connections and main crews completed all their work in all sections.   
 	   if(myModel.getSecondCrew()) // if there are second crews:
 	   {	
-		   if (UtilitySimulation.getPipeCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT()))
+		   if (UtilitySimulation.getPipeCounter() == myModel.getNUM_SEC())
 		   {	myModel.crews.stopUse();
 	   			myModel.excavators.stopUse();
 	   			System.out.println("resource crews stopped at simulation time " + myModel.presentTime() + " 2nd crew finishes housing connections");
@@ -451,7 +465,7 @@ public class SectionProcessAll extends ParentProcess
 	    */
 	   
   	   myModel.backfill();
-	   if (UtilitySimulation.getBackfillCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
+	   if (UtilitySimulation.getBackfillCounter() == myModel.getNUM_SEC()) {
 		   myModel.trucks.stopUse();
 		   
 		   if(myModel.getSecondCrew()){
@@ -493,7 +507,7 @@ public class SectionProcessAll extends ParentProcess
 	
 		   myModel.rollers.takeBack(1);
 		   myModel.prepare();
-		   if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
+		   if (UtilitySimulation.getPrepareCounter() == myModel.getNUM_SEC()) {
 			   myModel.rollers.stopUse();
 			   System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
 		   }
@@ -511,7 +525,7 @@ public class SectionProcessAll extends ParentProcess
 				   " End: " + myModel.presentTime().toString());
 		   myModel.trucks.takeBack(1);
 		   myModel.prepare();
-   		   if (UtilitySimulation.getPrepareCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())) {
+   		   if (UtilitySimulation.getPrepareCounter() == myModel.getNUM_SEC()) {
 		    	  myModel.rollers.stopUse();
 		       System.out.println("resource rollers stopped at simulation time " + myModel.presentTime());
    		   		}
@@ -563,9 +577,13 @@ public class SectionProcessAll extends ParentProcess
 	private String Old_sewer_type; 		// type of old sewer
 	private String New_sewer_type; 		// type of new sewer
 	private double Old_diameter;  		// diameter of old sewer 
+	private double Old_diameter_Sep;  	// diameter of old DWA sewer in case of separated sewer
 	private double New_diameter;  		// diameter of new sewer
-	private double Old_put_area;		// Area of the old put						
-	private double New_put_area;		// Area of the new put						
+	private double New_diameter_Sep;  	// diameter of new DWA sewer in case of separated sewer
+	private double Old_put_area;		// Area of the old put			
+	private double Old_put_area_sep;	// Area of the old DWA put in case of separated sewer
+	private double New_put_area;		// Area of the new put 
+	private double New_put_area_sep;	// Area of the new DWA put in case of separated sewer
 	private double Asphalt_old;  		// layer thickness of old asphalt in mm
 	private double Asphalt_new;  		// layer thickness of new asphalt in mm 
 	private double Cables;  			// weight class of cables in the ground

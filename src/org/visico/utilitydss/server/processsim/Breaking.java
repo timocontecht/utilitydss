@@ -24,7 +24,7 @@ public class Breaking extends ParentProcess
 	public Breaking(Model owner, ParentProcess parent, String name, boolean showInTrace, int Old_pavement, double Total_Area, 
 			double Section_Area, double remove_pavement)
 	{
-		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
+		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
 		myModel = (UtilitySimulation)owner;
 		oldPavement = Old_pavement;
 		total_area = Total_Area;
@@ -61,7 +61,7 @@ public class Breaking extends ParentProcess
 					   " End: " + myModel.presentTime().toString());
 			   myModel.breakers.takeBack(1);
 			   myModel.breaking();
-			   if (UtilitySimulation.getBreakCounter() == (myModel.getScenario().getNUM_SEC() + myModel.getScenario().getNUM_PUT())){
+			   if (UtilitySimulation.getBreakCounter() == myModel.getNUM_SEC()){
 				   myModel.breakers.stopUse();
 				   System.out.println("resource breakers stopped at simulation time " + myModel.presentTime());
 			   }
@@ -104,7 +104,7 @@ public class Breaking extends ParentProcess
     			
     		default:
 		    // no pavement removal
-		   		System.out.println("No breaking activities performed " + myModel.presentTime());	   
+		   		System.out.println("No breaking activities performed because there was no pavement" + myModel.presentTime());	   
 		   		break;
 	   }}
 	  

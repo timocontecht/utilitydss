@@ -38,28 +38,28 @@ public class Section
 */
 	private int PUT; 
 	private int Shore;					// Indicates if shoring is used and if so what type is used.
-	private double Num_Put_connections;  	// number of connections the put has, only if put
+	private double Num_Put_connections; // number of connections the put has, only if put
 	private int Old_pavement; 			// type of old pavement
 	private int New_pavement;  			// type of new pavement
 	private double Section_length;  	// length of section in m 
-	private double Pipe_length;  	// length of pipes in m
+	private double Pipe_length;  		// length of pipes in m
 	private double Section_width;  		// width of section in m
 	private double Trench_width;  		// width of Trench  in m
 	private double Trench_depth;  		// depth of Trench in m
 	private String Old_sewer_type; 		// type of old sewer
 	private String New_sewer_type; 		// type of new sewer
-	private double Old_diameter;  			// diameter of old sewer 
-	private double New_diameter;  			// diameter of new sewer
+	private double Old_diameter;  		// diameter of old sewer 
+	private double New_diameter;  		// diameter of new sewer
 	private double Old_put_area;		// Area of the old put						
 	private double New_put_area;		// Area of the new put						
-	private double Asphalt_old;  			// layer thickness of old asphalt in mm
-	private double Asphalt_new;  			// layer thickness of new asphalt in mm 
+	private double Asphalt_old;  		// layer thickness of old asphalt in mm
+	private double Asphalt_new;  		// layer thickness of new asphalt in mm 
 	private double Cables;  			// weight class of cables in the ground
 	private double Length_connections;  // average length of connections in m
 	private double Diameter_connections;// average depth of connections in m
-	private double Foundation_type;  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
-	private double Soil_removed;  			// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
-	private double Soil_new;  				// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	private double Foundation_type;  	// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
+	private double Soil_removed;  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
+	private double Soil_new;  			// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Pipes_old;  			// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Pipes_new;  			// where are the new pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	private double Rock_layer;			// height of pavement preparation rock layer in m

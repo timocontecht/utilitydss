@@ -25,14 +25,13 @@ public class Connections extends ParentProcess
 	    */
 	
 	public Connections(Model owner, SectionProcessAll parent, String name, boolean showInTrace, double connection_duration_hwa, 
-			double second_backfill_height, double pipe_area, double trench_Area, double backfill, double soil_pl_factor)
+			double second_backfill_height, double pipe_area, double backfill, double soil_pl_factor)
 	{
-		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
+		super(owner, name, showInTrace, Old_pavement, Old_pavement, Old_pavement, Old_pavement, remove_pavement, Old_pavement, Old_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, name, name, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement, remove_pavement);
 		myModel = (UtilitySimulation)owner;
 		Connection_duration_hwa = connection_duration_hwa;
 		Second_backfill_height = second_backfill_height;
 		Pipe_Area = pipe_area;
-		Trench_Area = trench_Area;
 		Backfill = backfill;
 		Soil_pl_factor = soil_pl_factor;
 		Parent = parent;
@@ -86,17 +85,12 @@ public class Connections extends ParentProcess
 			   hold (new TimeSpan((myModel.getHousingConnectionTime() * Connection_duration_hwa), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
 			   ActivityMessage msg_10 = new ActivityMessage(myModel, Parent, startConnection_2, "Housing pipe " + this, myModel.presentTime(), 5) ;
 			   sendMessage(msg_10);
-			   sendTraceNote("Activity: " + Parent + " Install housing connection: " + startConnection_2.toString() + 
+			   sendTraceNote("Activity: " + Parent + " Install housing connection: "+ " start " + startConnection_2.toString() + 
 					   " End: " + myModel.presentTime().toString());
-			   if(myModel.getSecondCrew()) {
-				   	myModel.secondcrews.takeBack(1);}
-			   else {myModel.crews.takeBack(1); myModel.excavators.takeBack(1);}
+			   
 		   
 			   // TODO second backfill should also happen at pipes where there is no connection
 			   // 10. (second) backfill + compacting
-			   if(myModel.getSecondCrew()) {
-				   	myModel.secondcrews.provide(1);}
-			   else {myModel.crews.provide(1); myModel.excavators.provide(1);}
 			   myModel.trucks.provide(1);
 			   startConnection_2 = myModel.presentTime();
 			   hold (new TimeSpan((myModel.getBackfillTime() * ((Second_backfill_height * Pipe_Area)/Backfill) * Soil_pl_factor), TimeUnit.HOURS));
@@ -108,7 +102,6 @@ public class Connections extends ParentProcess
 				   	myModel.secondcrews.takeBack(1);}
 			   else {myModel.crews.takeBack(1); myModel.excavators.takeBack(1);}
 			   myModel.trucks.takeBack(1);
-			   
 			   ActivityMessage msg_12 = new ActivityMessage(myModel, Parent, startConnection_1, "Connection + backfill " + this, myModel.presentTime(), 4);
 			   sendMessage(msg_12);
 			   
@@ -123,12 +116,11 @@ public class Connections extends ParentProcess
 				if(myModel.getSecondCrew()) {
 				   	myModel.secondcrews.provide(1);}
 			   else {myModel.crews.provide(1); myModel.excavators.provide(1);}
-				//myModel.secondcrews.provide(1);
-			   startConnection_1 = myModel.presentTime();
+				startConnection_1 = myModel.presentTime();
 			   hold (new TimeSpan((myModel.getHousingConnectionTime() * Connection_duration_hwa), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
 			   ActivityMessage msg_13 = new ActivityMessage(myModel, Parent, startConnection_1, "Housing pipe " + this, myModel.presentTime(), 0) ;
 			   sendMessage(msg_13);
-			   sendTraceNote("Activity: " + Parent + " Install housing connection: " + startConnection_1.toString() + 
+			   sendTraceNote("Activity: " + Parent + " Install housing connection: " + " start " + startConnection_1.toString() + 
 					   " End: " + myModel.presentTime().toString());
 			   if(myModel.getSecondCrew()) {
 				   	myModel.secondcrews.takeBack(1);}
@@ -151,11 +143,9 @@ public class Connections extends ParentProcess
 	   private double Connection_duration_hwa;		// duration of one connection
 	   private double Second_backfill_height;		// height of the second backfill
 	   private double Pipe_Area;					// total area around one pipe
-	   private double Trench_Area;					// total area of the trench
 	   private double Backfill;						// backfill production in m^3 per hour
 	   private double Soil_pl_factor;				// factor for where the soil is placed before backfilling ( in depot, off site or besides the ditch)
 	   private SectionProcessAll Parent;			// parent of this class
-	   private int ThirdCrew;
 	   private static final int Old_pavement = 0;	
 	   private static final double remove_pavement = 0;
 

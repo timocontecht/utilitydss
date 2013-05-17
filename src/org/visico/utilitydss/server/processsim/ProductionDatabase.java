@@ -27,7 +27,9 @@ public class ProductionDatabase
 			String old_sewer_type,
 			String new_sewer_type,
 			double old_diameter,
+			double old_diameter_sep,
 			double new_diameter,
+			double new_diameter_sep,
 			double asphalt_old,
 			double asphalt_new,
 			double cables,
@@ -41,7 +43,9 @@ public class ProductionDatabase
 			double rock_layer,
 			double sand_layer,
 			double old_put_area,
+			double old_put_area_sep,
 			double new_put_area,
+			double new_put_area_sep,
 			double bed_preparation
 			) 
 	
@@ -56,8 +60,10 @@ public class ProductionDatabase
 		Trench_depth = trench_depth;  				// depth of Trench in
 		Old_sewer_type = old_sewer_type; 			// type of old sewer
 		New_sewer_type = new_sewer_type; 			// type of new sewer
-		Old_diameter = old_diameter;  				// diameter of old sewer 
+		Old_diameter = old_diameter;  				// diameter of old sewer
+		Old_diameter_sep = old_diameter_sep;
 		New_diameter = new_diameter;  				// diameter of new sewer
+		New_diameter_sep = new_diameter_sep;
 		Asphalt_old = asphalt_old;  				// layer thickness of old asphalt in
 		Asphalt_new = asphalt_new;  				// layer thickness of new asphalt in // 
 		Cables = cables;  							// weight class of cables in the ground
@@ -71,7 +77,9 @@ public class ProductionDatabase
 		Rock_layer = rock_layer;					// height of broken rock layer
 		Sand_layer = sand_layer;					// height of sand layer	
 		Old_put_area = old_put_area;				// area of the old put
+		Old_put_area_sep = old_put_area_sep;				// area of the old put
 		New_put_area = new_put_area;				// area of the new put
+		New_put_area_sep = new_put_area_sep;				// area of the new put
 
 	/**
 	* production values 
@@ -105,13 +113,13 @@ public class ProductionDatabase
 		if(Soil_removed == 1) {soil_rm_factor = 1.1;}
 		else {soil_rm_factor = 1;}
 		
-		// Shoring (in meter per hours) 											!!! data from gwwkosten.n !!!
-		// Average ditch width used													// no data found for removal, therefore placement is used
-		if(Shore == 1){shoring = 0.1; shoring_remove = 0.1;}			// sliding cask
+		// Shoring (in meter per hours) 										
+		// !!! no data found for removal, therefore placement values are used. !!!
+		if(Shore == 1){shoring = 0.1; shoring_remove = 0.1;}				// sliding cask
 		
-		else if(Shore == 2){shoring = 0.25; shoring_remove = 0.25;}	// sheet piling (damwand)
+		else if(Shore == 2){shoring = 0.25; shoring_remove = 0.25;}			// sheet piling (damwand)
 		
-		else if(Shore == 3){											// supported wall (gestutte wanden)
+		else if(Shore == 3){												// supported wall (gestutte wanden)
 			if(Trench_depth <1.50) {shoring = 26; shoring_remove = 26;}
 			else if(Trench_depth <1.50) {shoring = 18; shoring_remove = 18;}
 			else {shoring = 12; shoring_remove = 12;}
@@ -129,6 +137,18 @@ public class ProductionDatabase
 			else if(Old_diameter <= 1000) {pipe_removal = 8;}
 			else if(Old_diameter <= 1250) {pipe_removal = 6;}
 			else if(Old_diameter <= 1500) {pipe_removal = 4;}
+			
+			//for separated DWA sewer:
+			if(Old_diameter_sep <= 300) {pipe_removal_sep = 21.5;} 
+			else if(Old_diameter_sep <= 400) {pipe_removal_sep = 19;}
+			else if(Old_diameter_sep <= 500) {pipe_removal_sep = 17;}
+			else if(Old_diameter_sep <= 600) {pipe_removal_sep = 15;}
+			else if(Old_diameter_sep <= 700) {pipe_removal_sep = 13;}
+			else if(Old_diameter_sep <= 800) {pipe_removal_sep = 11;}
+			else if(Old_diameter_sep <= 900) {pipe_removal_sep = 10;}
+			else if(Old_diameter_sep <= 1000) {pipe_removal_sep = 8;}
+			else if(Old_diameter_sep <= 1250) {pipe_removal_sep = 6;}
+			else if(Old_diameter_sep <= 1500) {pipe_removal_sep = 4;}
 		}
 		
 		else if(Old_sewer_type == "Gres"){						
@@ -139,22 +159,38 @@ public class ProductionDatabase
 			else if(Old_diameter == 200) {pipe_removal = 40;}
 			else if(Old_diameter == 250) {pipe_removal = 40;}
 			else if(Old_diameter == 315) {pipe_removal = 30;}
+			
+			//for separated DWA sewer:
+			if(Old_diameter_sep == 250) {pipe_removal_sep = 24;} 
+			else if(Old_diameter_sep == 110) {pipe_removal_sep = 20;} 
+			else if(Old_diameter_sep == 125) {pipe_removal_sep = 20;}
+			else if(Old_diameter_sep == 160) {pipe_removal_sep = 25;}
+			else if(Old_diameter_sep == 200) {pipe_removal_sep = 40;}
+			else if(Old_diameter_sep == 250) {pipe_removal_sep = 40;}
+			else if(Old_diameter_sep == 315) {pipe_removal_sep = 30;}
 		}
 		
 		else if(Old_sewer_type == "Plastic"){						
 			pipe_removal = 20; 
+			pipe_removal_sep = (20); //for separated DWA sewer
 		}
 		
 		if(Pipes_old == 1) {pipe_rm_factor = 1.1;}
 		else {pipe_rm_factor = 1;}
 		
-		 // Removing Put in units per hour							!!! data from gwwkosten.nl, average put height used (2 m high) !!!
-		 // Pre-fab put, brick and mortar puts are not taken into account	
+		 // Removing Put in units per hour							
+		 // data from gwwkosten.nl, average put height used  
+		 // Pre-fab put is standard, brick and mortar puts are not taken into account	
 	 		if(Old_put_area < 1) {put_removal = (4.75);}
 			else if(Old_put_area == 1) {put_removal = (3.85);}
 			else if(Old_put_area > 2) {put_removal = (1.9);}
 			else {put_removal = 3;}								// area between 1 and 2 meter
 
+	 		//for separated DWA sewer:
+	 		if(Old_put_area_sep < 1) {put_removal_sep = (4.75);}
+			else if(Old_put_area_sep == 1) {put_removal_sep = (3.85);}
+			else if(Old_put_area_sep > 2) { put_removal_sep = (1.9);}
+			else {put_removal_sep = 3;}
 			 
 		// Preparing Bed (m^3 per hour)
 		if(Trench_width <= 1){
@@ -170,6 +206,7 @@ public class ProductionDatabase
 		}
 		 
 		// Foundation (Production in hour per pipelength)
+		// !!! these are estimates as there where no numbers for this on bouwkostenonline and gwwkostenonline !!!
 		if(Foundation_type == 0){foundation_duration = 0;}				// geen fundering	 
 		else if(Foundation_type == 1){foundation_duration = 30;}		// verstevigd zand	
 		else if(Foundation_type == 2){foundation_duration = 10;}		// bodemplaat
@@ -187,6 +224,18 @@ public class ProductionDatabase
 			else if(New_diameter == 1000) {pipe_placement = 4;}
 			else if(New_diameter == 1250) {pipe_placement = 4;}
 			else if(New_diameter == 1500) {pipe_placement = 3;}
+			
+			//for separated DWA sewer:
+			if(New_diameter_sep == 300) {pipe_placement_sep = 8;} 
+			else if(New_diameter_sep == 400) {pipe_placement_sep = 7;}
+			else if(New_diameter_sep == 500) {pipe_placement_sep = 6.5;}
+			else if(New_diameter_sep == 600) {pipe_placement_sep = 6;}
+			else if(New_diameter_sep == 700) {pipe_placement_sep = 5.5;}
+			else if(New_diameter_sep == 800) {pipe_placement_sep = 5;}
+			else if(New_diameter_sep == 900) {pipe_placement_sep = 4.5;}
+			else if(New_diameter_sep == 1000) {pipe_placement_sep = 4;}
+			else if(New_diameter_sep == 1250) {pipe_placement_sep = 4;}
+			else if(New_diameter_sep == 1500) {pipe_placement_sep = 3;}
 		}
 		
 		else if(New_sewer_type == "Gres"){						
@@ -196,6 +245,14 @@ public class ProductionDatabase
 			else if(New_diameter == 200) {pipe_placement = 15;}
 			else if(New_diameter == 250) {pipe_placement = 10;}
 			else if(New_diameter == 315) {pipe_placement = 10;}
+	 		
+	 		//for separated DWA sewer:
+	 		if(New_diameter_sep == 110) {pipe_placement_sep = 15;} 
+			else if(New_diameter_sep == 125) {pipe_placement_sep = 15;}
+			else if(New_diameter_sep == 160) {pipe_placement_sep = 15;}
+			else if(New_diameter_sep == 200) {pipe_placement_sep = 15;}
+			else if(New_diameter_sep == 250) {pipe_placement_sep = 10;}
+			else if(New_diameter_sep == 315) {pipe_placement_sep = 10;}
 		}
 		
 		else if(New_sewer_type == "Plastic"){						
@@ -205,6 +262,14 @@ public class ProductionDatabase
 			else if(New_diameter == 400) {pipe_placement = 6;}
 			else if(New_diameter == 500) {pipe_placement = 5;}
 			else if(New_diameter == 600) {pipe_placement = 5;}
+			
+			//for separated DWA sewer:
+			if(New_diameter_sep == 200) {pipe_placement_sep = 7;} 
+			else if(New_diameter_sep == 250) {pipe_placement_sep = 7;}
+			else if(New_diameter_sep == 300) {pipe_placement_sep = 6.5;}
+			else if(New_diameter_sep == 400) {pipe_placement_sep = 6;}
+			else if(New_diameter_sep == 500) {pipe_placement_sep = 5;}
+			else if(New_diameter_sep == 600) {pipe_placement_sep = 5;}
 		}
 		
 		if(Pipes_new == 1) {pipe_pl_factor = 1.1;}
@@ -214,10 +279,15 @@ public class ProductionDatabase
 	 		if(New_put_area < 1) {put_placement = 1/0.63;}
 			else if(New_put_area == 1) {put_placement = 1/0.6;}
 			else if(New_put_area > 2) {put_placement = 1/0.42;}
-			else {put_placement = 1/0.5;}								// area between 1 and 2
-		//}
-		
-		// Connection put (in hours per unit) (used average pipe diameter)					
+			else {put_placement = 1/0.5;}			// area between 1 and 2
+	 		
+	 		//for separated DWA sewer:
+	 		if(New_put_area < 1) {put_placement_sep = 1/0.63;}
+			else if(New_put_area_sep == 1) {put_placement_sep = 1/0.6;}
+			else if(New_put_area_sep > 2) {put_placement_sep = 1/0.42;}
+			else {put_placement_sep = 1/0.5;}			// area between 1 and 2
+				
+		// Connection put (in hours per unit) 					
 		connection_put_duration = 1; 
 		// I really doubt this number is accurate	
 		 
@@ -292,9 +362,13 @@ public class ProductionDatabase
 	private String Old_sewer_type; 		// type of old sewer
 	private String New_sewer_type; 		// type of new sewer
 	private double Old_diameter;  		// diameter of old sewer 
+	private double Old_diameter_sep;  	// diameter of old DWA sewer put in case of separated sewer
 	private double New_diameter;  		// diameter of new sewer
+	private double New_diameter_sep;  	// diameter of new DWA sewer put in case of separated sewer
 	private double Old_put_area;		// Area of the old put						-can be differentiated further in put heights-
+	private double Old_put_area_sep;	// Area of the old DWA put put in case of separated sewer
 	private double New_put_area;		// Area of the new put						-can be differentiated further in put heights-
+	private double New_put_area_sep;	// Area of the new DWA put in case of separated sewer
 	private double Asphalt_old;  		// layer thickness of old asphalt in mm
 	private double Asphalt_new;  		// layer thickness of new asphalt in mm 
 	private double Cables;  			// weight class of cables in the ground
@@ -315,12 +389,16 @@ public class ProductionDatabase
 	private int remove_pavement;			// production quantity of pavement removal in m^2 per hour
 	private int excavation;					// production quantity of excavation in m^3 per hour
 	private double pipe_removal;			// production quantity of pipe removal in m per hour
+	private double pipe_removal_sep;		// production quantity of pipe removal in m per hour for separated DWA sewer
 	private double put_removal; 			// production quantity of pipe removal in hour per unit
+	private double put_removal_sep; 		// production quantity of pipe removal in hour per unit for separated DWA sewer
 	private double shoring;					// production quantity of shoring in m per hour
 	private double shoring_remove;			// production quantity of shoring removal in m per hour
 	private double preparation;				// production quantity of pavement removal in m^3 per hour
 	private double pipe_placement;			// production quantity of pipe placement in m per hour
+	private double pipe_placement_sep;		// production quantity of pipe removal in m per hour for separated DWA sewer
 	private double put_placement;			// production quantity of put placement in hours per unit
+	private double put_placement_sep;		// production quantity of put placement in hours per unit for separated DWA sewer
 	private double connection_duration_hwa;	// total production duration of a rain water connection in units per hour
 	private double connection_duration_vw;	// total production duration of a housing connection in units per hour  
 	private double connection_pipe_duration;// production duration of a housing or rain water pipe in meter per hour
@@ -414,4 +492,16 @@ public class ProductionDatabase
 	   public double getPipe_pl_factor() {
 		      return pipe_pl_factor;
 		   }
+		public double getPipe_removal_sep() {
+			return pipe_removal_sep;
+		}
+		public double getPut_removal_sep() {
+			return put_removal_sep;
+		}
+		public double getPipe_placement_sep() {
+			return pipe_placement_sep;
+		}
+		public double getPut_placement_sep() {
+			return put_placement_sep;
+		}
 }
