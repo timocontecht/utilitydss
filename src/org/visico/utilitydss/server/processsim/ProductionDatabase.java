@@ -108,7 +108,7 @@ public class ProductionDatabase
 
 		// Excavating (m^3 per hour)
 		if(Replacement == 0 ) { excavation = 24;}
-		else {excavation = 10;}
+		else {excavation = 20;}
 		
 		if(Soil_removed == 1) {soil_rm_factor = 1.1;}
 		else {soil_rm_factor = 1;}
@@ -214,62 +214,62 @@ public class ProductionDatabase
 		 
 		// Placing pipe (m per hour)
 		if(New_sewer_type == "Concrete"){							
-			if(New_diameter == 300) {pipe_placement = 8;} 
-			else if(New_diameter == 400) {pipe_placement = 7;}
-			else if(New_diameter == 500) {pipe_placement = 6.5;}
-			else if(New_diameter == 600) {pipe_placement = 6;}
-			else if(New_diameter == 700) {pipe_placement = 5.5;}
-			else if(New_diameter == 800) {pipe_placement = 5;}
-			else if(New_diameter == 900) {pipe_placement = 4.5;}
-			else if(New_diameter == 1000) {pipe_placement = 4;}
-			else if(New_diameter == 1250) {pipe_placement = 4;}
-			else if(New_diameter == 1500) {pipe_placement = 3;}
+			if(New_diameter <= 300) {pipe_placement = 8;} 
+			else if(New_diameter <= 400) {pipe_placement = 7;}
+			else if(New_diameter <= 500) {pipe_placement = 6.5;}
+			else if(New_diameter <= 600) {pipe_placement = 6;}
+			else if(New_diameter <= 700) {pipe_placement = 5.5;}
+			else if(New_diameter <= 800) {pipe_placement = 5;}
+			else if(New_diameter <= 900) {pipe_placement = 4.5;}
+			else if(New_diameter <= 1000) {pipe_placement = 4;}
+			else if(New_diameter <= 1250) {pipe_placement = 4;}
+			else if(New_diameter <= 1500) {pipe_placement = 3;}
 			
 			//for separated DWA sewer:
-			if(New_diameter_sep == 300) {pipe_placement_sep = 8;} 
-			else if(New_diameter_sep == 400) {pipe_placement_sep = 7;}
-			else if(New_diameter_sep == 500) {pipe_placement_sep = 6.5;}
-			else if(New_diameter_sep == 600) {pipe_placement_sep = 6;}
-			else if(New_diameter_sep == 700) {pipe_placement_sep = 5.5;}
-			else if(New_diameter_sep == 800) {pipe_placement_sep = 5;}
-			else if(New_diameter_sep == 900) {pipe_placement_sep = 4.5;}
-			else if(New_diameter_sep == 1000) {pipe_placement_sep = 4;}
-			else if(New_diameter_sep == 1250) {pipe_placement_sep = 4;}
-			else if(New_diameter_sep == 1500) {pipe_placement_sep = 3;}
+			if(New_diameter_sep <= 300) {pipe_placement_sep = 8;} 
+			else if(New_diameter_sep <= 400) {pipe_placement_sep = 7;}
+			else if(New_diameter_sep <= 500) {pipe_placement_sep = 6.5;}
+			else if(New_diameter_sep <= 600) {pipe_placement_sep = 6;}
+			else if(New_diameter_sep <= 700) {pipe_placement_sep = 5.5;}
+			else if(New_diameter_sep <= 800) {pipe_placement_sep = 5;}
+			else if(New_diameter_sep <= 900) {pipe_placement_sep = 4.5;}
+			else if(New_diameter_sep <= 1000) {pipe_placement_sep = 4;}
+			else if(New_diameter_sep <= 1250) {pipe_placement_sep = 4;}
+			else if(New_diameter_sep <= 1500) {pipe_placement_sep = 3;}
 		}
 		
 		else if(New_sewer_type == "Gres"){						
-	 		if(New_diameter == 110) {pipe_placement = 15;} 
-			else if(New_diameter == 125) {pipe_placement = 15;}
-			else if(New_diameter == 160) {pipe_placement = 15;}
-			else if(New_diameter == 200) {pipe_placement = 15;}
-			else if(New_diameter == 250) {pipe_placement = 10;}
-			else if(New_diameter == 315) {pipe_placement = 10;}
+	 		if(New_diameter <= 110) {pipe_placement = 15;} 
+			else if(New_diameter <= 125) {pipe_placement = 15;}
+			else if(New_diameter <= 160) {pipe_placement = 15;}
+			else if(New_diameter <= 200) {pipe_placement = 15;}
+			else if(New_diameter <= 250) {pipe_placement = 10;}
+			else if(New_diameter <= 315) {pipe_placement = 10;}
 	 		
 	 		//for separated DWA sewer:
 	 		if(New_diameter_sep == 110) {pipe_placement_sep = 15;} 
-			else if(New_diameter_sep == 125) {pipe_placement_sep = 15;}
-			else if(New_diameter_sep == 160) {pipe_placement_sep = 15;}
-			else if(New_diameter_sep == 200) {pipe_placement_sep = 15;}
-			else if(New_diameter_sep == 250) {pipe_placement_sep = 10;}
-			else if(New_diameter_sep == 315) {pipe_placement_sep = 10;}
+			else if(New_diameter_sep <= 125) {pipe_placement_sep = 15;}
+			else if(New_diameter_sep <= 160) {pipe_placement_sep = 15;}
+			else if(New_diameter_sep <= 200) {pipe_placement_sep = 15;}
+			else if(New_diameter_sep <= 250) {pipe_placement_sep = 10;}
+			else if(New_diameter_sep <= 315) {pipe_placement_sep = 10;}
 		}
 		
 		else if(New_sewer_type == "Plastic"){						
-			if(New_diameter == 200) {pipe_placement = 7;} 
-			else if(New_diameter == 250) {pipe_placement = 7;}
-			else if(New_diameter == 300) {pipe_placement = 6.5;}
-			else if(New_diameter == 400) {pipe_placement = 6;}
-			else if(New_diameter == 500) {pipe_placement = 5;}
-			else if(New_diameter == 600) {pipe_placement = 5;}
+			if(New_diameter <= 200) {pipe_placement = 7;} 
+			else if(New_diameter <= 250) {pipe_placement = 7;}
+			else if(New_diameter <= 300) {pipe_placement = 6.5;}
+			else if(New_diameter <= 400) {pipe_placement = 6;}
+			else if(New_diameter <= 500) {pipe_placement = 5;}
+			else if(New_diameter <= 600) {pipe_placement = 5;}
 			
 			//for separated DWA sewer:
-			if(New_diameter_sep == 200) {pipe_placement_sep = 7;} 
-			else if(New_diameter_sep == 250) {pipe_placement_sep = 7;}
-			else if(New_diameter_sep == 300) {pipe_placement_sep = 6.5;}
-			else if(New_diameter_sep == 400) {pipe_placement_sep = 6;}
-			else if(New_diameter_sep == 500) {pipe_placement_sep = 5;}
-			else if(New_diameter_sep == 600) {pipe_placement_sep = 5;}
+			if(New_diameter_sep <= 200) {pipe_placement_sep = 7;} 
+			else if(New_diameter_sep <= 250) {pipe_placement_sep = 7;}
+			else if(New_diameter_sep <= 300) {pipe_placement_sep = 6.5;}
+			else if(New_diameter_sep <= 400) {pipe_placement_sep = 6;}
+			else if(New_diameter_sep <= 500) {pipe_placement_sep = 5;}
+			else if(New_diameter_sep <= 600) {pipe_placement_sep = 5;}
 		}
 		
 		if(Pipes_new == 1) {pipe_pl_factor = 1.1;}

@@ -18,22 +18,22 @@ public class Deventer {
 		 * Fase 1B1
 		 */
 	
-		// Section nr.									{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }; 	// indicates the number of the section for ease of characteristics input
+		// Section nr.									{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }; 		// indicates the number of the section for ease of characteristics input
 	   // project characteristics
-	   ///*
-	   public static int[] put = 						{ 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
-	   public static int[] shore = 						{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
-																										// 2 means Sheet piling (damwand), 3 means supported walls  
-	   public static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 					// Indicates if this section has existing old sewer: 0 is no, 1 is yes
-	   public static int [] oldSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 		// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
-	   public static int [] newSeparated = 				{ 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 };			// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
-	   public static double[] num_put_connections = 	{ 0, 3, 0, 3, 0, 3, 0, 0, 2, 0, 2, 0, 1 };  		// number of connections the put has, only if put
-	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
-																										// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
+	   /*
+	   public static int[] put = 						{ 0, 1,};//, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1 }; 	// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
+	   public static int[] shore = 						{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 			// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+																											// 2 means Sheet piling (damwand), 3 means supported walls  
+	   public static int [] replacement =				{ 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
+	   public static int [] oldSeparated = 				{ 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; 			// Indicates if the old section has combined or separated sewer: 0 is combined, 2 is separated
+	   public static int [] newSeparated = 				{ 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 };			// Indicates if the new section has combined or separated sewer:: 0 is combined, 2 is separated
+	   public static double[] num_put_connections = 	{ 0, 2, 0, 3, 0, 3, 0, 0, 2, 0, 2, 0, 1 };  		// number of connections the put has, only if put
+	   public static int[] old_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 			// type of old pavement indicates old pavement type, 0 means no pavement, 1 means asphalt; break section, 2 means stones, 
+																											// 3 means asphalt; break all sections at start--> 3 can only be used if this goes for all sections
 	   public static int[] new_pavement = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type of new pavement indicates new pavement type, 0 means no pavement, 1 means asphalt; pave section, 2 means stones,
-	   																									// 3 means asphalt; pave all sections at end --> 3 can only be used if this goes for all sections
+	   																										// 3 means asphalt; pave all sections at end --> 3 can only be used if this goes for all sections
 	   public static double[] cables =		 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// weight class of cables in the ground 
-	   public static double[] foundation_type =			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
+	   public static double[] foundation_type =			{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// type foundation used: 1 = solidified sand, 2 = styrofoam plate, 3 = pole construction
 	   public static double[] soil_removed = 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the removed soil placed: 0 = next to trench 1 = in depot, 2 = transported off site=
 	   public static double[] soil_new = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where is the new soil placed: 0 = next to trench 1 = in depot, 2 = transported off site
 	   public static double[] pipes_old = 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  		// where are the removed pipes placed: 0 = next to trench 1 = in depot, 2 = transported off site
@@ -44,11 +44,11 @@ public class Deventer {
 	   public static double pipe_length = 				2.4; 															// length of pipes in
 	   public static double[] section_width = 			{ 7, 7, 7, 7, 13, 13, 13, 18, 18, 18, 18, 18, 8 };  			// width of section in
 	   public static double[] trench_width = 			{ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 };  					// width of Trench in  					///////////// bigger with puts?
-	   public static double[] trench_depth = 			{ 4.4, 4.4, 4.4, 4.2, 4, 4, 4, 3, 3, 2.5, 1.8, 1.8, 1.6, 1.6};  		// depth of Trench in
+	   public static double[] trench_depth = 			{ 4.4, 4.4, 4.4, 4.2, 4, 4, 4, 3, 3, 2.5, 1.8, 1.8, 1.6, 1.6}; 	// depth of Trench in
 	   public static String old_sewer_type = 		 	"Concrete"; 													// type of old sewer	Concrete, Gres, Plastic
 	   public static String new_sewer_type = 		 	"Concrete"; 													// type of new sewer	Concrete, Gres, Plastic
-	   public static double[] old_diameter = 			{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer (HWA if separated)
-	   public static double[] old_diameter_sep =		{ 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
+	   public static double[] old_diameter = 			{ 600, 600, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer (HWA if separated)
+	   public static double[] old_diameter_sep =		{ 315, 315, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000 }; 		// diameter of old sewer separated DWA streng 
 	   public static double[] new_diameter = 			{ 800, 000, 800, 000, 800, 000, 800, 500, 000, 400, 000, 300, 000 };  		// diameter of new sewer (HWA if separated)
 	   public static double[] new_diameter_sep = 		{ 315, 000, 315, 000, 315, 000, 315, 000, 000, 000, 000, 000, 000 };  		// diameter of old sewer separated DWA streng 
 	   public static double[] asphalt_old = 			{ 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40 };  		// layer thickness of old asphalt in
@@ -82,7 +82,7 @@ public class Deventer {
 	   public static int[][] pipe_connections = 		{ section0_connections, section1_connections, section2_connections, section3_connections, section4_connections,section5_connections,
 		   												section6_connections, section7_connections, section8_connections, section9_connections, section10_connections, 
 		   												section11_connections, section12_connections};
-	   //*/
+	   */
 
 	   /**
 		 * Fase 1B2
@@ -90,8 +90,8 @@ public class Deventer {
 
 		// Section nr.									{ 1, 2, 3, 4, 5}; 		// indicates the number of the section for ease of characteristics input
 	   // project characteristics
-	   /*
-		public static int[] put = 						{ 0, 1, 0, 1, 0 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
+	   ///*
+		public static int[] put = 						{ 0, 1};//, 0, 1, 0 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put, 2 is overstort  
 	   public static int[] shore = 						{ 0, 0, 0, 0, 0}; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																								// 2 means Sheet piling (damwand), 3 means supported walls  
 	   public static int [] replacement =				{ 0, 0, 0, 0, 0}; 			// Indicates if this section has existing old sewer: 0 is no, 1 is yes
@@ -144,7 +144,7 @@ public class Deventer {
 	   private static int[] section5_connections =		{3, 8, 12, 16, 20, 23 };							// indicates if a pipe in section 2 has a connection.
 		public static int[][] pipe_connections = 		{ section1_connections, section2_connections, section3_connections, section4_connections,
 														section5_connections};
-	   */
+	   //*/
 
 	   /**
 		 * Fase 1B3

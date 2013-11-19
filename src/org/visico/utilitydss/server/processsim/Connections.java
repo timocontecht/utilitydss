@@ -118,7 +118,7 @@ public class Connections extends ParentProcess
 			   else {myModel.crews.provide(1); myModel.excavators.provide(1);}
 				startConnection_1 = myModel.presentTime();
 			   hold (new TimeSpan((myModel.getHousingConnectionTime() * Connection_duration_hwa), TimeUnit.HOURS)); //multiply by this.NUM_CONNECTIONS or iterate trough them
-			   ActivityMessage msg_13 = new ActivityMessage(myModel, Parent, startConnection_1, "Housing pipe " + this, myModel.presentTime(), 0) ;
+			   ActivityMessage msg_13 = new ActivityMessage(myModel, Parent, startConnection_1, "Housing pipe " + this, myModel.presentTime(), 5) ;
 			   sendMessage(msg_13);
 			   sendTraceNote("Activity: " + Parent + " Install housing connection: " + " start " + startConnection_1.toString() + 
 					   " End: " + myModel.presentTime().toString());

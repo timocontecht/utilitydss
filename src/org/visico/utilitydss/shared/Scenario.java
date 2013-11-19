@@ -36,16 +36,16 @@ public class Scenario implements Serializable
 	   private int NUM_STARTINGCONDITION = 1;	// forces sections to wait for predecessors to be done with specified activity
 	   
 	   // this could be removed by linking to NUM_2NDCREW directly
-	   private static boolean secondCrew = true;		// indicates if there is a 2nd crew present to perform housing connections
+	   private static boolean secondCrew = false;		// indicates if there is a 2nd crew present to perform housing connections
 	   private static int sectionWait = 1;				// indicates after which activity the next section starts: 1 = after main loop (only possible if there is a 2nd crew), 
 														// 2 = second backfill, 3 = surface prepared, 4 = paving
-	   private static double ConnectionWait = 500;		// determines how far along the main sewer should be before the 2nd crew starts with connections in timeunits of simulation
+	   private static double ConnectionWait = 4600;		// determines how far along the main sewer should be before the 2nd crew starts with connections in timeunits of simulation
 		/**   
 		* Model parameters: Simulation output settings
 		*/
-		private static int activityMsg = 1;				// indicates what data is collected in main loop: 1 = one activity for all pipes, 2 = per pipe, 3 =  per activity per pipe
+		private static int activityMsg = 2;				// indicates what data is collected in main loop: 1 = one activity for all pipes, 2 = per pipe, 3 =  per activity per pipe
 		private static int activityMsgConnection = 1;	// indicates what data is collected in connection loop: 1 = total time per connection, 2 = per each activity per connection, 10 = don't show data for connections
-		private static int activityMsgPut = 1;			// indicates what data is collected in main loop: 1  = per put, 2 =  per activity per put
+		private static int activityMsgPut = 2;			// indicates what data is collected in main loop: 1  = per put, 2 =  per activity per put
 
 
 	public int getNUM_BREAKER() {

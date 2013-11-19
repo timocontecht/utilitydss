@@ -70,7 +70,6 @@ public class Paving extends ParentProcess
 			   			myModel.stonepavecrews.stopUse();
 			   			myModel.getExperiment().stop();
 			   			System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
-			   			System.out.println(Parent + " completed");
 			   		}
     			break;
 
@@ -93,7 +92,6 @@ public class Paving extends ParentProcess
 		   			myModel.pavecrews.stopUse();
 		   			myModel.getExperiment().stop();
 		   			System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
-		   			System.out.println(Parent + " completed");
 				}  
 				break;
     			
@@ -125,8 +123,7 @@ public class Paving extends ParentProcess
 				   myModel.pavecrews.stopUse();
 				   myModel.stonepavecrews.stopUse();
 				   myModel.getExperiment().stop();
-				   System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());	
-				   System.out.println(Parent + " completed");
+				   System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
 			   	}   				   	
 			   	
 		   		else{
@@ -148,7 +145,6 @@ public class Paving extends ParentProcess
 		   			myModel.pavecrews.stopUse();
 		   			myModel.getExperiment().stop();
 		   			System.out.println("resource pavecrews stopped at simulation time " + myModel.presentTime());
-		   			System.out.println(Parent + " completed");
 		   		}	
 		   		break;  	
 	 		}

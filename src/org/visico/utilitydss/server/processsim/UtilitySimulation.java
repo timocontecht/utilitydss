@@ -381,41 +381,41 @@ public class UtilitySimulation extends Model
 	      // true                = show in report?
 	      // false               = show in trace?
 	      breakingTime= new ContDistUniform(this, "BreakingTimeStream",
-                  .8, 1.2, true, false);
+                  8, 12, true, false);
 	      stoneRemovalTime= new ContDistUniform(this, "StoneRemovalTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      excavatingTime= new ContDistUniform(this, "ExcavatingTimeStream",
-	    		  .8, 1.2, true, false);	
+	    		  8, 12, true, false);	
 	      closingTime= new ContDistUniform(this, "ClosingTimeStream",
-	    		  .8, 1.2, true, false);	
+	    		  8, 12, true, false);	
 	      shoreTime= new ContDistUniform(this, "ShoringTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      pipeRemoveTime = new ContDistUniform(this, "PipeRemoveTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      putRemoveTime = new ContDistUniform(this, "putRemoveTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      bedPreparationTime= new ContDistUniform(this, "BedPreparationTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      foundationTime= new ContDistUniform(this, "FoundationTimeSream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      pipePlacingTime= new ContDistUniform(this, "PipePlacingTimeStream",
-	    		  .8, 12, true, false);
+	    		  8, 12, true, false);
 	      putPlacingTime= new ContDistUniform(this, "PutPlacingTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      removeTrenchTime= new ContDistUniform(this, "TrenchRemoveTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      housingConnectionTime= new ContDistUniform(this, "HousingConnectionTimeStream",
-	    		  8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      putConnectionTime= new ContDistUniform(this, "PutConnectionTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      backfillTime= new ContDistUniform(this, "BackfillTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      surfacePrepareTime= new ContDistUniform(this, "SurfacePrepareTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      paveTime= new ContDistUniform(this, "PaveTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 	      stonePaveTime= new ContDistUniform(this, "StonePaveTimeStream",
-	    		  .8, 1.2, true, false);
+	    		  8, 12, true, false);
 
 	      // Initialize the resources and bins
 	      // Parameters:
@@ -585,10 +585,10 @@ public class UtilitySimulation extends Model
     */
    // Section nr									{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; 		// indicates the number of the section for ease of characteristics input
    // project characteristics
-   private static int[] put = 						{ 1, 0, 1, 0, 0, 1, 0, 1, 0 }; 		// indicates if section is pipe section or put, 0 is section, 1 is put.  
-   private static int[] shore = 					{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
+   private static int[] put = 						{ 1, 0, 1, 0, 0, 1, 0, 1, 0 }; 			// indicates if section is pipe section or put, 0 is section, 1 is put.  
+   private static int[] shore = 					{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 }; 		// indicates if project requires shoring, 0 means no shoring, 1 means sliding cask, 
 																							// 2 means Sheet piling (damwand), 3 means supported walls  
-   private static int [] replacement =				{ 0, 0, 0, 0, 0, 0, 0, 1, 1, 0 }; 		// Indicates if this section has existing old sewer: 0 is no, 1 is yes
+   private static int [] replacement =				{ 0, 1, 0, 0, 0, 0, 0, 1, 1, 0 }; 		// Indicates if this section has existing old sewer: 0 is no, 1 is yes
    private static int [] oldSeparated = 			{ 1, 1, 1, 1, 1, 1, 1, 1, 2, 1 }; 		// Indicates if the old section has combined or separated sewer: 1 is combined, 2 is separated
    private static int [] newSeparated = 			{ 1, 1, 1, 1, 1, 1, 2, 2, 2, 1 };		// Indicates if the new section has combined or separated sewer:: 1 is combined, 2 is separated
    private static double[] num_put_connections = 	{ 2, 2, 2, 2, 2, 2, 2, 3, 2, 2 };  		// number of connections the put has, only if put
